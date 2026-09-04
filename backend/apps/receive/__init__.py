@@ -1,0 +1,1 @@
+"""Receive app package."""

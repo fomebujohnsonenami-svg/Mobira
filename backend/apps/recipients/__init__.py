@@ -1,0 +1,1 @@
+"""Recipients app package."""
