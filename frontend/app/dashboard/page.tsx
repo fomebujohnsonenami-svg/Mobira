@@ -27,6 +27,7 @@ import {
   Lock,
   Search,
   Check,
+  RotateCcw,
 } from 'lucide-react';
 import { DashboardLayoutWrapper } from '@/components/layout/DashboardLayoutWrapper';
 import { PageShell } from '@/components/layout/PageShell';
@@ -120,9 +121,17 @@ export default function DashboardPage() {
       <PageShell
         title="Executive Dashboard"
         subtitle="Single pane of glass for corporate disbursements, receivables, identity trust, and treasury."
-        badge={<BusinessVerificationBadge size="md" />}
+        badge={
+          <span
+            className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-black text-white shadow-sm"
+            style={{ backgroundColor: '#2563EB' }}
+          >
+            <Check className="w-3 h-3 stroke-[3.5]" />
+            <span>Verified Business</span>
+          </span>
+        }
         action={
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3 w-full lg:w-auto">
             <PrivacyToggle size="md" />
             <QuickActions
               onOpenSendModal={() => {
@@ -145,9 +154,9 @@ export default function DashboardPage() {
             onRetry={loadData}
           />
         ) : (
-          <div className="space-y-6">
+          <div className="space-y-6 w-full min-w-0">
             {/* ======================================================================= */}
-            {/* 1. TOP CARDS: Inflow, Outflow, Ledger, Verified Beneficiaries           */}
+            {/* 1. TOP METRIC CARDS                                                     */}
             {/* ======================================================================= */}
             <MetricCards
               moneyReceived={185400}
@@ -158,18 +167,18 @@ export default function DashboardPage() {
             />
 
             {/* ======================================================================= */}
-            {/* 2. MAIN 2-COLUMN BALANCED WORKSPACE (Tamagui Glass Aesthetics)          */}
+            {/* 2. MAIN 2-COLUMN BALANCED WORKSPACE (Charcoal & Lime Aesthetics)         */}
             {/* ======================================================================= */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 w-full min-w-0">
               
               {/* LEFT COLUMN (5 Cols): Treasury Rails & Reusable Payment Lists */}
-              <div className="lg:col-span-5 space-y-6">
+              <div className="lg:col-span-5 space-y-6 min-w-0">
                 
                 {/* 2A. Connected Payment Rails Card */}
-                <div className="p-5 rounded-2xl bg-[#08162B]/90 backdrop-blur-xl border border-emerald-500/20 shadow-xl shadow-black/20 space-y-4">
-                  <div className="flex items-center justify-between pb-3 border-b border-navy-800">
+                <div className="p-4 sm:p-5 rounded-2xl bg-[#18222D] border border-slate-800 shadow-xl space-y-4">
+                  <div className="flex items-center justify-between pb-3 border-b border-slate-800">
                     <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center font-bold">
+                      <div className="w-8 h-8 rounded-xl bg-[#A3E635]/15 text-[#A3E635] flex items-center justify-center font-bold">
                         <Zap className="w-4 h-4" />
                       </div>
                       <div>
@@ -183,7 +192,7 @@ export default function DashboardPage() {
                     </div>
                     <Link
                       href="/connected-accounts"
-                      className="text-xs font-bold text-emerald-400 hover:text-emerald-300 flex items-center gap-1 group"
+                      className="text-xs font-bold text-[#A3E635] hover:underline flex items-center gap-1 group"
                     >
                       <span>Manage</span>
                       <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
@@ -192,219 +201,217 @@ export default function DashboardPage() {
 
                   <div className="space-y-2.5">
                     {/* Rail 1: MTN MoMo */}
-                    <div className="p-3.5 rounded-xl bg-navy-950/80 border border-emerald-500/20 hover:border-emerald-500/40 transition-all flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-xl bg-emerald-500 text-navy-950 font-black flex items-center justify-center text-xs shadow-sm shadow-emerald-500/20">
+                    <div className="p-3.5 rounded-xl bg-[#131B24] border border-slate-800 hover:border-[#A3E635]/40 transition-all flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="w-9 h-9 rounded-xl bg-[#A3E635] text-[#0F172A] font-black flex items-center justify-center text-xs shrink-0 shadow-sm shadow-[#A3E635]/20">
                           <Smartphone className="w-5 h-5" />
                         </div>
-                        <div>
-                          <div className="flex items-center gap-1.5">
-                            <span className="font-bold text-xs text-white">MTN MoMo Business</span>
-                            <span className="px-1.5 py-0.2 rounded text-[9px] font-black bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                        <div className="min-w-0 truncate">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className="font-bold text-xs text-white">
+                              MTN MoMo Business
+                            </span>
+                            <span className="text-[9px] font-black px-1.5 py-0.2 rounded bg-[#A3E635]/15 text-[#A3E635] border border-[#A3E635]/30">
                               PRIMARY
                             </span>
                           </div>
-                          <div className="text-[11px] font-mono text-slate-400">
-                            •••• 4821 • Limit: {formatAmount(5000000)}
-                          </div>
+                          <p className="text-[10px] text-slate-400 font-mono mt-0.5 truncate">
+                            •••• 4821 • Daily Limit: {formatAmount(5000000, 'GH₵')}
+                          </p>
                         </div>
                       </div>
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#A3E635]/15 text-[#A3E635] shrink-0">
                         Active
                       </span>
                     </div>
 
-                    {/* Rail 2: Bank Transfer */}
-                    <div className="p-3.5 rounded-xl bg-navy-950/80 border border-slate-800 hover:border-slate-700 transition-all flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-xl bg-navy-850 text-slate-200 font-black flex items-center justify-center text-xs border border-navy-700">
-                          <Building2 className="w-5 h-5 text-sky-400" />
+                    {/* Rail 2: GCB Interbank */}
+                    <div className="p-3.5 rounded-xl bg-[#131B24] border border-slate-800 hover:border-slate-700 transition-all flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="w-9 h-9 rounded-xl bg-[#1E293B] text-slate-300 font-black flex items-center justify-center text-xs shrink-0 border border-slate-700">
+                          <Building className="w-5 h-5" />
                         </div>
-                        <div>
-                          <span className="font-bold text-xs text-white block">GCB Corporate Bank</span>
-                          <div className="text-[11px] font-mono text-slate-400">
-                            •••• 9184 • Limit: {formatAmount(10000000)}
+                        <div className="min-w-0 truncate">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className="font-bold text-xs text-white">
+                              GCB Business Treasury
+                            </span>
+                            <span className="text-[9px] font-semibold px-1.5 py-0.2 rounded bg-slate-800 text-slate-400">
+                              SECONDARY
+                            </span>
                           </div>
+                          <p className="text-[10px] text-slate-400 font-mono mt-0.5 truncate">
+                            •••• 9184 • Daily Limit: {formatAmount(10000000, 'GH₵')}
+                          </p>
                         </div>
                       </div>
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                        Active
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 shrink-0">
+                        Standby
                       </span>
                     </div>
-                  </div>
-
-                  <div className="pt-2 flex items-center justify-between text-[11px] text-slate-400 border-t border-navy-850">
-                    <span className="flex items-center gap-1.5">
-                      <Lock className="w-3.5 h-3.5 text-emerald-400" />
-                      Zero credentials stored
-                    </span>
-                    <span className="font-mono text-emerald-400 font-bold">Simulated Multi-Rail</span>
                   </div>
                 </div>
 
                 {/* 2B. Reusable Payment Lists Card */}
-                <div className="p-5 rounded-2xl bg-[#08162B]/90 backdrop-blur-xl border border-slate-800 shadow-xl shadow-black/20 space-y-4">
-                  <div className="flex items-center justify-between pb-3 border-b border-navy-800">
+                <div className="p-4 sm:p-5 rounded-2xl bg-[#18222D] border border-slate-800 shadow-xl space-y-4">
+                  <div className="flex items-center justify-between pb-3 border-b border-slate-800">
                     <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center font-bold">
+                      <div className="w-8 h-8 rounded-xl bg-amber-500/15 text-amber-400 flex items-center justify-center font-bold">
                         <ListTodo className="w-4 h-4" />
                       </div>
                       <div>
                         <h3 className="font-extrabold text-sm text-white">
-                          Batch Payment Lists
+                          Reusable Payment Lists
                         </h3>
                         <p className="text-[11px] text-slate-400">
-                          Pre-flight cleared payroll & vendor lists
+                          3 persistent bulk batches
                         </p>
                       </div>
                     </div>
                     <Link
                       href="/payment-lists"
-                      className="text-xs font-bold text-emerald-400 hover:text-emerald-300 flex items-center gap-1 group"
+                      className="text-xs font-bold text-[#A3E635] hover:underline flex items-center gap-1 group"
                     >
-                      <span>All Lists ({paymentLists.length})</span>
+                      <span>All Lists</span>
                       <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
                     </Link>
                   </div>
 
                   <div className="space-y-2.5">
-                    {paymentLists.slice(0, 3).map((list) => (
-                      <div
-                        key={list.id}
-                        className="p-3.5 rounded-xl bg-navy-950/80 border border-slate-800 hover:border-emerald-500/30 transition-all flex items-center justify-between gap-3"
-                      >
-                        <div className="min-w-0">
-                          <div className="flex items-center gap-2">
-                            <strong className="text-xs font-bold text-white truncate block">
-                              {list.name}
-                            </strong>
-                            <span className="px-1.5 py-0.2 rounded text-[9px] font-bold bg-navy-850 text-slate-300 border border-navy-750">
-                              {list.recipient_count} payees
-                            </span>
-                          </div>
-                          <div className="text-xs font-mono font-bold text-emerald-400 mt-1">
-                            {formatAmount(list.total_amount, list.currency || 'GH₵')}
-                          </div>
+                    {/* List 1: September Employees */}
+                    <div className="p-3.5 rounded-xl bg-[#131B24] border border-slate-800 hover:border-[#A3E635]/40 transition-all flex items-center justify-between gap-2">
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="font-bold text-xs text-white">
+                            September Employee Payments
+                          </span>
+                          <span className="text-[9px] font-black px-1.5 py-0.2 rounded bg-blue-500/15 text-[#38BDF8] border border-blue-500/30">
+                            48 Staff
+                          </span>
                         </div>
-
-                        <Link href="/payment-lists">
-                          <Button
-                            variant="secondary"
-                            size="sm"
-                            className="text-[11px] font-bold py-1 px-3 bg-navy-850 hover:bg-emerald-500 hover:text-navy-950 transition-all border border-navy-700"
-                          >
-                            Open List
-                          </Button>
-                        </Link>
+                        <p className="text-[11px] text-slate-400 mt-1">
+                          Volume:{' '}
+                          <span className="font-bold text-white font-mono">
+                            {formatAmount(142000, 'GH₵')}
+                          </span>
+                        </p>
                       </div>
-                    ))}
+                      <Link
+                        href="/payment-lists"
+                        className="px-2.5 py-1.5 rounded-xl bg-[#A3E635] hover:bg-[#84CC16] text-[#0F172A] font-black text-xs uppercase tracking-wider transition-all shrink-0 active:scale-95 shadow-sm"
+                      >
+                        Disburse
+                      </Link>
+                    </div>
+
+                    {/* List 2: Monthly Suppliers */}
+                    <div className="p-3.5 rounded-xl bg-[#131B24] border border-slate-800 hover:border-slate-700 transition-all flex items-center justify-between gap-2">
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="font-bold text-xs text-white">
+                            Monthly Suppliers Batch
+                          </span>
+                          <span className="text-[9px] font-black px-1.5 py-0.2 rounded bg-purple-500/15 text-purple-300 border border-purple-500/30">
+                            20 Vendors
+                          </span>
+                        </div>
+                        <p className="text-[11px] text-slate-400 mt-1">
+                          Volume:{' '}
+                          <span className="font-bold text-white font-mono">
+                            {formatAmount(32500, 'GH₵')}
+                          </span>
+                        </p>
+                      </div>
+                      <Link
+                        href="/payment-lists"
+                        className="px-2.5 py-1.5 rounded-xl bg-[#1E293B] hover:bg-[#283548] border border-slate-700 text-white font-bold text-xs uppercase tracking-wider transition-all shrink-0 active:scale-95 shadow-sm"
+                      >
+                        Review
+                      </Link>
+                    </div>
                   </div>
                 </div>
+
               </div>
 
-              {/* RIGHT COLUMN (7 Cols): Real-Time Verified Transaction Ledger */}
-              <div className="lg:col-span-7 space-y-6">
-                <div className="p-5 rounded-2xl bg-[#08162B]/90 backdrop-blur-xl border border-slate-800 shadow-xl shadow-black/20 space-y-4">
-                  <div className="flex items-center justify-between pb-3 border-b border-navy-800">
-                    <div>
-                      <h3 className="font-extrabold text-sm text-white">
-                        Recent Verified Ledger Activity
-                      </h3>
-                      <p className="text-[11px] text-slate-400">
-                        Multi-rail disbursements and collections with pre-flight clearance
-                      </p>
+              {/* RIGHT COLUMN (7 Cols): Real-Time Verified Ledger Feed */}
+              <div className="lg:col-span-7 space-y-6 min-w-0">
+                <div className="p-4 sm:p-5 rounded-2xl bg-[#18222D] border border-slate-800 shadow-xl space-y-4">
+                  <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-xl bg-[#A3E635]/15 text-[#A3E635] flex items-center justify-center font-bold">
+                        <Receipt className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <h3 className="font-extrabold text-sm text-white">
+                          Verified Real-Time Ledger Feed
+                        </h3>
+                        <p className="text-[11px] text-slate-400">
+                          Live settlements across MTN MoMo and Bank EFT
+                        </p>
+                      </div>
                     </div>
                     <Link
                       href="/transactions"
-                      className="text-xs font-bold text-emerald-400 hover:text-emerald-300 flex items-center gap-1 group"
+                      className="text-xs font-bold text-[#A3E635] hover:underline flex items-center gap-1 group"
                     >
-                      <span>View Full Ledger</span>
+                      <span>Full Ledger</span>
                       <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
                     </Link>
                   </div>
 
-                  {/* Transaction Feed */}
-                  <div className="divide-y divide-navy-800/80">
+                  <div className="divide-y divide-slate-800/80">
                     {transactions.slice(0, 6).map((tx) => {
-                      const isDisbursement = tx.direction === 'DISBURSEMENT';
-                      const isSuccess = tx.status === 'SUCCESS';
-                      const isPending = tx.status === 'PENDING';
+                      const isDisb = tx.direction === 'DISBURSEMENT';
 
                       return (
                         <div
                           key={tx.id}
                           onClick={() => setSelectedTxn(tx)}
-                          className="py-3.5 flex items-center justify-between gap-3 hover:bg-navy-950/60 p-2 rounded-xl transition-colors cursor-pointer group"
+                          className="py-3 px-2 flex items-center justify-between hover:bg-[#1E293B]/60 rounded-xl transition-colors cursor-pointer gap-3"
                         >
                           <div className="flex items-center gap-3 min-w-0">
                             <div
-                              className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 font-black text-xs ${
-                                isDisbursement
-                                  ? 'bg-navy-850 text-slate-300 border border-navy-750'
-                                  : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30'
+                              className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 ${
+                                isDisb
+                                  ? 'bg-[#131B24] text-slate-300 border border-slate-800'
+                                  : 'bg-[#A3E635]/15 text-[#A3E635] border border-[#A3E635]/30'
                               }`}
                             >
-                              {isDisbursement ? (
-                                <ArrowUpRight className="w-4 h-4 stroke-[2.5]" />
+                              {isDisb ? (
+                                <ArrowUpRight className="w-4 h-4" />
                               ) : (
-                                <ArrowDownLeft className="w-4 h-4 stroke-[2.5]" />
+                                <ArrowDownLeft className="w-4 h-4" />
                               )}
                             </div>
-
                             <div className="min-w-0">
-                              <div className="flex items-center gap-2">
-                                <span className="text-xs font-bold text-white truncate block">
-                                  {tx.counterparty_name || 'Commercial Transfer'}
-                                </span>
-                                <span className="inline-flex items-center gap-0.5 px-1.5 py-0.2 rounded text-[9px] font-black bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
-                                  <Check className="w-2.5 h-2.5 stroke-[3]" /> Verified
-                                </span>
-                              </div>
-                              <div className="text-[11px] text-slate-400 flex items-center gap-2 mt-0.5 font-mono">
-                                <span>{tx.channel}</span>
+                              <p className="text-xs sm:text-sm font-bold text-white truncate">
+                                {tx.counterparty_name}
+                              </p>
+                              <p className="text-[10px] text-slate-400 flex items-center gap-1.5 mt-0.5 truncate">
+                                <span className="font-mono">{tx.reference}</span>
                                 <span>•</span>
                                 <span>{formatDate(tx.created_at)}</span>
-                              </div>
+                              </p>
                             </div>
                           </div>
 
                           <div className="text-right shrink-0">
-                            <div
-                              className={`text-xs font-mono font-black ${
-                                isDisbursement ? 'text-white' : 'text-emerald-400'
+                            <p
+                              className={`text-xs sm:text-sm font-black tabular-nums ${
+                                isDisb ? 'text-white' : 'text-[#A3E635]'
                               }`}
                             >
-                              {isDisbursement ? '-' : '+'}
+                              {isDisb ? '-' : '+'}
                               {formatAmount(tx.amount, tx.currency || 'GH₵')}
-                            </div>
-                            <span
-                              className={`inline-block text-[10px] font-bold uppercase tracking-wider mt-0.5 ${
-                                isSuccess
-                                  ? 'text-emerald-400'
-                                  : isPending
-                                  ? 'text-yellow-400'
-                                  : 'text-rose-400'
-                              }`}
-                            >
-                              {tx.status}
+                            </p>
+                            <span className="inline-flex items-center gap-1 px-1.5 py-0.2 rounded text-[9px] font-black bg-[#A3E635]/15 text-[#A3E635] mt-0.5">
+                              ✓ Cleared
                             </span>
                           </div>
                         </div>
                       );
                     })}
-                  </div>
-
-                  <div className="pt-2 border-t border-navy-850 flex items-center justify-between">
-                    <span className="text-xs text-slate-400 font-mono">
-                      Showing {Math.min(transactions.length, 6)} of {transactions.length} ledger entries
-                    </span>
-                    <Link href="/transactions">
-                      <Button variant="outline" size="sm" className="text-xs font-bold gap-1 border-navy-700 text-slate-300 hover:text-white">
-                        <Receipt className="w-3.5 h-3.5 text-emerald-400" /> Export CSV / Audit
-                      </Button>
-                    </Link>
                   </div>
                 </div>
               </div>
@@ -413,32 +420,36 @@ export default function DashboardPage() {
           </div>
         )}
 
-        {/* Global Modals */}
+        {/* Disbursement Wizard Modal */}
         <DisbursementWizard
           isOpen={isSendOpen}
           onClose={() => setIsSendOpen(false)}
           recipients={recipients}
           initialData={sendInitialData}
           onPaymentSuccess={() => {
-            loadData();
             setIsSendOpen(false);
-          }}
-        />
-
-        <CreatePaymentLinkModal
-          isOpen={isReceiveOpen}
-          onClose={() => setIsReceiveOpen(false)}
-          onCreated={() => {
             loadData();
           }}
         />
 
+        {/* Pre-Flight Check Modal */}
         <PreFlightCheckModal
           isOpen={isVerifyOpen}
           onClose={() => setIsVerifyOpen(false)}
           onProceedWithPayment={handlePreflightProceed}
         />
 
+        {/* Payment Link Modal */}
+        <CreatePaymentLinkModal
+          isOpen={isReceiveOpen}
+          onClose={() => setIsReceiveOpen(false)}
+          onCreated={() => {
+            setIsReceiveOpen(false);
+            loadData();
+          }}
+        />
+
+        {/* Transaction Detail Modal */}
         <TransactionDetailModal
           isOpen={!!selectedTxn}
           onClose={() => setSelectedTxn(null)}

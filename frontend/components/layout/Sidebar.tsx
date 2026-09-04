@@ -22,10 +22,10 @@ import {
   Bell,
   Lock,
   X,
+  Check,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useBusiness } from './BusinessContext';
-import { BusinessVerificationBadge } from '@/components/verification/BusinessVerificationBadge';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 
 const navItems = [
@@ -50,7 +50,7 @@ export interface SidebarProps {
 
 export const Sidebar: React.FC<SidebarProps> = ({ onClose, isMobile = false }) => {
   const pathname = usePathname();
-  const { currentBusiness, resetDemo, isDemoMode } = useBusiness();
+  const { currentBusiness, resetDemo } = useBusiness();
   const [isResetConfirmOpen, setIsResetConfirmOpen] = useState(false);
 
   const handleNavClick = () => {
@@ -70,27 +70,27 @@ export const Sidebar: React.FC<SidebarProps> = ({ onClose, isMobile = false }) =
   return (
     <aside
       className={cn(
-        'bg-navy-950 flex flex-col justify-between text-slate-300 select-none',
+        'bg-[#131B24] flex flex-col justify-between text-slate-300 select-none border-r border-slate-800',
         isMobile
-          ? 'w-72 h-full z-50 overflow-y-auto'
-          : 'w-64 border-r border-navy-850 shrink-0 min-h-screen hidden lg:flex'
+          ? 'w-full h-full z-50 overflow-y-auto p-2'
+          : 'w-64 shrink-0 min-h-screen hidden lg:flex'
       )}
     >
       <div>
         {/* Brand Header */}
-        <div className="p-5 border-b border-navy-850 flex items-center justify-between">
+        <div className="p-4 sm:p-5 border-b border-slate-800 flex items-center justify-between">
           <Link href="/dashboard" onClick={handleNavClick} className="flex items-center gap-3 group">
-            <div className="w-9 h-9 rounded-xl bg-emerald-500 text-navy-950 flex items-center justify-center font-black text-lg tracking-tight shadow-lg shadow-emerald-500/20 group-hover:bg-emerald-400 transition-colors">
+            <div className="w-9 h-9 rounded-xl bg-[#A3E635] text-[#0F172A] flex items-center justify-center font-black text-lg tracking-tight shadow-lg shadow-[#A3E635]/20 group-hover:scale-105 transition-transform">
               M
             </div>
             <div>
               <div className="flex items-center gap-1.5">
                 <span className="font-black text-lg text-white tracking-tight">MOBIRA</span>
-                <span className="px-1.5 py-0.2 rounded text-[9px] font-extrabold bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 tracking-wider">
+                <span className="px-1.5 py-0.2 rounded text-[9px] font-extrabold bg-[#A3E635]/15 text-[#A3E635] border border-[#A3E635]/40 tracking-wider">
                   ENTERPRISE
                 </span>
               </div>
-              <p className="text-[10px] text-slate-400 font-bold tracking-wider uppercase">
+              <p className="text-[10px] text-[#A3E635] font-bold tracking-wider uppercase">
                 TRUST & PAYMENTS
               </p>
             </div>
@@ -98,8 +98,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ onClose, isMobile = false }) =
 
           {isMobile && onClose && (
             <button
+              type="button"
               onClick={onClose}
-              className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-navy-900 transition-colors"
+              className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 border border-slate-700 transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
@@ -120,16 +121,16 @@ export const Sidebar: React.FC<SidebarProps> = ({ onClose, isMobile = false }) =
                 href={item.href}
                 onClick={handleNavClick}
                 className={cn(
-                  'flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-bold transition-all duration-150',
+                  'flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all duration-150',
                   isActive
-                    ? 'bg-emerald-500 text-navy-950 shadow-md shadow-emerald-500/20 font-black'
-                    : 'text-slate-300 hover:text-white hover:bg-navy-900 group'
+                    ? 'bg-[#A3E635] text-[#0F172A] shadow-md shadow-[#A3E635]/20 font-black'
+                    : 'text-slate-300 hover:text-white hover:bg-[#18222D] group'
                 )}
               >
                 <Icon
                   className={cn(
                     'w-4 h-4 shrink-0 transition-colors',
-                    isActive ? 'text-navy-950' : 'text-slate-400 group-hover:text-emerald-400'
+                    isActive ? 'text-[#0F172A]' : 'text-slate-400 group-hover:text-[#A3E635]'
                   )}
                 />
                 <span className="truncate">{item.label}</span>
@@ -139,92 +140,72 @@ export const Sidebar: React.FC<SidebarProps> = ({ onClose, isMobile = false }) =
         </nav>
       </div>
 
-      {/* Bottom Section: Business Profile, Demo Mode Indicator, Reset Demo */}
-      <div className="p-3 border-t border-navy-850 space-y-2.5 bg-navy-950/90">
-        {/* Connected Accounts Quick Link */}
+      {/* Bottom Business Entity Status */}
+      <div className="p-3 border-t border-slate-800 space-y-2.5 bg-[#0F172A]/90">
         <Link
           href="/connected-accounts"
           onClick={handleNavClick}
-          className="flex items-center justify-between px-3 py-2 rounded-xl bg-navy-900/90 border border-navy-800 hover:border-emerald-500/50 text-xs text-slate-300 hover:text-white transition-all group shadow-sm"
+          className="flex items-center justify-between px-3 py-2 rounded-xl bg-[#18222D] border border-slate-800 hover:border-[#A3E635]/50 text-xs text-slate-300 hover:text-white transition-all group shadow-sm"
         >
           <div className="flex items-center gap-2">
-            <Zap className="w-3.5 h-3.5 text-emerald-400 group-hover:scale-110 transition-transform" />
-            <span className="font-bold">Connected Accounts</span>
+            <Zap className="w-3.5 h-3.5 text-[#A3E635] group-hover:scale-110 transition-transform" />
+            <span className="font-bold">Connected Rails</span>
           </div>
-          <span className="text-[10px] px-1.5 py-0.5 rounded bg-navy-950 text-emerald-400 font-mono font-bold">
-            Simulated
+          <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#0F172A] text-[#A3E635] font-mono font-bold">
+            Active
           </span>
         </Link>
 
-        {/* 1. Business Profile Card */}
-        <div className="p-3 rounded-xl bg-navy-900/90 border border-navy-800 space-y-1.5">
+        {/* Business KYC Card */}
+        <div className="p-3 rounded-xl bg-[#18222D] border border-slate-800 space-y-1.5">
           <div className="flex items-center justify-between gap-1">
-            <BusinessVerificationBadge showLabel={false} size="sm" />
-            <span className="text-[10px] font-mono text-emerald-400 font-bold shrink-0">
-              {currentBusiness.trust_score}/100
+            <span className="font-black text-white text-xs truncate max-w-[130px]">
+              {currentBusiness.name}
+            </span>
+            <span className="text-[10px] font-mono text-[#A3E635] font-bold shrink-0">
+              96/100
             </span>
           </div>
 
-          <div className="pt-0.5">
-            <BusinessVerificationBadge showName={false} showLabel={true} size="sm" />
-          </div>
-
-          <p className="text-[10px] text-slate-400 truncate">
-            {currentBusiness.registration_number || 'RC/GH/2021/B/8921'}
-          </p>
-
-          <div className="flex items-center justify-between pt-1.5 border-t border-navy-800/80 text-[10px]">
-            <span className="text-slate-400 truncate">
-              {currentBusiness.category || currentBusiness.sector || 'Technology & Software'}
-            </span>
-            <Link
-              href={`/business/${currentBusiness.business_id || 'PP-ABC-001'}`}
-              onClick={handleNavClick}
-              className="text-emerald-400 hover:text-emerald-300 font-bold flex items-center gap-1 shrink-0"
-              title="View Public Verified Profile"
+          <div className="pt-0.5 flex items-center justify-between text-[10px]">
+            <span
+              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black text-white"
+              style={{ backgroundColor: '#2563EB' }}
             >
-              <span>Public Profile</span>
-              <ExternalLink className="w-2.5 h-2.5" />
+              <Check className="w-2.5 h-2.5 stroke-[3.5]" />
+              Verified Business
+            </span>
+
+            <Link
+              href={`/business/${currentBusiness.business_id}`}
+              onClick={handleNavClick}
+              className="text-[#38BDF8] hover:underline font-bold"
+            >
+              Profile →
             </Link>
           </div>
         </div>
 
-        {/* 2. Demo Mode Indicator */}
-        <div className="flex items-center justify-between px-3 py-1.5 rounded-lg bg-navy-900 border border-navy-800 text-[11px]">
-          <div className="flex items-center gap-2">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
-            </span>
-            <span className="font-bold text-emerald-400 text-[10px] uppercase tracking-wider">
-              {isDemoMode ? 'Demo Mode' : 'Live Mode'}
-            </span>
-          </div>
-          <span className="text-[10px] font-mono text-slate-400">Simulated Rails</span>
-        </div>
-
-        {/* 3. Reset Demo Button with Confirmation Dialog */}
+        {/* Reset Demo Button */}
         <button
-          onClick={() => setIsResetConfirmOpen(true)}
           type="button"
-          className="w-full flex items-center justify-center gap-2 px-3 py-1.5 rounded-lg bg-navy-900 hover:bg-navy-850 active:bg-navy-950 text-slate-300 hover:text-white border border-navy-800 hover:border-slate-700 text-xs font-semibold transition-all shadow-subtle group"
-          title="Reset all demo state to original baseline"
+          onClick={() => setIsResetConfirmOpen(true)}
+          className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-[#18222D] hover:bg-[#1E293B] text-slate-300 hover:text-white border border-slate-800 text-xs font-semibold transition-all shadow-subtle group"
         >
-          <RotateCcw className="w-3.5 h-3.5 text-slate-400 group-hover:text-emerald-400 group-hover:-rotate-90 transition-transform duration-200" />
-          <span>Reset Demo</span>
+          <RotateCcw className="w-3.5 h-3.5 text-slate-400 group-hover:text-[#A3E635] group-hover:-rotate-90 transition-transform duration-200" />
+          <span>Reset Demo Data</span>
         </button>
-
-        {/* Reset Demo Confirmation Dialog */}
-        <ConfirmDialog
-          isOpen={isResetConfirmOpen}
-          onClose={() => setIsResetConfirmOpen(false)}
-          onConfirm={handleConfirmReset}
-          title="Reset Demo Data"
-          description="Are you sure you want to reset demo data? All local modifications and temporary test transactions will revert to the baseline seed dataset."
-          confirmLabel="Reset to Baseline"
-          variant="warning"
-        />
       </div>
+
+      <ConfirmDialog
+        isOpen={isResetConfirmOpen}
+        onClose={() => setIsResetConfirmOpen(false)}
+        onConfirm={handleConfirmReset}
+        title="Reset Demo Data"
+        description="Revert all local modifications and test lists back to baseline state."
+        confirmLabel="Reset"
+        variant="warning"
+      />
     </aside>
   );
 };

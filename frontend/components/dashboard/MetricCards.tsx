@@ -2,7 +2,6 @@
 
 import React from 'react';
 import { ArrowUpRight, ArrowDownLeft, ShieldCheck, Receipt, Users, CheckCircle2, Eye, EyeOff } from 'lucide-react';
-import { Card } from '@/components/ui/Card';
 import { usePrivacy } from '@/components/privacy/PrivacyContext';
 
 export interface MetricCardsProps {
@@ -23,34 +22,34 @@ export const MetricCards: React.FC<MetricCardsProps> = ({
   const { isBlinded, togglePrivacy, formatAmount } = usePrivacy();
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-      {/* 1. Money Received */}
-      <div className="relative group p-5 rounded-2xl bg-[#08162B]/80 dark:bg-navy-900/80 backdrop-blur-xl border border-emerald-500/20 hover:border-emerald-500/40 shadow-lg shadow-black/20 hover:shadow-emerald-950/20 transition-all duration-300 hover:-translate-y-0.5">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+      {/* 1. Total Inflow */}
+      <div className="relative group p-4 sm:p-5 rounded-2xl bg-[#18222D] border border-slate-800 hover:border-[#A3E635]/40 shadow-lg shadow-black/20 transition-all duration-300">
         <div className="flex items-center justify-between">
-          <span className="text-[11px] font-black uppercase tracking-wider text-slate-400">
+          <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-slate-400">
             Total Inflow
           </span>
           <div className="flex items-center gap-1.5">
             <button
               type="button"
               onClick={togglePrivacy}
-              className="p-1 rounded-lg text-slate-500 hover:text-emerald-400 hover:bg-navy-800 transition-colors"
+              className="p-1 rounded-lg text-slate-400 hover:text-[#A3E635] hover:bg-slate-800 transition-colors"
               title={isBlinded ? 'Reveal amount' : 'Blind amount'}
             >
               {isBlinded ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
             </button>
-            <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
-              <ArrowDownLeft className="w-4 h-4 stroke-[2.5]" />
+            <div className="p-1.5 sm:p-2 rounded-xl bg-[#A3E635]/15 text-[#A3E635] border border-[#A3E635]/30">
+              <ArrowDownLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4 stroke-[2.5]" />
             </div>
           </div>
         </div>
-        <div className="mt-3">
-          <p className="text-2xl font-black text-emerald-400 tracking-tight font-mono">
+        <div className="mt-2 sm:mt-3">
+          <p className="text-xl sm:text-2xl font-black text-[#A3E635] tracking-tight font-mono">
             {formatAmount(moneyReceived, currency)}
           </p>
-          <div className="flex items-center justify-between mt-2 pt-2 border-t border-navy-800/60 text-[11px]">
-            <span className="text-emerald-400 font-bold flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+          <div className="flex items-center justify-between mt-2 pt-2 border-t border-slate-800/80 text-[10px] sm:text-[11px]">
+            <span className="text-[#A3E635] font-bold flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#A3E635] animate-pulse" />
               +18.2% this month
             </span>
             <span className="text-slate-400">Collections</span>
@@ -58,79 +57,79 @@ export const MetricCards: React.FC<MetricCardsProps> = ({
         </div>
       </div>
 
-      {/* 2. Money Sent */}
-      <div className="relative group p-5 rounded-2xl bg-[#08162B]/80 dark:bg-navy-900/80 backdrop-blur-xl border border-slate-800 hover:border-slate-700 shadow-lg shadow-black/20 transition-all duration-300 hover:-translate-y-0.5">
+      {/* 2. Total Outflow */}
+      <div className="relative group p-4 sm:p-5 rounded-2xl bg-[#18222D] border border-slate-800 hover:border-slate-700 shadow-lg shadow-black/20 transition-all duration-300">
         <div className="flex items-center justify-between">
-          <span className="text-[11px] font-black uppercase tracking-wider text-slate-400">
+          <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-slate-400">
             Total Outflow
           </span>
           <div className="flex items-center gap-1.5">
             <button
               type="button"
               onClick={togglePrivacy}
-              className="p-1 rounded-lg text-slate-500 hover:text-emerald-400 hover:bg-navy-800 transition-colors"
+              className="p-1 rounded-lg text-slate-400 hover:text-[#A3E635] hover:bg-slate-800 transition-colors"
               title={isBlinded ? 'Reveal amount' : 'Blind amount'}
             >
               {isBlinded ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
             </button>
-            <div className="p-2 rounded-xl bg-navy-850 text-slate-300 border border-navy-750">
-              <ArrowUpRight className="w-4 h-4 stroke-[2.5]" />
+            <div className="p-1.5 sm:p-2 rounded-xl bg-[#1E293B] text-slate-300 border border-slate-700">
+              <ArrowUpRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 stroke-[2.5]" />
             </div>
           </div>
         </div>
-        <div className="mt-3">
-          <p className="text-2xl font-black text-white tracking-tight font-mono">
+        <div className="mt-2 sm:mt-3">
+          <p className="text-xl sm:text-2xl font-black text-white tracking-tight font-mono">
             {formatAmount(moneySent, currency)}
           </p>
-          <div className="flex items-center justify-between mt-2 pt-2 border-t border-navy-800/60 text-[11px]">
+          <div className="flex items-center justify-between mt-2 pt-2 border-t border-slate-800/80 text-[10px] sm:text-[11px]">
             <span className="text-slate-300 font-medium">Payroll & Suppliers</span>
             <span className="text-slate-400 font-mono">Disbursed</span>
           </div>
         </div>
       </div>
 
-      {/* 3. Unified Ledger Transactions */}
-      <div className="relative group p-5 rounded-2xl bg-[#08162B]/80 dark:bg-navy-900/80 backdrop-blur-xl border border-slate-800 hover:border-slate-700 shadow-lg shadow-black/20 transition-all duration-300 hover:-translate-y-0.5">
+      {/* 3. Unified Ledger Volume */}
+      <div className="relative group p-4 sm:p-5 rounded-2xl bg-[#18222D] border border-slate-800 hover:border-slate-700 shadow-lg shadow-black/20 transition-all duration-300">
         <div className="flex items-center justify-between">
-          <span className="text-[11px] font-black uppercase tracking-wider text-slate-400">
+          <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-slate-400">
             Ledger Volume
           </span>
-          <div className="p-2 rounded-xl bg-navy-850 text-emerald-400 border border-emerald-500/20">
-            <Receipt className="w-4 h-4 stroke-[2.5]" />
+          <div className="p-1.5 sm:p-2 rounded-xl bg-[#1E293B] text-[#A3E635] border border-slate-700">
+            <Receipt className="w-3.5 h-3.5 sm:w-4 sm:h-4 stroke-[2.5]" />
           </div>
         </div>
-        <div className="mt-3">
-          <p className="text-2xl font-black text-white tracking-tight font-mono">
-            {transactionCount}
+        <div className="mt-2 sm:mt-3">
+          <p className="text-xl sm:text-2xl font-black text-white tracking-tight font-mono">
+            {transactionCount}{' '}
+            <span className="text-xs font-bold text-slate-400 font-sans">Txns</span>
           </p>
-          <div className="flex items-center justify-between mt-2 pt-2 border-t border-navy-800/60 text-[11px]">
-            <span className="text-emerald-400 font-bold flex items-center gap-1">
-              <CheckCircle2 className="w-3.5 h-3.5" /> 99.4% Clearance
-            </span>
-            <span className="text-slate-400 font-mono">Multi-Rail</span>
+          <div className="flex items-center justify-between mt-2 pt-2 border-t border-slate-800/80 text-[10px] sm:text-[11px]">
+            <span className="text-slate-300">100% Dual-Auth</span>
+            <span className="text-[#A3E635] font-bold">Real-Time</span>
           </div>
         </div>
       </div>
 
-      {/* 4. Pre-Flight Verified Beneficiaries */}
-      <div className="relative group p-5 rounded-2xl bg-[#08162B]/80 dark:bg-navy-900/80 backdrop-blur-xl border border-emerald-500/20 hover:border-emerald-500/40 shadow-lg shadow-black/20 transition-all duration-300 hover:-translate-y-0.5">
+      {/* 4. Pre-Flight Identity Verified */}
+      <div className="relative group p-4 sm:p-5 rounded-2xl bg-[#18222D] border border-slate-800 hover:border-[#A3E635]/40 shadow-lg shadow-black/20 transition-all duration-300">
         <div className="flex items-center justify-between">
-          <span className="text-[11px] font-black uppercase tracking-wider text-slate-400">
-            Pre-Flight Beneficiaries
+          <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-slate-400">
+            Pre-Flight Verified
           </span>
-          <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
-            <ShieldCheck className="w-4 h-4 stroke-[2.5]" />
+          <div className="p-1.5 sm:p-2 rounded-xl bg-[#A3E635]/15 text-[#A3E635] border border-[#A3E635]/30">
+            <ShieldCheck className="w-3.5 h-3.5 sm:w-4 sm:h-4 stroke-[2.5]" />
           </div>
         </div>
-        <div className="mt-3">
-          <p className="text-2xl font-black text-emerald-400 tracking-tight font-mono">
-            {verifiedRecipientsRatio}
+        <div className="mt-2 sm:mt-3">
+          <p className="text-xl sm:text-2xl font-black text-white tracking-tight font-mono">
+            {verifiedRecipientsRatio}{' '}
+            <span className="text-xs font-bold text-[#A3E635] font-sans">Match</span>
           </p>
-          <div className="flex items-center justify-between mt-2 pt-2 border-t border-navy-800/60 text-[11px]">
-            <span className="text-emerald-400 font-bold flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" /> 100% Identity Match
+          <div className="flex items-center justify-between mt-2 pt-2 border-t border-slate-800/80 text-[10px] sm:text-[11px]">
+            <span className="text-[#A3E635] font-bold flex items-center gap-1">
+              <CheckCircle2 className="w-3 h-3 text-[#A3E635]" /> Carrier Confirmed
             </span>
-            <span className="text-slate-400 font-mono">Zero Fraud</span>
+            <span className="text-slate-400">Zero Losses</span>
           </div>
         </div>
       </div>

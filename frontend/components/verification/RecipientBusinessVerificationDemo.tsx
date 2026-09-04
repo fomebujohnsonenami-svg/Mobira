@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   ShieldCheck,
   CheckCircle2,
@@ -13,8 +13,6 @@ import {
   User,
   Check,
   Smartphone,
-  Sparkles,
-  ExternalLink,
   ShieldAlert,
   Loader2,
   CheckCircle,
@@ -23,10 +21,6 @@ import {
   Tag,
   Zap,
 } from 'lucide-react';
-import { Card } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
-import { Badge } from '@/components/ui/Badge';
 import { useToast } from '@/components/ui/Toast';
 
 export interface RecipientBusinessVerificationDemoProps {
@@ -43,7 +37,7 @@ export const RecipientBusinessVerificationDemo: React.FC<RecipientBusinessVerifi
   // ==========================================
   const [businessQuery, setBusinessQuery] = useState('MOB-8829-GH');
   const [isPaidBusinessOpen, setIsPaidBusinessOpen] = useState(false);
-  const [businessPayAmount, setBusinessPayAmount] = useState('350.00');
+  const [businessPayAmount] = useState('350.00');
 
   // Hardcoded Primary Verified Demo Business
   const verifiedDemoBusiness = {
@@ -162,18 +156,18 @@ export const RecipientBusinessVerificationDemo: React.FC<RecipientBusinessVerifi
 
   return (
     <div
-      className={`space-y-6 rounded-3xl bg-[#0F172A] p-4 sm:p-6 md:p-8 text-slate-100 border border-slate-800 shadow-2xl ${className}`}
+      className={`space-y-6 rounded-3xl bg-[#131B24] p-4 sm:p-6 md:p-8 text-slate-100 border border-slate-800 shadow-2xl ${className}`}
     >
       {/* ========================================================================= */}
       {/* TOP PRESENTATION QUICK-FILL TOOLBAR */}
       {/* ========================================================================= */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 rounded-2xl bg-[#0B132B]/90 border border-slate-800/80 backdrop-blur-md">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 rounded-2xl bg-[#18222D] border border-slate-800">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-[#2563EB] text-white flex items-center justify-center font-black shadow-lg shadow-blue-500/20">
+          <div className="w-9 h-9 rounded-xl bg-[#2563EB] text-white flex items-center justify-center font-black shadow-lg shadow-blue-500/20 shrink-0">
             <Zap className="w-5 h-5 fill-current" />
           </div>
           <div>
-            <h3 className="font-extrabold text-sm sm:text-base text-white tracking-tight flex items-center gap-2">
+            <h3 className="font-extrabold text-sm sm:text-base text-white tracking-tight flex items-center gap-2 flex-wrap">
               Interactive Verification Suite
               <span className="px-2 py-0.5 rounded text-[10px] font-extrabold bg-[#2563EB]/20 text-[#38BDF8] border border-[#2563EB]/40 uppercase tracking-wider">
                 Live Simulator
@@ -185,46 +179,46 @@ export const RecipientBusinessVerificationDemo: React.FC<RecipientBusinessVerifi
           </div>
         </div>
 
-        {/* 3 Quick Demo Buttons */}
-        <div className="flex flex-wrap items-center gap-2">
+        {/* 3 Quick Demo Buttons (Wrap nicely on mobile) */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 w-full md:w-auto">
           <button
             type="button"
             onClick={loadValidMatchDemo}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-[#10B981]/15 text-[#10B981] border border-[#10B981]/40 hover:bg-[#10B981]/25 transition-all active:scale-95 shadow-sm"
+            className="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-black bg-[#A3E635] text-[#0F172A] hover:bg-[#84CC16] transition-all active:scale-95 shadow-sm"
           >
             <CheckCircle2 className="w-3.5 h-3.5" />
-            Load Valid Match (Kwame Mensah)
+            <span>Valid Match</span>
           </button>
 
           <button
             type="button"
             onClick={triggerMismatchDemo}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-[#EF4444]/15 text-[#EF4444] border border-[#EF4444]/40 hover:bg-[#EF4444]/25 transition-all active:scale-95 shadow-sm"
+            className="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-[#EF4444]/15 text-[#EF4444] border border-[#EF4444]/40 hover:bg-[#EF4444]/25 transition-all active:scale-95 shadow-sm"
           >
             <AlertTriangle className="w-3.5 h-3.5" />
-            Trigger Mismatch (Jeanne Ngono)
+            <span>Trigger Mismatch</span>
           </button>
 
           <button
             type="button"
             onClick={resetDemoState}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 border border-slate-700 hover:bg-slate-700 hover:text-white transition-all active:scale-95 shadow-sm"
+            className="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-[#1E293B] text-slate-300 border border-slate-700 hover:bg-slate-700 hover:text-white transition-all active:scale-95 shadow-sm"
           >
             <RotateCcw className="w-3.5 h-3.5" />
-            Reset Demo
+            <span>Reset Demo</span>
           </button>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full min-w-0">
         {/* ========================================================================= */}
         {/* MODULE 1: PRESET BUSINESS IDENTITY LOOKUP (PAY A VERIFIED BUSINESS)       */}
         {/* ========================================================================= */}
-        <div className="space-y-4 rounded-2xl bg-[#0B132B]/80 p-5 sm:p-6 border border-slate-800/80 flex flex-col justify-between">
-          <div className="space-y-4">
+        <div className="space-y-4 rounded-2xl bg-[#18222D] p-4 sm:p-6 border border-slate-800 flex flex-col justify-between min-w-0">
+          <div className="space-y-4 min-w-0">
             <div className="flex items-center justify-between pb-3 border-b border-slate-800">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-[#2563EB]/20 text-[#38BDF8] flex items-center justify-center border border-[#2563EB]/30 font-bold">
+                <div className="w-8 h-8 rounded-lg bg-[#2563EB]/20 text-[#38BDF8] flex items-center justify-center border border-[#2563EB]/30 font-bold shrink-0">
                   <Building2 className="w-4 h-4 text-[#2563EB]" />
                 </div>
                 <div>
@@ -236,14 +230,14 @@ export const RecipientBusinessVerificationDemo: React.FC<RecipientBusinessVerifi
                   </p>
                 </div>
               </div>
-              <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-blue-950 text-blue-400 border border-blue-800">
+              <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-blue-950 text-[#38BDF8] border border-blue-800 shrink-0">
                 KYB Lookup
               </span>
             </div>
 
             {/* Input Field: Business ID / Phone / Account */}
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-300 flex items-center justify-between">
+              <label className="text-xs font-bold text-slate-300 flex items-center justify-between flex-wrap gap-1">
                 <span>Business ID / Phone / Account Number</span>
                 <span className="text-[10px] text-slate-400 font-normal">
                   Demo Key: <code className="text-[#38BDF8] font-bold">MOB-8829-GH</code>
@@ -255,8 +249,8 @@ export const RecipientBusinessVerificationDemo: React.FC<RecipientBusinessVerifi
                   type="text"
                   value={businessQuery}
                   onChange={(e) => setBusinessQuery(e.target.value)}
-                  placeholder="Enter Business ID / Phone (e.g. MOB-8829-GH)"
-                  className="w-full pl-10 pr-24 py-2.5 bg-[#0F172A] border border-slate-700 rounded-xl text-xs text-white font-mono placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-[#2563EB]/80 focus:border-[#2563EB] transition-all"
+                  placeholder="Enter Business ID / Phone"
+                  className="w-full pl-10 pr-24 py-2.5 bg-[#131B24] border border-slate-700 rounded-xl text-xs text-white font-mono placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-[#2563EB]/80 focus:border-[#2563EB] transition-all"
                 />
                 <button
                   type="button"
@@ -271,40 +265,37 @@ export const RecipientBusinessVerificationDemo: React.FC<RecipientBusinessVerifi
             {/* Business Lookup Result */}
             {isBusinessFound ? (
               /* Verified Business Card with Electric Blue Checkmark Badge */
-              <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-[#0F172A] to-[#1E293B] border-2 border-[#2563EB]/40 shadow-xl space-y-4 animate-in fade-in zoom-in-95 duration-200">
+              <div className="p-4 sm:p-5 rounded-2xl bg-[#131B24] border-2 border-[#2563EB]/40 shadow-xl space-y-4 animate-in fade-in zoom-in-95 duration-200">
                 <div className="flex items-start justify-between gap-3">
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3 min-w-0">
                     {/* Logo */}
-                    <div className="w-12 h-12 rounded-2xl bg-[#2563EB] text-white font-black text-base flex items-center justify-center shadow-lg shadow-blue-500/25 shrink-0 border border-blue-400/40">
+                    <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-[#2563EB] text-white font-black text-base flex items-center justify-center shadow-lg shadow-blue-500/25 shrink-0 border border-blue-400/40">
                       AF
                     </div>
-                    <div>
+                    <div className="min-w-0 truncate">
                       {/* Business Name + Electric Blue Checkmark Badge */}
                       <div className="flex items-center gap-2 flex-wrap">
                         <h5 className="font-black text-base text-white tracking-tight">
                           {verifiedDemoBusiness.name}
                         </h5>
-                        {/* Status: Blue Verified Business badge (#2563EB checkmark) */}
                         <span
-                          className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-black text-white shadow-md shadow-blue-500/30 border border-blue-300/40"
+                          className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-black text-white shadow-md shadow-blue-500/30"
                           style={{ backgroundColor: '#2563EB' }}
                         >
-                          <span className="inline-flex items-center justify-center w-3.5 h-3.5 rounded-full bg-white text-[#2563EB] p-0.5">
-                            <Check className="w-3 h-3 stroke-[3.5]" />
-                          </span>
+                          <Check className="w-3 h-3 stroke-[3.5]" />
                           <span>Verified Business</span>
                         </span>
                       </div>
 
                       {/* Category & Location */}
-                      <div className="flex items-center gap-3 text-xs text-slate-300 mt-1 flex-wrap">
-                        <span className="flex items-center gap-1 text-slate-300">
+                      <div className="flex items-center gap-2 text-xs text-slate-300 mt-1 flex-wrap">
+                        <span className="flex items-center gap-1">
                           <Tag className="w-3 h-3 text-[#38BDF8]" />
                           {verifiedDemoBusiness.category}
                         </span>
                         <span>•</span>
-                        <span className="flex items-center gap-1 text-slate-300">
-                          <MapPin className="w-3 h-3 text-[#10B981]" />
+                        <span className="flex items-center gap-1">
+                          <MapPin className="w-3 h-3 text-[#A3E635]" />
                           {verifiedDemoBusiness.location}
                         </span>
                       </div>
@@ -316,7 +307,7 @@ export const RecipientBusinessVerificationDemo: React.FC<RecipientBusinessVerifi
                     <span className="text-[10px] text-slate-400 font-bold uppercase block">
                       Trust Score
                     </span>
-                    <span className="text-sm font-black text-[#10B981] font-mono">
+                    <span className="text-sm font-black text-[#A3E635] font-mono">
                       {verifiedDemoBusiness.trustScore}/100
                     </span>
                   </div>
@@ -328,13 +319,13 @@ export const RecipientBusinessVerificationDemo: React.FC<RecipientBusinessVerifi
                 </p>
 
                 <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-800 text-[11px] font-mono">
-                  <div className="p-2 rounded-lg bg-[#0B132B] border border-slate-800">
+                  <div className="p-2 rounded-xl bg-[#18222D] border border-slate-800">
                     <span className="text-slate-400 block text-[9px] uppercase font-sans">Business ID</span>
-                    <span className="text-white font-bold">{verifiedDemoBusiness.id}</span>
+                    <span className="text-white font-bold truncate block">{verifiedDemoBusiness.id}</span>
                   </div>
-                  <div className="p-2 rounded-lg bg-[#0B132B] border border-slate-800">
+                  <div className="p-2 rounded-xl bg-[#18222D] border border-slate-800">
                     <span className="text-slate-400 block text-[9px] uppercase font-sans">Registrar No.</span>
-                    <span className="text-white font-bold">
+                    <span className="text-white font-bold truncate block">
                       {verifiedDemoBusiness.registrationNumber}
                     </span>
                   </div>
@@ -369,8 +360,7 @@ export const RecipientBusinessVerificationDemo: React.FC<RecipientBusinessVerifi
                   <span>Business ID not found or unverified.</span>
                 </div>
                 <p className="text-[11px] text-slate-300 leading-relaxed">
-                  The identifier &quot;{businessQuery}&quot; has not completed Mobira KYB
-                  accreditation or does not exist in the verified registry.
+                  The identifier &quot;{businessQuery}&quot; has not completed Mobira KYB accreditation or does not exist in the registry.
                 </p>
                 <div className="pt-1">
                   <button
@@ -378,7 +368,7 @@ export const RecipientBusinessVerificationDemo: React.FC<RecipientBusinessVerifi
                     onClick={() => setBusinessQuery('MOB-8829-GH')}
                     className="text-xs font-bold text-[#38BDF8] hover:underline inline-flex items-center gap-1"
                   >
-                    Restore verified demo business (MOB-8829-GH) →
+                    Restore demo business (MOB-8829-GH) →
                   </button>
                 </div>
               </div>
@@ -389,12 +379,12 @@ export const RecipientBusinessVerificationDemo: React.FC<RecipientBusinessVerifi
         {/* ========================================================================= */}
         {/* MODULE 2: RECIPIENT NAME VERIFICATION (PAYMENT RECIPIENT CHECK)           */}
         {/* ========================================================================= */}
-        <div className="space-y-4 rounded-2xl bg-[#0B132B]/80 p-5 sm:p-6 border border-slate-800/80 flex flex-col justify-between">
-          <div className="space-y-4">
+        <div className="space-y-4 rounded-2xl bg-[#18222D] p-4 sm:p-6 border border-slate-800 flex flex-col justify-between min-w-0">
+          <div className="space-y-4 min-w-0">
             <div className="flex items-center justify-between pb-3 border-b border-slate-800">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-[#10B981]/20 text-[#10B981] flex items-center justify-center border border-[#10B981]/30 font-bold">
-                  <ShieldCheck className="w-4 h-4 text-[#10B981]" />
+                <div className="w-8 h-8 rounded-lg bg-[#A3E635]/15 text-[#A3E635] flex items-center justify-center border border-[#A3E635]/30 font-bold shrink-0">
+                  <ShieldCheck className="w-4 h-4 text-[#A3E635]" />
                 </div>
                 <div>
                   <h4 className="font-extrabold text-sm sm:text-base text-white">
@@ -405,8 +395,8 @@ export const RecipientBusinessVerificationDemo: React.FC<RecipientBusinessVerifi
                   </p>
                 </div>
               </div>
-              <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-800">
-                Pre-Flight Check
+              <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-lime-950 text-[#A3E635] border border-lime-800 shrink-0">
+                Pre-Flight
               </span>
             </div>
 
@@ -422,7 +412,7 @@ export const RecipientBusinessVerificationDemo: React.FC<RecipientBusinessVerifi
                     value={savedBeneficiary}
                     onChange={(e) => setSavedBeneficiary(e.target.value)}
                     placeholder="Kwame Mensah"
-                    className="w-full pl-9 pr-3 py-2 bg-[#0F172A] border border-slate-700 rounded-xl text-xs text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-[#10B981]/70 focus:border-[#10B981]"
+                    className="w-full pl-9 pr-3 py-2 bg-[#131B24] border border-slate-700 rounded-xl text-xs text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-[#A3E635]/70 focus:border-[#A3E635]"
                   />
                 </div>
               </div>
@@ -443,19 +433,19 @@ export const RecipientBusinessVerificationDemo: React.FC<RecipientBusinessVerifi
                       setPaymentAuthorized(false);
                     }}
                     placeholder="0240000000"
-                    className="w-full pl-9 pr-3 py-2 bg-[#0F172A] border border-slate-700 rounded-xl text-xs text-white font-mono placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-[#10B981]/70 focus:border-[#10B981]"
+                    className="w-full pl-9 pr-3 py-2 bg-[#131B24] border border-slate-700 rounded-xl text-xs text-white font-mono placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-[#A3E635]/70 focus:border-[#A3E635]"
                   />
                 </div>
               </div>
             </div>
 
             {/* Channel Select & Action Trigger */}
-            <div className="flex items-center gap-2">
-              <div className="w-1/2">
+            <div className="flex flex-col sm:flex-row items-stretch gap-2">
+              <div className="w-full sm:w-1/2">
                 <select
                   value={recipientChannel}
                   onChange={(e) => setRecipientChannel(e.target.value)}
-                  className="w-full px-3 py-2 bg-[#0F172A] border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:ring-2 focus:ring-[#10B981]/70 font-semibold"
+                  className="w-full px-3 py-2 bg-[#131B24] border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:ring-2 focus:ring-[#A3E635]/70 font-semibold"
                 >
                   <option value="MTN MoMo">MTN MoMo (Ghana)</option>
                   <option value="Vodafone Cash">Vodafone Cash (Telecel)</option>
@@ -467,7 +457,7 @@ export const RecipientBusinessVerificationDemo: React.FC<RecipientBusinessVerifi
                 type="button"
                 disabled={isVerifyingRecipient}
                 onClick={() => handleVerifyRecipient()}
-                className="w-1/2 py-2 px-3 rounded-xl bg-[#2563EB] hover:bg-[#1d4ed8] text-white text-xs font-bold flex items-center justify-center gap-1.5 transition-all shadow-md active:scale-95 disabled:opacity-50"
+                className="w-full sm:w-1/2 py-2 px-3 rounded-xl bg-[#2563EB] hover:bg-[#1d4ed8] text-white text-xs font-bold flex items-center justify-center gap-1.5 transition-all shadow-md active:scale-95 disabled:opacity-50"
               >
                 {isVerifyingRecipient ? (
                   <>
@@ -485,47 +475,44 @@ export const RecipientBusinessVerificationDemo: React.FC<RecipientBusinessVerifi
 
             {/* Verification Result Card */}
             {isVerifyingRecipient ? (
-              <div className="p-4 rounded-2xl bg-[#0F172A] border border-slate-700 flex items-center justify-center gap-3 py-6 animate-pulse">
-                <Loader2 className="w-5 h-5 animate-spin text-[#38BDF8]" />
+              <div className="p-4 rounded-2xl bg-[#131B24] border border-slate-700 flex items-center justify-center gap-3 py-6 animate-pulse">
+                <Loader2 className="w-5 h-5 animate-spin text-[#A3E635]" />
                 <span className="text-xs font-bold text-slate-300">
                   Verifying with provider...
                 </span>
               </div>
             ) : recipientVerificationState === 'MATCH' ? (
-              /* MATCH CASE: 🟢 MATCH VERIFIED (#10B981) */
-              <div className="p-4 rounded-2xl bg-[#10B981]/10 border-2 border-[#10B981]/40 space-y-3 animate-in fade-in duration-200">
+              /* MATCH CASE: 🟢 MATCH VERIFIED */
+              <div className="p-4 rounded-2xl bg-[#A3E635]/10 border-2 border-[#A3E635]/40 space-y-3 animate-in fade-in duration-200">
                 <div className="flex items-center justify-between">
-                  {/* Status Badge: 🟢 MATCH VERIFIED (#10B981) */}
-                  <span
-                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black text-white shadow-md shadow-emerald-500/20"
-                    style={{ backgroundColor: '#10B981' }}
-                  >
+                  {/* Status Badge: 🟢 MATCH VERIFIED */}
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black text-[#0F172A] bg-[#A3E635] shadow-md shadow-[#A3E635]/20">
                     <CheckCircle2 className="w-3.5 h-3.5 stroke-[3]" />
                     <span>🟢 MATCH VERIFIED</span>
                   </span>
 
-                  <span className="text-[10px] font-mono text-[#10B981] font-extrabold uppercase">
+                  <span className="text-[10px] font-mono text-[#A3E635] font-extrabold uppercase">
                     100% Match
                   </span>
                 </div>
 
                 <div className="grid grid-cols-2 gap-2 text-xs">
-                  <div className="p-2.5 rounded-xl bg-[#0F172A] border border-slate-800">
+                  <div className="p-2.5 rounded-xl bg-[#131B24] border border-slate-800">
                     <span className="text-slate-400 block text-[10px] uppercase font-bold">
                       Saved Beneficiary
                     </span>
-                    <span className="text-white font-extrabold">{savedBeneficiary}</span>
+                    <span className="text-white font-extrabold truncate block">{savedBeneficiary}</span>
                   </div>
-                  <div className="p-2.5 rounded-xl bg-[#0F172A] border border-[#10B981]/30">
-                    <span className="text-[#10B981] block text-[10px] uppercase font-bold">
+                  <div className="p-2.5 rounded-xl bg-[#131B24] border border-[#A3E635]/40">
+                    <span className="text-[#A3E635] block text-[10px] uppercase font-bold">
                       Returned Account Name
                     </span>
-                    <span className="text-white font-extrabold">{returnedAccountName}</span>
+                    <span className="text-white font-extrabold truncate block">{returnedAccountName}</span>
                   </div>
                 </div>
 
                 <p className="text-[11px] text-slate-300 flex items-center gap-1.5">
-                  <Check className="w-3.5 h-3.5 text-[#10B981]" />
+                  <Check className="w-3.5 h-3.5 text-[#A3E635]" />
                   Telecom registry subscriber matched registered KYC profile: {returnedAccountName}.
                 </p>
 
@@ -541,11 +528,10 @@ export const RecipientBusinessVerificationDemo: React.FC<RecipientBusinessVerifi
                         message: `Disbursement of GH₵500.00 released to ${returnedAccountName}.`,
                       });
                     }}
-                    className="w-full py-3 px-4 rounded-xl font-black text-xs uppercase tracking-wider text-navy-950 flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/25 transition-all hover:brightness-110 active:scale-98"
-                    style={{ backgroundColor: '#10B981' }}
+                    className="w-full py-3 px-4 rounded-xl font-black text-xs uppercase tracking-wider text-[#0F172A] bg-[#A3E635] hover:bg-[#84CC16] flex items-center justify-center gap-2 shadow-lg shadow-[#A3E635]/25 transition-all active:scale-98"
                   >
                     <CheckCircle className="w-4 h-4" />
-                    {paymentAuthorized ? 'PAYMENT AUTHORIZED ✓' : 'Authorize Payment'}
+                    {paymentAuthorized ? 'PAYMENT AUTHORIZED ✓' : 'Authorize Payment (GH₵500.00)'}
                   </button>
                 </div>
               </div>
@@ -568,17 +554,17 @@ export const RecipientBusinessVerificationDemo: React.FC<RecipientBusinessVerifi
                 </div>
 
                 <div className="grid grid-cols-2 gap-2 text-xs">
-                  <div className="p-2.5 rounded-xl bg-[#0F172A] border border-slate-800">
+                  <div className="p-2.5 rounded-xl bg-[#131B24] border border-slate-800">
                     <span className="text-slate-400 block text-[10px] uppercase font-bold">
                       Saved Beneficiary
                     </span>
-                    <span className="text-slate-200 font-extrabold">{savedBeneficiary}</span>
+                    <span className="text-slate-200 font-extrabold truncate block">{savedBeneficiary}</span>
                   </div>
-                  <div className="p-2.5 rounded-xl bg-[#0F172A] border border-[#EF4444]/50">
+                  <div className="p-2.5 rounded-xl bg-[#131B24] border border-[#EF4444]/50">
                     <span className="text-[#EF4444] block text-[10px] uppercase font-bold">
                       Returned Account Name
                     </span>
-                    <span className="text-white font-extrabold">{returnedAccountName}</span>
+                    <span className="text-white font-extrabold truncate block">{returnedAccountName}</span>
                   </div>
                 </div>
 
@@ -631,7 +617,7 @@ export const RecipientBusinessVerificationDemo: React.FC<RecipientBusinessVerifi
       {/* ========================================================================= */}
       {isPaidBusinessOpen && (
         <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="w-full max-w-md rounded-3xl bg-[#0B132B] border-2 border-[#2563EB]/50 p-6 text-white space-y-5 shadow-2xl animate-in zoom-in-95 duration-200">
+          <div className="w-full max-w-md rounded-3xl bg-[#18222D] border-2 border-[#2563EB]/50 p-6 text-white space-y-5 shadow-2xl animate-in zoom-in-95 duration-200">
             <div className="flex items-center justify-between pb-3 border-b border-slate-800">
               <div className="flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-xl bg-[#2563EB] text-white flex items-center justify-center font-bold">
@@ -650,7 +636,7 @@ export const RecipientBusinessVerificationDemo: React.FC<RecipientBusinessVerifi
               </span>
             </div>
 
-            <div className="p-4 rounded-2xl bg-[#0F172A] border border-slate-800 space-y-3 text-xs">
+            <div className="p-4 rounded-2xl bg-[#131B24] border border-slate-800 space-y-3 text-xs">
               <div className="flex items-center justify-between">
                 <span className="text-slate-400">Recipient:</span>
                 <span className="font-bold text-white">ABC Fashion (Accra, Ghana)</span>
@@ -665,7 +651,7 @@ export const RecipientBusinessVerificationDemo: React.FC<RecipientBusinessVerifi
               </div>
               <div className="flex items-center justify-between pt-2 border-t border-slate-800">
                 <span className="text-slate-300 font-bold">Amount to Disburse:</span>
-                <span className="font-black text-base text-[#10B981] font-mono">
+                <span className="font-black text-base text-[#A3E635] font-mono">
                   GH₵{businessPayAmount}
                 </span>
               </div>

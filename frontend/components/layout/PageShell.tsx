@@ -16,23 +16,29 @@ export const PageShell: React.FC<PageShellProps> = ({
   children,
 }) => {
   return (
-    <div className="space-y-6 pb-12">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-slate-200 dark:border-navy-800">
-        <div>
-          <div className="flex items-center gap-2.5">
-            <h1 className="text-xl sm:text-2xl font-black text-navy-950 dark:text-slate-100 tracking-tight">
+    <div className="space-y-5 sm:space-y-6 pb-12 w-full">
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-4 border-b border-slate-800">
+        <div className="space-y-1 min-w-0">
+          <div className="flex items-center gap-2 sm:gap-2.5 flex-wrap">
+            <h1 className="text-lg sm:text-2xl font-black text-white tracking-tight">
               {title}
             </h1>
-            {badge}
+            {badge && <div className="shrink-0">{badge}</div>}
           </div>
           {subtitle && (
-            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">{subtitle}</p>
+            <p className="text-xs sm:text-sm text-slate-400 leading-relaxed max-w-3xl">
+              {subtitle}
+            </p>
           )}
         </div>
-        {action && <div className="flex items-center gap-3 shrink-0">{action}</div>}
+        {action && (
+          <div className="flex items-center gap-2 sm:gap-3 flex-wrap lg:shrink-0 w-full lg:w-auto">
+            {action}
+          </div>
+        )}
       </div>
 
-      <div>{children}</div>
+      <div className="w-full min-w-0">{children}</div>
     </div>
   );
 };

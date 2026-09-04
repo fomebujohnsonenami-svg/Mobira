@@ -16,24 +16,24 @@ export const Button: React.FC<ButtonProps> = ({
   disabled,
   ...props
 }) => {
-  const baseStyles = 'inline-flex items-center justify-center font-bold rounded-lg transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-emerald-500/70 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-subtle';
+  const baseStyles = 'inline-flex items-center justify-center font-bold rounded-xl transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-[#A3E635]/70 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-subtle active:scale-98 select-none';
 
   const variantStyles = {
-    // Vibrant Emerald Primary
-    primary: 'bg-emerald-500 hover:bg-emerald-400 active:bg-emerald-600 text-navy-950 font-black border border-emerald-600/30 shadow-md shadow-emerald-500/20',
-    // Deep Blue Institutional Secondary
-    secondary: 'bg-navy-900 hover:bg-navy-850 active:bg-navy-950 text-white dark:bg-navy-900 dark:hover:bg-navy-850 dark:active:bg-navy-950 border border-navy-800 dark:border-navy-700',
+    // Vibrant Electric Lime Primary
+    primary: 'bg-[#A3E635] hover:bg-[#84CC16] active:bg-[#65A30D] text-[#0F172A] font-black border border-[#A3E635]/40 shadow-md shadow-[#A3E635]/20',
+    // Deep Charcoal / Slate Secondary
+    secondary: 'bg-[#1E293B] hover:bg-[#283548] active:bg-[#0F172A] text-white border border-slate-700',
     // Minimal hairline border
-    outline: 'border border-slate-300 dark:border-navy-700/80 bg-white dark:bg-navy-900 text-navy-950 dark:text-slate-100 hover:bg-slate-50 dark:hover:bg-navy-850 hover:border-emerald-500/40',
-    danger: 'bg-rose-700 hover:bg-rose-800 active:bg-rose-900 text-white border border-rose-800',
-    ghost: 'bg-transparent hover:bg-slate-100 dark:hover:bg-navy-850 text-slate-700 dark:text-slate-200 shadow-none',
-    success: 'bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white border border-emerald-700',
+    outline: 'border border-slate-700/80 bg-[#18222D] text-white hover:bg-[#1E293B] hover:border-[#A3E635]/50 shadow-sm',
+    danger: 'bg-rose-600 hover:bg-rose-700 active:bg-rose-800 text-white border border-rose-700 shadow-md shadow-rose-900/20',
+    ghost: 'bg-transparent hover:bg-slate-800/60 text-slate-300 hover:text-white shadow-none',
+    success: 'bg-[#10B981] hover:bg-[#059669] active:bg-[#047857] text-white border border-emerald-600',
   };
 
   const sizeStyles = {
     sm: 'px-3 py-1.5 text-xs gap-1.5',
-    md: 'px-4 py-2 text-sm gap-2',
-    lg: 'px-5 py-2.5 text-base gap-2.5',
+    md: 'px-4 py-2 text-xs sm:text-sm gap-2',
+    lg: 'px-5 py-2.5 text-sm sm:text-base gap-2.5',
   };
 
   return (
