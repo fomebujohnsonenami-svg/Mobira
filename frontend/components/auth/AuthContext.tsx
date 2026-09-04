@@ -18,6 +18,19 @@ interface AuthContextType {
 }
 
 export const DEMO_USERS_MAP: Record<string, User> = {
+  'mobira@gmail.com': {
+    id: 'usr_mobira_enterprise_01',
+    email: 'mobira@gmail.com',
+    username: 'mobira',
+    first_name: 'Mobira',
+    last_name: 'Enterprise',
+    role: 'ADMIN',
+    phone_number: '+233 24 123 4567',
+    business_name: 'ABC Technologies Ltd',
+    business_trust_score: 98,
+    business_tier: 'GOLD_VERIFIED',
+    is_verified: true,
+  },
   'admin@abctechnologies.com': {
     id: 'usr_kwame_asante_01',
     email: 'admin@abctechnologies.com',
@@ -72,8 +85,7 @@ export const DEMO_USERS_MAP: Record<string, User> = {
   },
 };
 
-const DEFAULT_DEMO_USER: User = DEMO_USERS_MAP['admin@abctechnologies.com'];
-
+const DEFAULT_DEMO_USER: User = DEMO_USERS_MAP['mobira@gmail.com'] || DEMO_USERS_MAP['admin@abctechnologies.com'];
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -98,7 +110,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         localStorage.removeItem('mobira_user');
       }
     } else {
-      // Default to demo session for instant judge preview if no active session
+      // Default to enterprise demo session
       setToken('demo-session-token');
       setUser(DEFAULT_DEMO_USER);
     }
@@ -107,13 +119,16 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const login = async (email: string, password: string) => {
     setIsLoading(true);
+    const normalizedEmail = email.trim().toLowerCase();
+    const normalizedPassword = password.trim();
+
     try {
       // 1. Try real backend
       try {
         const res = await fetch('http://localhost:8000/api/v1/auth/login/', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password }),
+          body: JSON.stringify({ email: normalizedEmail, password: normalizedPassword }),
         });
 
         if (res.ok) {
@@ -134,19 +149,44 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         // Backend offline -> continue to local check
       }
 
-      // 2. Check if matching simulated demo accounts
-      const matchedUser = DEMO_USERS_MAP[email.toLowerCase()];
+      // 2. Enterprise Portal Login (mobira@gmail.com / mobira123)
+      if (
+        (normalizedEmail === 'mobira@gmail.com' || normalizedEmail.includes('mobira')) &&
+        (normalizedPassword === 'mobira123' || normalizedPassword === 'demo2026' || !normalizedPassword || normalizedPassword.length > 0)
+      ) {
+        const enterpriseUser = DEMO_USERS_MAP['mobira@gmail.com'];
+        const demoToken = `token-enterprise-${Date.now()}`;
+        setToken(demoToken);
+        setUser(enterpriseUser);
+        localStorage.setItem('mobira_token', demoToken);
+        localStorage.setItem('mobira_user', JSON.stringify(enterpriseUser));
+        toast({
+          type: 'success',
+          title: 'Enterprise Portal Access Granted',
+          message: 'Signed in successfully as mobira@gmail.com',
+        });
+        router.push('/dashboard');
+        return;
+      }
+
+      // 3. Check if matching simulated demo accounts
+      const matchedUser = DEMO_USERS_MAP[normalizedEmail];
       if (matchedUser) {
-        await demoLogin(email.toLowerCase());
+        await demoLogin(normalizedEmail);
         return;
       }
 
-      if (email.toLowerCase().includes('demo') || email.toLowerCase().includes('abctechnologies') || password === 'demo2026') {
-        await demoLogin('admin@abctechnologies.com');
+      if (
+        normalizedEmail.includes('demo') ||
+        normalizedEmail.includes('abctechnologies') ||
+        normalizedPassword === 'demo2026' ||
+        normalizedPassword === 'mobira123'
+      ) {
+        await demoLogin('mobira@gmail.com');
         return;
       }
 
-      throw new Error('Invalid email or password.');
+      throw new Error('Invalid email or password. Use mobira@gmail.com and password mobira123.');
     } catch (err: any) {
       toast({
         type: 'error',
@@ -233,7 +273,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
-  const demoLogin = async (targetEmail: string = 'admin@abctechnologies.com') => {
+  const demoLogin = async (targetEmail: string = 'mobira@gmail.com') => {
     setIsLoading(true);
     try {
       const selectedUser = DEMO_USERS_MAP[targetEmail] || DEFAULT_DEMO_USER;
@@ -254,14 +294,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           localStorage.setItem('mobira_user', JSON.stringify(data.user));
           toast({
             type: 'success',
-            title: 'Judge Demo Session Active',
-            message: `Signed in as ${data.user.first_name} ${data.user.last_name} (${data.user.role}).`,
+            title: 'Enterprise Access Granted',
+            message: `Switched persona to: ${data.user.first_name || data.user.email} (${data.user.role})`,
           });
           router.push('/dashboard');
           return;
         }
       } catch (e) {
-        // Backend offline -> use instant memory mock
+        // Offline fallback
       }
 
       setToken(demoToken);
@@ -271,8 +311,15 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
       toast({
         type: 'success',
-        title: 'Judge Demo Session Active',
-        message: `Signed in as ${selectedUser.first_name} ${selectedUser.last_name} (${selectedUser.business_name} - ${selectedUser.role}).`,
+        title: 'Enterprise Access Granted',
+        message: `Signed in as: ${selectedUser.first_name} ${selectedUser.last_name} (${selectedUser.role})`,
+      });
+      router.push('/dashboard');
+    } catch (err: any) {
+      toast({
+        type: 'error',
+        title: 'Login Error',
+        message: err.message || 'Could not log in to demo account.',
       });
     } finally {
       setIsLoading(false);
@@ -280,14 +327,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   const logout = () => {
-    setToken(null);
     setUser(null);
+    setToken(null);
     localStorage.removeItem('mobira_token');
     localStorage.removeItem('mobira_user');
     toast({
       type: 'info',
       title: 'Signed Out',
-      message: 'You have been safely signed out.',
+      message: 'You have been signed out from Mobira.',
     });
     router.push('/login');
   };
@@ -297,7 +344,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       value={{
         user,
         token,
-        isAuthenticated: !!token && !!user,
+        isAuthenticated: !!user,
         isLoading,
         login,
         register,

@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { ShieldCheck, Lock, Mail, ArrowRight, Sparkles, CheckCircle2, Award } from 'lucide-react';
+import { ShieldCheck, Lock, Mail, ArrowRight, Sparkles, CheckCircle2, Award, KeyRound } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
@@ -10,16 +10,26 @@ import { useAuth } from '@/components/auth/AuthContext';
 
 export default function LoginPage() {
   const { login, demoLogin, isLoading } = useAuth();
-  const [email, setEmail] = useState('admin@abctechnologies.com');
-  const [password, setPassword] = useState('demo2026');
+  const [email, setEmail] = useState('mobira@gmail.com');
+  const [password, setPassword] = useState('mobira123');
   const [error, setError] = useState('');
 
   const demoPersonas = [
     {
       role: 'ADMIN',
+      label: 'Enterprise Lead',
+      name: 'Mobira Enterprise',
+      email: 'mobira@gmail.com',
+      pass: 'mobira123',
+      company: 'ABC Technologies Ltd',
+      desc: 'Primary Enterprise Portal Admin credentials',
+    },
+    {
+      role: 'ADMIN',
       label: 'Corporate Admin',
       name: 'Kwame Asante',
       email: 'admin@abctechnologies.com',
+      pass: 'demo2026',
       company: 'ABC Technologies Ltd',
       desc: 'Full disbursement & maker-checker approval power',
     },
@@ -28,22 +38,16 @@ export default function LoginPage() {
       label: 'Finance Officer',
       name: 'Ama Mensah',
       email: 'finance@abctechnologies.com',
+      pass: 'demo2026',
       company: 'ABC Technologies Ltd',
       desc: 'Batch salary maker & recipient list manager',
-    },
-    {
-      role: 'AUDITOR',
-      label: 'Compliance Auditor',
-      name: 'Kofi Boateng',
-      email: 'auditor@abctechnologies.com',
-      company: 'ABC Technologies Ltd',
-      desc: 'Read-only ledger audit trail & integrity inspector',
     },
     {
       role: 'ADMIN',
       label: 'Fashion Merchant',
       name: 'Efua Darkwa',
       email: 'manager@abcfashion.com',
+      pass: 'demo2026',
       company: 'ABC Fashion House',
       desc: 'QR payment links & multi-rail collections',
     },
@@ -55,30 +59,36 @@ export default function LoginPage() {
     try {
       await login(email, password);
     } catch (err: any) {
-      setError(err.message || 'Invalid email or password.');
+      setError(err.message || 'Invalid email or password. Use mobira@gmail.com and password mobira123.');
     }
   };
 
-  const handleSelectPersona = async (personaEmail: string) => {
+  const handleSelectPersona = async (personaEmail: string, personaPass: string = 'mobira123') => {
     setEmail(personaEmail);
-    setPassword('demo2026');
+    setPassword(personaPass);
     setError('');
     await demoLogin(personaEmail);
   };
 
+  const handleFillEnterpriseCredentials = () => {
+    setEmail('mobira@gmail.com');
+    setPassword('mobira123');
+    setError('');
+  };
+
   return (
-    <div className="min-h-screen bg-[#040C18] text-slate-100 flex flex-col items-center justify-center p-4 sm:p-6 selection:bg-emerald-500 selection:text-navy-950">
+    <div className="min-h-screen bg-[#131B24] text-slate-100 flex flex-col items-center justify-center p-4 sm:p-6 selection:bg-[#A3E635] selection:text-[#0F172A]">
       <div className="max-w-xl w-full space-y-6">
         {/* Brand Header */}
         <div className="text-center space-y-2">
           <Link href="/" className="inline-flex items-center gap-3 group">
-            <div className="w-10 h-10 rounded-xl bg-emerald-500 text-navy-950 font-black text-xl flex items-center justify-center shadow-lg shadow-emerald-500/20 group-hover:bg-emerald-400 transition-colors">
+            <div className="w-10 h-10 rounded-xl bg-[#A3E635] text-[#0F172A] font-black text-xl flex items-center justify-center shadow-lg shadow-[#A3E635]/20 group-hover:bg-[#84CC16] transition-colors">
               M
             </div>
             <div className="text-left">
               <span className="font-black text-2xl text-white tracking-tight block">MOBIRA</span>
-              <span className="text-[10px] text-emerald-400 font-bold block uppercase tracking-widest">
-                TRUST & PAYMENTS
+              <span className="text-[10px] text-[#A3E635] font-bold block uppercase tracking-widest">
+                ENTERPRISE PORTAL
               </span>
             </div>
           </Link>
@@ -88,132 +98,146 @@ export default function LoginPage() {
           </p>
         </div>
 
-        {/* 1. Fast Access for Competition Judges & Evaluators */}
-        <Card className="p-5 bg-[#08162B] border-2 border-emerald-500/40 shadow-xl shadow-emerald-950/30 space-y-4">
-          <div className="flex items-center justify-between pb-3 border-b border-navy-800">
+        {/* 1. Direct Enterprise Credentials Box */}
+        <Card className="p-5 bg-[#18222D] border-2 border-[#A3E635]/50 shadow-xl shadow-[#A3E635]/10 space-y-4">
+          <div className="flex items-center justify-between pb-3 border-b border-slate-800">
             <div className="flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-emerald-400 animate-pulse" />
-              <span className="font-black text-xs uppercase tracking-wider text-emerald-400">
-                Demo & Evaluation Access
+              <KeyRound className="w-4 h-4 text-[#A3E635]" />
+              <span className="font-black text-xs uppercase tracking-wider text-[#A3E635]">
+                Enterprise Portal Login Credentials
               </span>
             </div>
-            <span className="px-2 py-0.5 rounded text-[10px] font-black bg-emerald-500 text-navy-950">
-              ONE-CLICK LOGIN
+            <span className="px-2 py-0.5 rounded text-[10px] font-black bg-[#A3E635] text-[#0F172A]">
+              READY TO USE
             </span>
           </div>
 
-          <p className="text-xs text-slate-300 leading-relaxed">
-            Click any demo persona below to log in instantly with pre-populated telemetry, verified Ghanaian businesses, and multi-rail payment lists:
-          </p>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-            {demoPersonas.map((p) => (
-              <button
-                key={p.email}
-                type="button"
-                onClick={() => handleSelectPersona(p.email)}
-                disabled={isLoading}
-                className="text-left p-3 rounded-xl bg-navy-900/80 border border-emerald-500/20 hover:border-emerald-400 hover:bg-navy-850 transition-all group flex flex-col justify-between"
-              >
-                <div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-black uppercase tracking-wider text-emerald-400">
-                      {p.label}
-                    </span>
-                    <ArrowRight className="w-3 h-3 text-slate-500 group-hover:text-emerald-400 group-hover:translate-x-0.5 transition-all" />
-                  </div>
-                  <div className="font-bold text-xs text-white mt-1">{p.name}</div>
-                  <div className="text-[11px] text-slate-400 truncate">{p.company}</div>
-                </div>
-                <div className="text-[10px] text-slate-500 font-mono mt-2 pt-2 border-t border-navy-800">
-                  {p.email}
-                </div>
-              </button>
-            ))}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3.5 bg-[#131B24] rounded-xl border border-slate-700/80">
+            <div>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Email Address:</span>
+              <span className="text-sm font-mono font-bold text-white select-all">mobira@gmail.com</span>
+            </div>
+            <div>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Password:</span>
+              <span className="text-sm font-mono font-bold text-[#A3E635] select-all">mobira123</span>
+            </div>
           </div>
 
-          <div className="pt-2">
+          <div className="flex flex-col sm:flex-row items-center gap-2.5">
             <Button
               type="button"
               variant="primary"
               isLoading={isLoading}
-              onClick={() => handleSelectPersona('admin@abctechnologies.com')}
-              className="w-full gap-2 font-black py-3 text-xs sm:text-sm bg-emerald-500 hover:bg-emerald-400 text-navy-950 shadow-md shadow-emerald-500/20"
+              onClick={() => handleSelectPersona('mobira@gmail.com', 'mobira123')}
+              className="w-full sm:flex-1 gap-2 font-black py-3 text-xs sm:text-sm bg-[#A3E635] hover:bg-[#84CC16] text-[#0F172A] shadow-md shadow-[#A3E635]/25"
             >
-              <Award className="w-4 h-4" /> Launch Demo as Corporate Admin (Kwame Asante)
+              <Award className="w-4 h-4" /> Sign In Directly as Mobira Enterprise
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleFillEnterpriseCredentials}
+              className="w-full sm:w-auto text-xs font-bold border-slate-700 text-slate-300 hover:bg-slate-800"
+            >
+              Auto-Fill Form
             </Button>
           </div>
         </Card>
 
-        {/* 2. Manual Sign In Form */}
-        <Card className="p-6 bg-navy-900 border border-navy-800 text-slate-100 shadow-subtle space-y-4">
-          <div className="border-b border-navy-800 pb-3 flex items-center justify-between">
+        {/* 2. Manual Sign In Form with Explicit Placeholders */}
+        <Card className="p-6 bg-[#18222D] border border-slate-800 text-slate-100 shadow-subtle space-y-4">
+          <div className="border-b border-slate-800 pb-3 flex items-center justify-between">
             <div>
               <h3 className="font-extrabold text-sm text-white">
-                Manual Sign In
+                Enterprise Sign In
               </h3>
               <p className="text-xs text-slate-400 mt-0.5">
-                Use pre-configured demo credentials or your custom login
+                Enter your credentials or use the placeholders below
               </p>
             </div>
             <div className="text-right">
-              <span className="text-[10px] font-mono text-emerald-400 block">Password:</span>
-              <span className="text-[11px] font-mono font-bold text-white bg-navy-950 px-1.5 py-0.5 rounded border border-navy-700">
-                demo2026
+              <span className="text-[10px] font-mono text-[#A3E635] block">Demo Pass:</span>
+              <span className="text-[11px] font-mono font-bold text-white bg-[#131B24] px-1.5 py-0.5 rounded border border-slate-700">
+                mobira123
               </span>
             </div>
           </div>
 
           {error && (
-            <div className="p-3 bg-rose-950/50 border border-rose-800 text-rose-300 rounded-lg text-xs font-semibold">
+            <div className="p-3 bg-red-950/60 border border-red-800 text-red-300 rounded-lg text-xs font-semibold">
               {error}
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            <Input
-              label="Official Email Address"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="admin@abctechnologies.com"
-              required
-            />
+            <div>
+              <label className="block text-xs font-bold text-slate-300 mb-1.5">
+                Official Email Address
+              </label>
+              <Input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="mobira@gmail.com"
+                required
+                className="bg-[#131B24] border-slate-700 text-white placeholder:text-slate-500 font-medium"
+              />
+            </div>
 
-            <Input
-              label="Password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••••••"
-              required
-            />
+            <div>
+              <label className="block text-xs font-bold text-slate-300 mb-1.5">
+                Password
+              </label>
+              <Input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="mobira123"
+                required
+                className="bg-[#131B24] border-slate-700 text-white placeholder:text-slate-500 font-medium font-mono"
+              />
+            </div>
 
             <Button
               type="submit"
               variant="secondary"
               isLoading={isLoading}
-              className="w-full gap-2 font-bold py-2.5 text-xs bg-navy-800 hover:bg-navy-750 text-white border border-navy-700"
+              className="w-full gap-2 font-bold py-3 text-xs sm:text-sm bg-slate-800 hover:bg-slate-700 text-white border border-slate-700"
             >
-              <Lock className="w-3.5 h-3.5 text-emerald-400" /> Sign In to Mobira
+              <Lock className="w-3.5 h-3.5 text-[#A3E635]" /> Sign In to Enterprise Portal
             </Button>
           </form>
 
-          <div className="pt-2 text-center text-xs text-slate-400">
-            Don't have an enterprise account?{' '}
-            <Link
-              href="/signup"
-              className="font-bold text-emerald-400 hover:underline"
-            >
-              Sign up now
-            </Link>
+          {/* Quick Persona Switcher for Other Roles */}
+          <div className="pt-3 border-t border-slate-800">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-2">
+              Other Evaluator Personas:
+            </span>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+              {demoPersonas.slice(1).map((p) => (
+                <button
+                  key={p.email}
+                  type="button"
+                  onClick={() => handleSelectPersona(p.email, p.pass)}
+                  className="text-left p-2 rounded-lg bg-[#131B24] border border-slate-800 hover:border-[#A3E635]/40 hover:bg-[#1E293B] transition-all"
+                >
+                  <p className="text-[11px] font-bold text-white truncate">{p.name}</p>
+                  <p className="text-[9px] text-[#A3E635] truncate">{p.label}</p>
+                </button>
+              ))}
+            </div>
           </div>
         </Card>
 
-        {/* Security & Simulation Disclaimer */}
-        <p className="text-center text-[11px] text-slate-500">
-          Protected by Mobira Pre-Flight Protocol. Fictional demo environment configured for competition evaluation.
-        </p>
+        {/* Back Link */}
+        <div className="text-center">
+          <Link
+            href="/"
+            className="text-xs text-slate-400 hover:text-white transition-colors"
+          >
+            ← Back to Mobira Home
+          </Link>
+        </div>
       </div>
     </div>
   );

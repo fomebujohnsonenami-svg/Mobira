@@ -72,7 +72,7 @@ export default function VerifyPage() {
                 <BusinessVerificationBadge size="lg" />
               </div>
               <p className="text-xs text-slate-500 dark:text-slate-400 max-w-xl pt-0.5">
-                The blue badge represents official identity & business verification by Mobira.
+                Official business entity verification is secured by entering your registered Business Identification Number (Demo BIN: 700235).
               </p>
             </div>
 

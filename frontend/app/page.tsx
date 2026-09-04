@@ -88,7 +88,7 @@ export default function HomePage() {
               Sign In
             </Link>
             <Link
-              href="/dashboard"
+              href="/login"
               className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-black bg-[#A3E635] hover:bg-[#84CC16] text-[#0F172A] shadow-md shadow-[#A3E635]/25 transition-all duration-150 active:scale-95"
             >
               <span>Launch Enterprise Portal</span>
@@ -149,7 +149,7 @@ export default function HomePage() {
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 pt-3">
               <Link
-                href="/dashboard"
+                href="/login"
                 className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-black text-sm bg-[#A3E635] hover:bg-[#84CC16] text-[#0F172A] shadow-xl shadow-[#A3E635]/20 transition-all duration-150 active:scale-95"
               >
                 <span>Open Business Dashboard</span>

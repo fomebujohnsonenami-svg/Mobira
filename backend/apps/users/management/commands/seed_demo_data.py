@@ -126,6 +126,18 @@ class Command(BaseCommand):
 
         # 3. CREATE USERS
         self.stdout.write('Seeding business team members...')
+        u_mobira = User.objects.create_user(
+            username='mobira',
+            email='mobira@gmail.com',
+            password='mobira123',
+            first_name='Mobira',
+            last_name='Enterprise',
+            role=UserRole.ADMIN,
+            business=b1,
+            phone_number='+233 24 123 4567',
+            is_verified=True,
+        )
+
         u_admin = User.objects.create_user(
             username='kwame.asante',
             email='admin@abctechnologies.com',

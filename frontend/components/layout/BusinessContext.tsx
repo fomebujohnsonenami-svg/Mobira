@@ -5,6 +5,7 @@ import { Business } from '@/types';
 import { api } from '@/services/api';
 import { useToast } from '@/components/ui/Toast';
 import { VerificationSuccessModal } from '@/components/verification/VerificationSuccessModal';
+import { BusinessVerificationModal } from '@/components/verification/BusinessVerificationModal';
 
 export type VerificationState = 'UNVERIFIED' | 'IN_PROGRESS' | 'VERIFIED';
 
@@ -16,10 +17,12 @@ interface BusinessContextType {
   isDemoMode: boolean;
   verificationStatus: VerificationState;
   setVerificationStatus: (status: VerificationState) => void;
-  startVerification: () => Promise<void>;
+  startVerification: () => void;
   closeSuccessModal: () => void;
   resetVerification: () => void;
   isSuccessModalOpen: boolean;
+  isVerificationModalOpen: boolean;
+  closeVerificationModal: () => void;
 }
 
 const DEFAULT_BUSINESS: Business = {
@@ -62,6 +65,7 @@ export const BusinessProvider: React.FC<{ children: ReactNode }> = ({ children }
 
   // Verification Lifecycle: UNVERIFIED -> IN_PROGRESS -> VERIFIED
   const [verificationStatus, setVerificationStatus] = useState<VerificationState>('VERIFIED');
+  const [isVerificationModalOpen, setIsVerificationModalOpen] = useState<boolean>(false);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
@@ -83,24 +87,23 @@ export const BusinessProvider: React.FC<{ children: ReactNode }> = ({ children }
     });
   };
 
-  const startVerification = async () => {
-    setVerificationStatus('IN_PROGRESS');
-    toast({
-      type: 'info',
-      title: 'Verification in Progress',
-      message: `Verifying ${currentBusiness.name} against National Registrar & Telecom KYC...`,
-    });
+  // Open the interactive verification input modal (asking for Business Name + BIN 700235)
+  const startVerification = () => {
+    setIsVerificationModalOpen(true);
+  };
 
-    // Simulate verification check
-    await new Promise((resolve) => setTimeout(resolve, 1400));
+  const closeVerificationModal = () => {
+    setIsVerificationModalOpen(false);
+  };
 
-    // Verification succeeds -> Display the Polished Success Modal!
+  const handleVerificationSuccess = () => {
+    setIsVerificationModalOpen(false);
+    setVerificationStatus('VERIFIED');
     setIsSuccessModalOpen(true);
   };
 
   const closeSuccessModal = () => {
     setIsSuccessModalOpen(false);
-    setVerificationStatus('VERIFIED');
     toast({
       type: 'success',
       title: 'Verification Complete',
@@ -113,7 +116,7 @@ export const BusinessProvider: React.FC<{ children: ReactNode }> = ({ children }
     toast({
       type: 'info',
       title: 'Verification State Reset',
-      message: 'Status set to: Verification Required (Ready for live demonstration).',
+      message: 'Status set to: Verification Required (Ready for live demonstration with BIN 700235).',
     });
   };
 
@@ -149,10 +152,21 @@ export const BusinessProvider: React.FC<{ children: ReactNode }> = ({ children }
         closeSuccessModal,
         resetVerification,
         isSuccessModalOpen,
+        isVerificationModalOpen,
+        closeVerificationModal,
       }}
     >
       {children}
-      {/* Global Verification Success Modal */}
+
+      {/* 1. Interactive Business Verification Input Modal (Prompts for Name + BIN 700235) */}
+      <BusinessVerificationModal
+        isOpen={isVerificationModalOpen}
+        onClose={closeVerificationModal}
+        businessName={currentBusiness.name}
+        onSuccess={handleVerificationSuccess}
+      />
+
+      {/* 2. Global Verification Success Confirmation Modal */}
       <VerificationSuccessModal
         isOpen={isSuccessModalOpen}
         onClose={closeSuccessModal}
