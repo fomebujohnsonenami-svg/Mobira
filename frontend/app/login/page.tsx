@@ -1,14 +1,19 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
 import Link from 'next/link';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { ShieldCheck, Lock, Mail, ArrowRight, Sparkles, CheckCircle2, Award, KeyRound } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { useAuth } from '@/components/auth/AuthContext';
 
-export default function LoginPage() {
+function LoginFormContent() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectTarget = searchParams.get('redirect') || '/dashboard';
+
   const { login, demoLogin, isLoading } = useAuth();
   const [email, setEmail] = useState('mobira@gmail.com');
   const [password, setPassword] = useState('mobira123');
@@ -58,6 +63,8 @@ export default function LoginPage() {
     setError('');
     try {
       await login(email, password);
+      // Redirect to target feature or dashboard
+      router.push(redirectTarget);
     } catch (err: any) {
       setError(err.message || 'Invalid email or password. Use mobira@gmail.com and password mobira123.');
     }
@@ -68,6 +75,8 @@ export default function LoginPage() {
     setPassword(personaPass);
     setError('');
     await demoLogin(personaEmail);
+    // Redirect to target feature or dashboard
+    router.push(redirectTarget);
   };
 
   const handleFillEnterpriseCredentials = () => {
@@ -96,6 +105,13 @@ export default function LoginPage() {
           <p className="text-xs text-slate-400 max-w-sm mx-auto pt-1">
             Enterprise orchestration and verified identity for African commercial payments.
           </p>
+
+          {redirectTarget && redirectTarget !== '/dashboard' && (
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#A3E635]/15 border border-[#A3E635]/30 text-[#A3E635] text-xs font-bold">
+              <Lock className="w-3 h-3" />
+              <span>Sign in to continue to: <code className="font-mono text-white">{redirectTarget}</code></span>
+            </div>
+          )}
         </div>
 
         {/* 1. Direct Enterprise Credentials Box */}
@@ -139,106 +155,96 @@ export default function LoginPage() {
               onClick={handleFillEnterpriseCredentials}
               className="w-full sm:w-auto text-xs font-bold border-slate-700 text-slate-300 hover:bg-slate-800"
             >
-              Auto-Fill Form
+              Prefill Form
             </Button>
           </div>
         </Card>
 
-        {/* 2. Manual Sign In Form with Explicit Placeholders */}
+        {/* 2. Login Form */}
         <Card className="p-6 bg-[#18222D] border border-slate-800 text-slate-100 shadow-subtle space-y-4">
-          <div className="border-b border-slate-800 pb-3 flex items-center justify-between">
-            <div>
-              <h3 className="font-extrabold text-sm text-white">
-                Enterprise Sign In
-              </h3>
-              <p className="text-xs text-slate-400 mt-0.5">
-                Enter your credentials or use the placeholders below
-              </p>
-            </div>
-            <div className="text-right">
-              <span className="text-[10px] font-mono text-[#A3E635] block">Demo Pass:</span>
-              <span className="text-[11px] font-mono font-bold text-white bg-[#131B24] px-1.5 py-0.5 rounded border border-slate-700">
-                mobira123
-              </span>
-            </div>
-          </div>
-
-          {error && (
-            <div className="p-3 bg-red-950/60 border border-red-800 text-red-300 rounded-lg text-xs font-semibold">
-              {error}
-            </div>
-          )}
-
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block text-xs font-bold text-slate-300 mb-1.5">
-                Official Email Address
-              </label>
-              <Input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="mobira@gmail.com"
-                required
-                className="bg-[#131B24] border-slate-700 text-white placeholder:text-slate-500 font-medium"
-              />
-            </div>
+            {error && (
+              <div className="p-3 bg-rose-500/15 border border-rose-500/30 rounded-xl text-rose-300 text-xs flex items-center gap-2">
+                <ShieldCheck className="w-4 h-4 shrink-0 text-rose-400" />
+                <span>{error}</span>
+              </div>
+            )}
 
-            <div>
-              <label className="block text-xs font-bold text-slate-300 mb-1.5">
-                Password
-              </label>
-              <Input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="mobira123"
-                required
-                className="bg-[#131B24] border-slate-700 text-white placeholder:text-slate-500 font-medium font-mono"
-              />
-            </div>
+            <Input
+              label="Enterprise Email Address"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="mobira@gmail.com"
+              required
+              className="bg-[#131B24] border-slate-700 text-white font-mono placeholder:text-slate-500"
+            />
+
+            <Input
+              label="Account Password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="mobira123"
+              required
+              className="bg-[#131B24] border-slate-700 text-white placeholder:text-slate-500"
+            />
 
             <Button
               type="submit"
-              variant="secondary"
+              variant="primary"
+              className="w-full font-black py-3 text-sm bg-[#A3E635] hover:bg-[#84CC16] text-[#0F172A] shadow-md shadow-[#A3E635]/25"
               isLoading={isLoading}
-              className="w-full gap-2 font-bold py-3 text-xs sm:text-sm bg-slate-800 hover:bg-slate-700 text-white border border-slate-700"
             >
-              <Lock className="w-3.5 h-3.5 text-[#A3E635]" /> Sign In to Enterprise Portal
+              <span>Authenticate & Access Feature</span>
+              <ArrowRight className="w-4 h-4 ml-1.5" />
             </Button>
           </form>
 
-          {/* Quick Persona Switcher for Other Roles */}
-          <div className="pt-3 border-t border-slate-800">
+          {/* Persona Switcher Accordion */}
+          <div className="pt-3 border-t border-slate-800/80">
             <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-2">
-              Other Evaluator Personas:
+              Or Switch Corporate Role:
             </span>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               {demoPersonas.slice(1).map((p) => (
                 <button
                   key={p.email}
                   type="button"
                   onClick={() => handleSelectPersona(p.email, p.pass)}
-                  className="text-left p-2 rounded-lg bg-[#131B24] border border-slate-800 hover:border-[#A3E635]/40 hover:bg-[#1E293B] transition-all"
+                  className="p-2.5 rounded-xl bg-[#131B24] border border-slate-800 hover:border-[#A3E635]/50 text-left transition-all group"
                 >
-                  <p className="text-[11px] font-bold text-white truncate">{p.name}</p>
-                  <p className="text-[9px] text-[#A3E635] truncate">{p.label}</p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-white group-hover:text-[#A3E635] transition-colors">
+                      {p.name}
+                    </span>
+                    <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-slate-800 text-slate-300">
+                      {p.role}
+                    </span>
+                  </div>
+                  <p className="text-[10px] text-slate-400 truncate mt-0.5">{p.company}</p>
                 </button>
               ))}
             </div>
           </div>
         </Card>
 
-        {/* Back Link */}
-        <div className="text-center">
-          <Link
-            href="/"
-            className="text-xs text-slate-400 hover:text-white transition-colors"
-          >
-            ← Back to Mobira Home
+        {/* Footer Navigation */}
+        <div className="text-center text-xs text-slate-400">
+          <span>Need a new organization account? </span>
+          <Link href="/signup" className="text-[#A3E635] font-bold hover:underline">
+            Register Business
           </Link>
         </div>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#131B24] flex items-center justify-center text-white">Loading Enterprise Portal...</div>}>
+      <LoginFormContent />
+    </Suspense>
   );
 }

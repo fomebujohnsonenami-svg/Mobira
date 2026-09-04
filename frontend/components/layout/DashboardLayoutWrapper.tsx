@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { Sidebar } from './Sidebar';
 import { Navbar } from './Navbar';
 import { useBusiness } from './BusinessContext';
@@ -14,8 +14,16 @@ export const DashboardLayoutWrapper: React.FC<{ children: React.ReactNode }> = (
   const { resetDemo } = useBusiness();
   const { user, isAuthenticated, isLoading, demoLogin } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isResetConfirmOpen, setIsResetConfirmOpen] = useState(false);
+
+  // Automatically redirect unauthenticated users to /login?redirect=...
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      router.push(`/login?redirect=${encodeURIComponent(pathname || '/dashboard')}`);
+    }
+  }, [isLoading, isAuthenticated, pathname, router]);
 
   const handleConfirmReset = () => {
     resetDemo();
@@ -32,7 +40,7 @@ export const DashboardLayoutWrapper: React.FC<{ children: React.ReactNode }> = (
           <div className="space-y-2">
             <h2 className="text-xl font-black text-white">Enterprise Feature Locked</h2>
             <p className="text-xs text-slate-300 leading-relaxed">
-              Please authenticate with your enterprise account to access this tool.
+              Redirecting to Enterprise Sign In...
             </p>
           </div>
 
@@ -50,25 +58,14 @@ export const DashboardLayoutWrapper: React.FC<{ children: React.ReactNode }> = (
             </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-2.5 pt-2">
-            <Button
-              variant="outline"
-              className="w-full"
-              onClick={() => router.push('/login')}
-            >
-              Go to Sign In
-            </Button>
-            <Button
-              variant="primary"
-              className="w-full"
-              onClick={async () => {
-                await demoLogin('mobira@gmail.com');
-              }}
-            >
-              <span>Instant Unlock</span>
-              <ArrowRight className="w-4 h-4 ml-1" />
-            </Button>
-          </div>
+          <Button
+            variant="primary"
+            className="w-full"
+            onClick={() => router.push(`/login?redirect=${encodeURIComponent(pathname || '/dashboard')}`)}
+          >
+            <span>Proceed to Sign In</span>
+            <ArrowRight className="w-4 h-4 ml-1" />
+          </Button>
         </div>
       </div>
     );

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -36,7 +36,20 @@ export default function HomePage() {
 
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
 
-  // Central handler: if not authenticated, redirect DIRECTLY to /login
+  // Auto-scroll to hash after logging in and returning to page
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.location.hash) {
+      const hash = window.location.hash.replace('#', '');
+      const el = document.getElementById(hash);
+      if (el) {
+        setTimeout(() => {
+          el.scrollIntoView({ behavior: 'smooth' });
+        }, 200);
+      }
+    }
+  }, [isAuthenticated]);
+
+  // Central handler: if not authenticated, redirect DIRECTLY to /login with redirect parameter
   const handleProtectedAction = (destinationUrl: string) => {
     if (isAuthenticated) {
       if (destinationUrl.startsWith('#')) {
@@ -44,12 +57,17 @@ export default function HomePage() {
         if (el) {
           el.scrollIntoView({ behavior: 'smooth' });
         }
+      } else if (destinationUrl.startsWith('/#')) {
+        const el = document.getElementById(destinationUrl.replace('/#', ''));
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth' });
+        }
       } else {
         router.push(destinationUrl);
       }
     } else {
-      // Send directly to sign in as requested!
-      router.push('/login');
+      // Send directly to sign in with target redirect so user goes straight there after login!
+      router.push(`/login?redirect=${encodeURIComponent(destinationUrl)}`);
     }
   };
 
@@ -78,14 +96,14 @@ export default function HomePage() {
             </div>
           </Link>
 
-          {/* Navigation Menu Items (Directly protected) */}
+          {/* Navigation Menu Items */}
           <nav className="hidden md:flex items-center gap-6 text-xs font-bold text-slate-300">
             <Link href="/" className="text-[#A3E635] hover:text-[#A3E635] transition-colors">
               Home
             </Link>
             <button
               type="button"
-              onClick={() => handleProtectedAction('#about')}
+              onClick={() => handleProtectedAction('/#about')}
               className="hover:text-white transition-colors flex items-center gap-1"
             >
               <span>About</span>
@@ -93,7 +111,7 @@ export default function HomePage() {
             </button>
             <button
               type="button"
-              onClick={() => handleProtectedAction('#features')}
+              onClick={() => handleProtectedAction('/#features')}
               className="hover:text-white transition-colors flex items-center gap-1"
             >
               <span>Features</span>
@@ -113,7 +131,7 @@ export default function HomePage() {
             </button>
             <button
               type="button"
-              onClick={() => handleProtectedAction('#workbench')}
+              onClick={() => handleProtectedAction('/#workbench')}
               className="hover:text-white transition-colors flex items-center gap-1"
             >
               <span>Live Demo</span>
@@ -155,7 +173,7 @@ export default function HomePage() {
                 </Link>
                 <button
                   type="button"
-                  onClick={() => router.push('/login')}
+                  onClick={() => router.push('/login?redirect=/dashboard')}
                   className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-black bg-[#A3E635] hover:bg-[#84CC16] text-[#0F172A] shadow-md shadow-[#A3E635]/25 transition-all duration-150 active:scale-95"
                 >
                   <Lock className="w-3.5 h-3.5" />
@@ -269,7 +287,7 @@ export default function HomePage() {
                   if (isAuthenticated) {
                     setIsVideoModalOpen(true);
                   } else {
-                    router.push('/login');
+                    router.push('/login?redirect=/verify');
                   }
                 }}
                 className="inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl font-bold text-sm bg-[#1E293B] text-white border border-slate-700 hover:border-[#A3E635]/60 hover:bg-[#283548] transition-all duration-150 shadow-md active:scale-95 group"
@@ -924,7 +942,7 @@ export default function HomePage() {
 
                 <button
                   type="button"
-                  onClick={() => router.push('/login')}
+                  onClick={() => router.push('/login?redirect=/#workbench')}
                   className="w-full py-3 rounded-xl bg-[#A3E635] hover:bg-[#84CC16] text-[#0F172A] text-xs font-black uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-lg shadow-[#A3E635]/25 active:scale-95"
                 >
                   <span>Sign In to Access Workbench</span>
@@ -993,7 +1011,7 @@ export default function HomePage() {
       </section>
 
       {/* ========================================================================= */}
-      {/* G. PRE-FLIGHT VERIFICATION SIMULATION MODAL (When Authenticated)           */}
+      {/* G. PRE-FLIGHT VERIFICATION SIMULATION MODAL                                */}
       {/* ========================================================================= */}
       <AnimatePresence>
         {isVideoModalOpen && (
