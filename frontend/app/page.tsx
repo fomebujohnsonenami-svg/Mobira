@@ -45,7 +45,7 @@ export default function HomePage() {
   const [isUnlockModalOpen, setIsUnlockModalOpen] = useState(false);
   const [modalTargetFeature, setModalTargetFeature] = useState<string>('Enterprise Suite');
 
-  // Compulsory Sign-In Form State
+  // Sign-In Form State
   const [email, setEmail] = useState('mobira@gmail.com');
   const [password, setPassword] = useState('mobira123');
   const [authError, setAuthError] = useState('');
@@ -80,7 +80,7 @@ export default function HomePage() {
         router.push(destinationUrl);
       }
     } else {
-      // Scroll to compulsory sign in box or open modal
+      // Scroll to sign in box or open modal
       setModalTargetFeature(featureLabel || 'Enterprise Feature');
       setIsUnlockModalOpen(true);
     }
@@ -223,7 +223,7 @@ export default function HomePage() {
                   className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-black bg-[#A3E635] hover:bg-[#84CC16] text-[#0F172A] shadow-md shadow-[#A3E635]/25 transition-all duration-150 active:scale-95"
                 >
                   <Lock className="w-3.5 h-3.5" />
-                  <span>Compulsory Sign In</span>
+                  <span>Sign In Required</span>
                 </button>
               </div>
             )}
@@ -232,7 +232,7 @@ export default function HomePage() {
       </header>
 
       {/* ========================================================================= */}
-      {/* B. HERO SECTION WITH EMBEDDED COMPULSORY SIGN-IN GATE                     */}
+      {/* B. HERO SECTION WITH EMBEDDED SIGN-IN GATE                               */}
       {/* ========================================================================= */}
       <section className="relative pt-10 pb-20 lg:pt-16 lg:pb-28 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto overflow-hidden">
         {/* Ambient Glows */}
@@ -257,7 +257,7 @@ export default function HomePage() {
               ) : (
                 <>
                   <Lock className="w-3.5 h-3.5 text-amber-400" />
-                  <span className="text-amber-300">COMPULSORY SIGN-IN REQUIRED TO USE PLATFORM</span>
+                  <span className="text-amber-300">SIGN IN REQUIRED TO USE PLATFORM</span>
                 </>
               )}
             </div>
@@ -380,7 +380,7 @@ export default function HomePage() {
             </div>
           </motion.div>
 
-          {/* Right Column: EMBEDDED COMPULSORY SIGN-IN CARD (when unauthenticated) OR LIVE SHOWCASE (when authenticated) */}
+          {/* Right Column: EMBEDDED SIGN-IN CARD (when unauthenticated) OR LIVE SHOWCASE (when authenticated) */}
           <div className="lg:col-span-5 relative flex items-center justify-center pt-4 lg:pt-0">
             {!isAuthenticated ? (
               <motion.div
@@ -397,7 +397,7 @@ export default function HomePage() {
                     </div>
                     <div>
                       <h3 className="font-extrabold text-sm text-white">Enterprise Sign-In</h3>
-                      <p className="text-[10px] text-[#A3E635] font-bold">Compulsory Access Gate</p>
+                      <p className="text-[10px] text-[#A3E635] font-bold">Sign In Required</p>
                     </div>
                   </div>
                   <span className="px-2 py-0.5 rounded text-[9px] font-black bg-[#A3E635]/20 text-[#A3E635] border border-[#A3E635]/40">
@@ -649,7 +649,7 @@ export default function HomePage() {
                   <p className="text-xs text-slate-300 mt-1">
                     {isAuthenticated
                       ? 'Watch how Mobira queries live carrier registries to eliminate ghost payroll payees.'
-                      : 'Compulsory sign in required to unlock live subscriber match simulation.'}
+                      : 'Sign in required to unlock live subscriber match simulation.'}
                   </p>
                 </div>
               </div>
@@ -1027,7 +1027,7 @@ export default function HomePage() {
                 <div className="space-y-1.5">
                   <h3 className="text-xl font-black text-white">Interactive Workbench Locked</h3>
                   <p className="text-xs text-slate-300 leading-relaxed">
-                    Compulsory sign-in required to test carrier subscriber lookups and business identity matching.
+                    Sign in required to test carrier subscriber lookups and business identity matching.
                   </p>
                 </div>
 
@@ -1120,7 +1120,7 @@ export default function HomePage() {
       </section>
 
       {/* ========================================================================= */}
-      {/* G. COMPULSORY SIGN-IN POPUP MODAL (When Clicking any locked feature)       */}
+      {/* G. SIGN-IN REQUIRED POPUP MODAL (When Clicking any locked feature)          */}
       {/* ========================================================================= */}
       <AnimatePresence>
         {isUnlockModalOpen && (
