@@ -21,7 +21,6 @@ import {
   Unlock,
   KeyRound,
   Mail,
-  UserCheck,
   LogOut,
   ChevronRight,
   Shield,
@@ -33,55 +32,24 @@ import { RecipientBusinessVerificationDemo } from '@/components/verification/Rec
 
 export default function HomePage() {
   const router = useRouter();
-  const { user, isAuthenticated, login, demoLogin, logout, isLoading } = useAuth();
+  const { user, isAuthenticated, logout, isLoading } = useAuth();
 
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
-  const [isUnlockModalOpen, setIsUnlockModalOpen] = useState(false);
-  const [modalTargetFeature, setModalTargetFeature] = useState<string>('Enterprise Suite');
 
-  // Quick Login form state inside modal
-  const [loginEmail, setLoginEmail] = useState('mobira@gmail.com');
-  const [loginPassword, setLoginPassword] = useState('mobira123');
-  const [loginError, setLoginError] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const handleProtectedAction = (featureName: string, destinationUrl?: string) => {
+  // Central handler: if not authenticated, redirect DIRECTLY to /login
+  const handleProtectedAction = (destinationUrl: string) => {
     if (isAuthenticated) {
-      if (destinationUrl) {
-        router.push(destinationUrl);
+      if (destinationUrl.startsWith('#')) {
+        const el = document.getElementById(destinationUrl.replace('#', ''));
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth' });
+        }
       } else {
-        setIsVideoModalOpen(true);
+        router.push(destinationUrl);
       }
     } else {
-      setModalTargetFeature(featureName);
-      setIsUnlockModalOpen(true);
-    }
-  };
-
-  const handleQuickLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoginError('');
-    setIsSubmitting(true);
-    try {
-      await login(loginEmail, loginPassword);
-      setIsUnlockModalOpen(false);
-    } catch (err: any) {
-      setLoginError(err.message || 'Invalid credentials. Use mobira@gmail.com and mobira123');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const handleInstantDemoLogin = async () => {
-    setLoginError('');
-    setIsSubmitting(true);
-    try {
-      await demoLogin('mobira@gmail.com');
-      setIsUnlockModalOpen(false);
-    } catch (err: any) {
-      setLoginError('Could not log in.');
-    } finally {
-      setIsSubmitting(false);
+      // Send directly to sign in as requested!
+      router.push('/login');
     }
   };
 
@@ -110,20 +78,30 @@ export default function HomePage() {
             </div>
           </Link>
 
-          {/* Navigation Menu Items */}
+          {/* Navigation Menu Items (Directly protected) */}
           <nav className="hidden md:flex items-center gap-6 text-xs font-bold text-slate-300">
             <Link href="/" className="text-[#A3E635] hover:text-[#A3E635] transition-colors">
               Home
             </Link>
-            <Link href="#about" className="hover:text-white transition-colors">
-              About
-            </Link>
-            <Link href="#features" className="hover:text-white transition-colors">
-              Features
-            </Link>
             <button
               type="button"
-              onClick={() => handleProtectedAction('Pre-Flight Verification', '/verify')}
+              onClick={() => handleProtectedAction('#about')}
+              className="hover:text-white transition-colors flex items-center gap-1"
+            >
+              <span>About</span>
+              {!isAuthenticated && <Lock className="w-3 h-3 text-amber-400/80" />}
+            </button>
+            <button
+              type="button"
+              onClick={() => handleProtectedAction('#features')}
+              className="hover:text-white transition-colors flex items-center gap-1"
+            >
+              <span>Features</span>
+              {!isAuthenticated && <Lock className="w-3 h-3 text-amber-400/80" />}
+            </button>
+            <button
+              type="button"
+              onClick={() => handleProtectedAction('/verify')}
               className="hover:text-white transition-colors flex items-center gap-1.5"
             >
               <span>Verification</span>
@@ -133,9 +111,14 @@ export default function HomePage() {
                 <Lock className="w-3 h-3 text-amber-400" />
               )}
             </button>
-            <Link href="#workbench" className="hover:text-white transition-colors">
-              Live Demo
-            </Link>
+            <button
+              type="button"
+              onClick={() => handleProtectedAction('#workbench')}
+              className="hover:text-white transition-colors flex items-center gap-1"
+            >
+              <span>Live Demo</span>
+              {!isAuthenticated && <Lock className="w-3 h-3 text-amber-400/80" />}
+            </button>
           </nav>
 
           {/* CTA Actions */}
@@ -172,7 +155,7 @@ export default function HomePage() {
                 </Link>
                 <button
                   type="button"
-                  onClick={() => handleProtectedAction('Enterprise Portal', '/dashboard')}
+                  onClick={() => router.push('/login')}
                   className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-black bg-[#A3E635] hover:bg-[#84CC16] text-[#0F172A] shadow-md shadow-[#A3E635]/25 transition-all duration-150 active:scale-95"
                 >
                   <Lock className="w-3.5 h-3.5" />
@@ -201,7 +184,11 @@ export default function HomePage() {
             className="lg:col-span-7 space-y-6 text-left"
           >
             {/* Top Pill Badge */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#A3E635]/15 border border-[#A3E635]/40 text-[#A3E635] text-xs font-black tracking-wide shadow-sm">
+            <button
+              type="button"
+              onClick={() => handleProtectedAction('/verify')}
+              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#A3E635]/15 border border-[#A3E635]/40 text-[#A3E635] text-xs font-black tracking-wide shadow-sm hover:scale-[1.02] transition-transform"
+            >
               {isAuthenticated ? (
                 <>
                   <span className="w-2 h-2 rounded-full bg-[#A3E635] animate-ping" />
@@ -210,10 +197,10 @@ export default function HomePage() {
               ) : (
                 <>
                   <Lock className="w-3.5 h-3.5 text-amber-400" />
-                  <span className="text-amber-300">ENTERPRISE PROTECTED • LOGIN TO UNLOCK FEATURES</span>
+                  <span className="text-amber-300">ENTERPRISE PROTECTED • CLICK TO SIGN IN</span>
                 </>
               )}
-            </div>
+            </button>
 
             {/* Hero Headline */}
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-[1.08]">
@@ -235,7 +222,17 @@ export default function HomePage() {
                 <React.Fragment key={item}>
                   <button
                     type="button"
-                    onClick={() => handleProtectedAction(item, item === 'PAY' ? '/payments' : item === 'RECEIVE' ? '/receive' : item === 'VERIFY' ? '/verify' : '/analytics')}
+                    onClick={() =>
+                      handleProtectedAction(
+                        item === 'PAY'
+                          ? '/payments'
+                          : item === 'RECEIVE'
+                          ? '/receive'
+                          : item === 'VERIFY'
+                          ? '/verify'
+                          : '/analytics'
+                      )
+                    }
                     className="px-3.5 py-1 rounded-lg bg-[#1E293B] border border-slate-700/80 text-xs font-black text-white shadow-sm hover:border-[#A3E635]/50 flex items-center gap-1.5 transition-colors"
                   >
                     <span>{item}</span>
@@ -250,7 +247,7 @@ export default function HomePage() {
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 pt-3">
               <button
                 type="button"
-                onClick={() => handleProtectedAction('Business Dashboard', '/dashboard')}
+                onClick={() => handleProtectedAction('/dashboard')}
                 className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-black text-sm bg-[#A3E635] hover:bg-[#84CC16] text-[#0F172A] shadow-xl shadow-[#A3E635]/20 transition-all duration-150 active:scale-95"
               >
                 {isAuthenticated ? (
@@ -261,14 +258,20 @@ export default function HomePage() {
                 ) : (
                   <>
                     <Lock className="w-4 h-4" />
-                    <span>Unlock Business Dashboard</span>
+                    <span>Open Business Dashboard (Sign In)</span>
                   </>
                 )}
               </button>
 
               <button
                 type="button"
-                onClick={() => handleProtectedAction('Pre-Flight Simulation')}
+                onClick={() => {
+                  if (isAuthenticated) {
+                    setIsVideoModalOpen(true);
+                  } else {
+                    router.push('/login');
+                  }
+                }}
                 className="inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl font-bold text-sm bg-[#1E293B] text-white border border-slate-700 hover:border-[#A3E635]/60 hover:bg-[#283548] transition-all duration-150 shadow-md active:scale-95 group"
               >
                 <div className="w-6 h-6 rounded-full bg-[#A3E635]/20 text-[#A3E635] flex items-center justify-center group-hover:scale-110 transition-transform">
@@ -278,7 +281,7 @@ export default function HomePage() {
                     <Lock className="w-3 h-3 text-amber-400" />
                   )}
                 </div>
-                <span>{isAuthenticated ? 'Test Pre-Flight Verification' : 'Unlock Pre-Flight Simulator'}</span>
+                <span>{isAuthenticated ? 'Test Pre-Flight Verification' : 'Test Pre-Flight Verification (Locked)'}</span>
               </button>
             </div>
 
@@ -397,7 +400,7 @@ export default function HomePage() {
                   <div className="grid grid-cols-3 gap-1.5 text-center">
                     <button
                       type="button"
-                      onClick={() => handleProtectedAction('PAY', '/payments')}
+                      onClick={() => handleProtectedAction('/payments')}
                       className="p-1.5 rounded-xl bg-[#1E293B] border border-slate-800 text-[9px] font-bold text-slate-200 hover:border-[#A3E635]/40"
                     >
                       <Send className="w-3.5 h-3.5 text-[#A3E635] mx-auto mb-0.5" />
@@ -405,7 +408,7 @@ export default function HomePage() {
                     </button>
                     <button
                       type="button"
-                      onClick={() => handleProtectedAction('RECEIVE', '/receive')}
+                      onClick={() => handleProtectedAction('/receive')}
                       className="p-1.5 rounded-xl bg-[#1E293B] border border-slate-800 text-[9px] font-bold text-slate-200 hover:border-[#A3E635]/40"
                     >
                       <QrCode className="w-3.5 h-3.5 text-sky-400 mx-auto mb-0.5" />
@@ -413,7 +416,7 @@ export default function HomePage() {
                     </button>
                     <button
                       type="button"
-                      onClick={() => handleProtectedAction('VERIFY', '/verify')}
+                      onClick={() => handleProtectedAction('/verify')}
                       className="p-1.5 rounded-xl bg-[#1E293B] border border-slate-800 text-[9px] font-bold text-slate-200 hover:border-[#A3E635]/40"
                     >
                       <ShieldCheck className="w-3.5 h-3.5 text-[#A3E635] mx-auto mb-0.5" />
@@ -457,11 +460,11 @@ export default function HomePage() {
                 </div>
                 <div className="text-left pr-1">
                   <span className="text-xs font-black text-white block">
-                    {isAuthenticated ? 'Enterprise Active' : 'Feature Protected'}
+                    {isAuthenticated ? 'Enterprise Active' : 'Protected Rails'}
                   </span>
                   <span className="text-[10px] text-[#A3E635] font-bold flex items-center gap-1">
                     <span className="w-1.5 h-1.5 rounded-full bg-[#A3E635] animate-ping" />
-                    {isAuthenticated ? '100% Unlocked' : 'Login with mobira@gmail.com'}
+                    {isAuthenticated ? '100% Unlocked' : 'Sign in to access'}
                   </span>
                 </div>
               </motion.div>
@@ -471,7 +474,7 @@ export default function HomePage() {
       </section>
 
       {/* ========================================================================= */}
-      {/* C. FLOATING CARDS & HOW IT WORKS ROW                                      */}
+      {/* C. FLOATING CARDS & HOW IT WORKS ROW (#about)                             */}
       {/* ========================================================================= */}
       <section id="about" className="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
@@ -481,7 +484,7 @@ export default function HomePage() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            onClick={() => handleProtectedAction('How Pre-Flight Works')}
+            onClick={() => handleProtectedAction('/verify')}
             className="lg:col-span-5 relative rounded-3xl overflow-hidden min-h-[300px] sm:min-h-[360px] group cursor-pointer border border-[#1E293B] shadow-xl"
           >
             <div
@@ -498,8 +501,8 @@ export default function HomePage() {
                   Live Overview
                 </div>
                 {!isAuthenticated && (
-                  <span className="px-2.5 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[10px] font-black flex items-center gap-1">
-                    <Lock className="w-3 h-3" /> LOCKED
+                  <span className="px-2.5 py-1 rounded-full bg-slate-900/90 text-amber-300 border border-amber-500/40 text-[10px] font-black flex items-center gap-1 backdrop-blur-sm">
+                    <Lock className="w-3 h-3" /> SIGN IN TO ACCESS
                   </span>
                 )}
               </div>
@@ -550,7 +553,7 @@ export default function HomePage() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-6">
                 {/* 1. Disbursement Engine */}
                 <div
-                  onClick={() => handleProtectedAction('Disbursement Engine', '/payments')}
+                  onClick={() => handleProtectedAction('/payments')}
                   className="p-4 rounded-2xl bg-[#131B24]/90 border border-slate-800 space-y-2.5 hover:border-[#A3E635]/40 transition-all group cursor-pointer"
                 >
                   <div className="flex items-center justify-between">
@@ -567,7 +570,7 @@ export default function HomePage() {
 
                 {/* 2. Anti-Fraud Intelligence */}
                 <div
-                  onClick={() => handleProtectedAction('Anti-Fraud Intelligence', '/verify')}
+                  onClick={() => handleProtectedAction('/verify')}
                   className="p-4 rounded-2xl bg-[#131B24]/90 border border-slate-800 space-y-2.5 hover:border-[#A3E635]/40 transition-all group cursor-pointer"
                 >
                   <div className="flex items-center justify-between">
@@ -584,7 +587,7 @@ export default function HomePage() {
 
                 {/* 3. Trust Score Metrics */}
                 <div
-                  onClick={() => handleProtectedAction('Trust Score Metrics', '/analytics')}
+                  onClick={() => handleProtectedAction('/analytics')}
                   className="p-4 rounded-2xl bg-[#131B24]/90 border border-slate-800 space-y-2.5 hover:border-[#A3E635]/40 transition-all group cursor-pointer"
                 >
                   <div className="flex items-center justify-between">
@@ -607,7 +610,7 @@ export default function HomePage() {
               </span>
               <button
                 type="button"
-                onClick={() => handleProtectedAction('Verification Workbench', '/verify')}
+                onClick={() => handleProtectedAction('/verify')}
                 className="text-xs font-bold text-[#A3E635] hover:underline inline-flex items-center gap-1"
               >
                 <span>Explore Live Verification Workbench</span>
@@ -619,7 +622,7 @@ export default function HomePage() {
       </section>
 
       {/* ========================================================================= */}
-      {/* D. CORE PILLARS SECTION (Light Slate Background #F8FAFC)                   */}
+      {/* D. CORE PILLARS SECTION (#features)                                       */}
       {/* ========================================================================= */}
       <section id="features" className="py-20 lg:py-28 bg-[#F8FAFC] text-[#0F172A] px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto space-y-16">
@@ -645,7 +648,8 @@ export default function HomePage() {
               viewport={{ once: true }}
               whileHover={{ scale: 1.03 }}
               transition={{ duration: 0.3 }}
-              className="rounded-3xl bg-white border border-slate-200/90 shadow-lg hover:shadow-2xl transition-all overflow-hidden flex flex-col justify-between group relative"
+              onClick={() => handleProtectedAction('/payments')}
+              className="rounded-3xl bg-white border border-slate-200/90 shadow-lg hover:shadow-2xl transition-all overflow-hidden flex flex-col justify-between group relative cursor-pointer"
             >
               <div className="h-44 relative overflow-hidden bg-slate-100">
                 <div
@@ -678,11 +682,7 @@ export default function HomePage() {
                   Disburse bulk salaries and vendor settlements across MTN Mobile Money, Vodafone Cash, and
                   Bank EFT with dual-approval maker-checker governance.
                 </p>
-                <button
-                  type="button"
-                  onClick={() => handleProtectedAction('Disbursement Engine (PAY)', '/payments')}
-                  className="inline-flex items-center gap-1.5 text-xs font-black text-[#65A30D] hover:text-[#4D7C0F] pt-2 text-left"
-                >
+                <div className="inline-flex items-center gap-1.5 text-xs font-black text-[#65A30D] hover:text-[#4D7C0F] pt-2 text-left">
                   {isAuthenticated ? (
                     <>
                       <span>Open Disbursement Engine</span>
@@ -691,10 +691,10 @@ export default function HomePage() {
                   ) : (
                     <>
                       <Lock className="w-3.5 h-3.5" />
-                      <span>Unlock Disbursement Engine</span>
+                      <span>Sign In to Access Engine</span>
                     </>
                   )}
-                </button>
+                </div>
               </div>
             </motion.div>
 
@@ -705,7 +705,8 @@ export default function HomePage() {
               viewport={{ once: true }}
               whileHover={{ scale: 1.03 }}
               transition={{ duration: 0.3, delay: 0.1 }}
-              className="rounded-3xl bg-white border border-slate-200/90 shadow-lg hover:shadow-2xl transition-all overflow-hidden flex flex-col justify-between group relative"
+              onClick={() => handleProtectedAction('/receive')}
+              className="rounded-3xl bg-white border border-slate-200/90 shadow-lg hover:shadow-2xl transition-all overflow-hidden flex flex-col justify-between group relative cursor-pointer"
             >
               <div className="h-44 relative overflow-hidden bg-slate-100">
                 <div
@@ -738,11 +739,7 @@ export default function HomePage() {
                   Generate branded payment links and dynamic QR codes that display verified corporate identity
                   and trigger seamless customer USSD mobile push prompts.
                 </p>
-                <button
-                  type="button"
-                  onClick={() => handleProtectedAction('Payment Links & QR (RECEIVE)', '/receive')}
-                  className="inline-flex items-center gap-1.5 text-xs font-black text-[#65A30D] hover:text-[#4D7C0F] pt-2 text-left"
-                >
+                <div className="inline-flex items-center gap-1.5 text-xs font-black text-[#65A30D] hover:text-[#4D7C0F] pt-2 text-left">
                   {isAuthenticated ? (
                     <>
                       <span>Open Payment Links & QR</span>
@@ -751,10 +748,10 @@ export default function HomePage() {
                   ) : (
                     <>
                       <Lock className="w-3.5 h-3.5" />
-                      <span>Unlock Payment Links & QR</span>
+                      <span>Sign In to Access Links</span>
                     </>
                   )}
-                </button>
+                </div>
               </div>
             </motion.div>
 
@@ -765,7 +762,8 @@ export default function HomePage() {
               viewport={{ once: true }}
               whileHover={{ scale: 1.03 }}
               transition={{ duration: 0.3, delay: 0.2 }}
-              className="rounded-3xl bg-white border-2 border-[#84CC16]/60 shadow-xl hover:shadow-2xl transition-all overflow-hidden flex flex-col justify-between group relative"
+              onClick={() => handleProtectedAction('/verify')}
+              className="rounded-3xl bg-white border-2 border-[#84CC16]/60 shadow-xl hover:shadow-2xl transition-all overflow-hidden flex flex-col justify-between group relative cursor-pointer"
             >
               <div className="h-44 relative overflow-hidden bg-slate-100">
                 <div
@@ -798,11 +796,7 @@ export default function HomePage() {
                   Execute pre-flight name matching against telecom subscriber registries and corporate registers
                   to eradicate ghost payees and wrong-number errors.
                 </p>
-                <button
-                  type="button"
-                  onClick={() => handleProtectedAction('Anti-Fraud Intelligence (VERIFY)', '/verify')}
-                  className="inline-flex items-center gap-1.5 text-xs font-black text-[#4D7C0F] hover:underline pt-2 text-left"
-                >
+                <div className="inline-flex items-center gap-1.5 text-xs font-black text-[#4D7C0F] hover:underline pt-2 text-left">
                   {isAuthenticated ? (
                     <>
                       <span>Open Anti-Fraud Workbench</span>
@@ -811,10 +805,10 @@ export default function HomePage() {
                   ) : (
                     <>
                       <Lock className="w-3.5 h-3.5" />
-                      <span>Unlock Verification Suite</span>
+                      <span>Sign In to Access Verify</span>
                     </>
                   )}
-                </button>
+                </div>
               </div>
             </motion.div>
 
@@ -825,7 +819,8 @@ export default function HomePage() {
               viewport={{ once: true }}
               whileHover={{ scale: 1.03 }}
               transition={{ duration: 0.3, delay: 0.3 }}
-              className="rounded-3xl bg-white border border-slate-200/90 shadow-lg hover:shadow-2xl transition-all overflow-hidden flex flex-col justify-between group relative"
+              onClick={() => handleProtectedAction('/analytics')}
+              className="rounded-3xl bg-white border border-slate-200/90 shadow-lg hover:shadow-2xl transition-all overflow-hidden flex flex-col justify-between group relative cursor-pointer"
             >
               <div className="h-44 relative overflow-hidden bg-slate-100">
                 <div
@@ -858,11 +853,7 @@ export default function HomePage() {
                   Convert verified payment histories into an authoritative Mobira Trust Score (0-100) to build
                   institutional credibility and unlock trade financing.
                 </p>
-                <button
-                  type="button"
-                  onClick={() => handleProtectedAction('Trust Score Metrics (GROW)', '/analytics')}
-                  className="inline-flex items-center gap-1.5 text-xs font-black text-[#65A30D] hover:text-[#4D7C0F] pt-2 text-left"
-                >
+                <div className="inline-flex items-center gap-1.5 text-xs font-black text-[#65A30D] hover:text-[#4D7C0F] pt-2 text-left">
                   {isAuthenticated ? (
                     <>
                       <span>Open Trust Score Analytics</span>
@@ -871,10 +862,10 @@ export default function HomePage() {
                   ) : (
                     <>
                       <Lock className="w-3.5 h-3.5" />
-                      <span>Unlock Trust Metrics</span>
+                      <span>Sign In to Access Analytics</span>
                     </>
                   )}
-                </button>
+                </div>
               </div>
             </motion.div>
           </div>
@@ -898,10 +889,10 @@ export default function HomePage() {
           </p>
         </div>
 
-        {/* Interactive Demo with Authentication Lock Gate */}
+        {/* Interactive Demo with Direct Sign In Gate */}
         <div className="relative rounded-3xl overflow-hidden border border-slate-800 bg-[#18222D]/90 p-4 sm:p-6 shadow-2xl">
           {!isAuthenticated && (
-            <div className="absolute inset-0 z-30 bg-[#0F172A]/85 backdrop-blur-md flex items-center justify-center p-6 text-center">
+            <div className="absolute inset-0 z-30 bg-[#0F172A]/90 backdrop-blur-md flex items-center justify-center p-6 text-center">
               <div className="max-w-md w-full p-6 sm:p-8 rounded-2xl bg-[#18222D] border-2 border-[#A3E635]/40 shadow-2xl space-y-5">
                 <div className="w-14 h-14 rounded-2xl bg-[#A3E635]/15 border border-[#A3E635]/40 text-[#A3E635] flex items-center justify-center mx-auto shadow-lg shadow-[#A3E635]/20">
                   <Lock className="w-7 h-7 stroke-[2.5]" />
@@ -909,13 +900,13 @@ export default function HomePage() {
                 <div className="space-y-1.5">
                   <h3 className="text-xl font-black text-white">Interactive Workbench Locked</h3>
                   <p className="text-xs text-slate-300 leading-relaxed">
-                    Sign in with your enterprise credentials to test live carrier lookups and business identity matching.
+                    You must sign in with your enterprise credentials to access live carrier lookups and business identity matching.
                   </p>
                 </div>
 
                 <div className="p-3.5 rounded-xl bg-[#131B24] border border-slate-800 text-left space-y-1.5 text-xs">
                   <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
-                    Demo Credentials:
+                    Enterprise Credentials:
                   </span>
                   <div className="flex items-center justify-between text-slate-300 font-mono text-[11px]">
                     <span>Email:</span>
@@ -931,27 +922,14 @@ export default function HomePage() {
                   </div>
                 </div>
 
-                <div className="flex flex-col sm:flex-row gap-2.5 pt-1">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setModalTargetFeature('Verification Workbench');
-                      setIsUnlockModalOpen(true);
-                    }}
-                    className="w-full py-2.5 rounded-xl border border-slate-700 hover:bg-slate-800 text-xs font-bold text-slate-200 transition-all"
-                  >
-                    Enter Credentials
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleInstantDemoLogin}
-                    disabled={isSubmitting}
-                    className="w-full py-2.5 rounded-xl bg-[#A3E635] hover:bg-[#84CC16] text-[#0F172A] text-xs font-black uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 shadow-md shadow-[#A3E635]/20"
-                  >
-                    <Unlock className="w-3.5 h-3.5" />
-                    <span>Instant Unlock</span>
-                  </button>
-                </div>
+                <button
+                  type="button"
+                  onClick={() => router.push('/login')}
+                  className="w-full py-3 rounded-xl bg-[#A3E635] hover:bg-[#84CC16] text-[#0F172A] text-xs font-black uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-lg shadow-[#A3E635]/25 active:scale-95"
+                >
+                  <span>Sign In to Access Workbench</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
               </div>
             </div>
           )}
@@ -1015,121 +993,7 @@ export default function HomePage() {
       </section>
 
       {/* ========================================================================= */}
-      {/* G. QUICK ENTERPRISE UNLOCK MODAL                                          */}
-      {/* ========================================================================= */}
-      <AnimatePresence>
-        {isUnlockModalOpen && (
-          <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              className="w-full max-w-md rounded-3xl bg-[#18222D] border-2 border-[#A3E635]/50 p-6 sm:p-7 text-white space-y-5 shadow-2xl relative text-left"
-            >
-              <button
-                type="button"
-                onClick={() => setIsUnlockModalOpen(false)}
-                className="absolute top-5 right-5 p-1.5 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white transition-colors"
-              >
-                <X className="w-4 h-4" />
-              </button>
-
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-2xl bg-[#A3E635]/15 border border-[#A3E635]/40 text-[#A3E635] flex items-center justify-center shrink-0">
-                  <Lock className="w-6 h-6 stroke-[2.5]" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-black text-white">Unlock {modalTargetFeature}</h3>
-                  <p className="text-xs text-slate-400">Enterprise authentication required</p>
-                </div>
-              </div>
-
-              {/* Demo Credentials Box */}
-              <div className="p-3.5 rounded-2xl bg-[#131B24] border border-slate-800 space-y-1.5 text-xs">
-                <div className="flex items-center justify-between text-slate-400">
-                  <span className="font-bold text-[10px] uppercase tracking-wider">Enterprise Credentials</span>
-                  <span className="text-[10px] text-[#A3E635] font-mono font-bold">Preset Ready</span>
-                </div>
-                <div className="flex items-center justify-between text-slate-300 font-mono text-[11px]">
-                  <span>Email:</span>
-                  <strong className="text-white">mobira@gmail.com</strong>
-                </div>
-                <div className="flex items-center justify-between text-slate-300 font-mono text-[11px]">
-                  <span>Password:</span>
-                  <strong className="text-[#A3E635]">mobira123</strong>
-                </div>
-              </div>
-
-              {/* Login Form */}
-              <form onSubmit={handleQuickLogin} className="space-y-3.5">
-                {loginError && (
-                  <div className="p-2.5 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-300 text-xs font-semibold">
-                    {loginError}
-                  </div>
-                )}
-
-                <div className="space-y-1">
-                  <label className="text-[11px] font-bold text-slate-300 uppercase tracking-wider">
-                    Enterprise Email
-                  </label>
-                  <div className="relative">
-                    <Mail className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
-                    <input
-                      type="email"
-                      value={loginEmail}
-                      onChange={(e) => setLoginEmail(e.target.value)}
-                      placeholder="mobira@gmail.com"
-                      required
-                      className="w-full pl-10 pr-3.5 py-2.5 rounded-xl bg-[#131B24] border border-slate-700 text-sm text-white focus:outline-none focus:border-[#A3E635] font-mono"
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-1">
-                  <label className="text-[11px] font-bold text-slate-300 uppercase tracking-wider">
-                    Password
-                  </label>
-                  <div className="relative">
-                    <KeyRound className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
-                    <input
-                      type="password"
-                      value={loginPassword}
-                      onChange={(e) => setLoginPassword(e.target.value)}
-                      placeholder="mobira123"
-                      required
-                      className="w-full pl-10 pr-3.5 py-2.5 rounded-xl bg-[#131B24] border border-slate-700 text-sm text-white focus:outline-none focus:border-[#A3E635]"
-                    />
-                  </div>
-                </div>
-
-                <div className="pt-2 space-y-2">
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="w-full py-3 rounded-xl bg-[#A3E635] hover:bg-[#84CC16] text-[#0F172A] font-black text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-lg shadow-[#A3E635]/25 active:scale-95 disabled:opacity-50"
-                  >
-                    <Unlock className="w-4 h-4" />
-                    <span>{isSubmitting ? 'Authenticating...' : 'Unlock Features & Continue'}</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={handleInstantDemoLogin}
-                    disabled={isSubmitting}
-                    className="w-full py-2.5 rounded-xl bg-[#1E293B] hover:bg-[#283548] border border-slate-700 text-white font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-1.5"
-                  >
-                    <Sparkles className="w-3.5 h-3.5 text-[#A3E635]" />
-                    <span>1-Click Demo Login (mobira@gmail.com)</span>
-                  </button>
-                </div>
-              </form>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
-
-      {/* ========================================================================= */}
-      {/* H. PRE-FLIGHT VERIFICATION SIMULATION MODAL                                */}
+      {/* G. PRE-FLIGHT VERIFICATION SIMULATION MODAL (When Authenticated)           */}
       {/* ========================================================================= */}
       <AnimatePresence>
         {isVideoModalOpen && (
@@ -1219,7 +1083,7 @@ export default function HomePage() {
       </AnimatePresence>
 
       {/* ========================================================================= */}
-      {/* I. FOOTER                                                                 */}
+      {/* H. FOOTER                                                                 */}
       {/* ========================================================================= */}
       <footer id="contact" className="border-t border-[#1E293B] bg-[#0F172A] px-4 sm:px-6 lg:px-8 py-12 text-slate-400 text-xs">
         <div className="max-w-7xl mx-auto space-y-8">
@@ -1239,35 +1103,35 @@ export default function HomePage() {
             <div className="flex flex-wrap items-center gap-6 text-xs font-bold text-slate-300">
               <button
                 type="button"
-                onClick={() => handleProtectedAction('Dashboard', '/dashboard')}
+                onClick={() => handleProtectedAction('/dashboard')}
                 className="hover:text-[#A3E635] transition-colors"
               >
                 Dashboard
               </button>
               <button
                 type="button"
-                onClick={() => handleProtectedAction('Disbursements (PAY)', '/payments')}
+                onClick={() => handleProtectedAction('/payments')}
                 className="hover:text-[#A3E635] transition-colors"
               >
                 Disbursements (PAY)
               </button>
               <button
                 type="button"
-                onClick={() => handleProtectedAction('Receive & Links', '/receive')}
+                onClick={() => handleProtectedAction('/receive')}
                 className="hover:text-[#A3E635] transition-colors"
               >
                 Receive & Links
               </button>
               <button
                 type="button"
-                onClick={() => handleProtectedAction('Pre-Flight Verify', '/verify')}
+                onClick={() => handleProtectedAction('/verify')}
                 className="hover:text-[#A3E635] transition-colors"
               >
                 Pre-Flight Verify
               </button>
               <button
                 type="button"
-                onClick={() => handleProtectedAction('Trust Scores', '/analytics')}
+                onClick={() => handleProtectedAction('/analytics')}
                 className="hover:text-[#A3E635] transition-colors"
               >
                 Trust Scores
