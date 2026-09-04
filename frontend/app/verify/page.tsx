@@ -14,6 +14,7 @@ import { VerificationResult, Recipient } from '@/types';
 import { DisbursementWizard } from '@/components/payments/DisbursementWizard';
 import { useBusiness } from '@/components/layout/BusinessContext';
 import { BusinessVerificationBadge } from '@/components/verification/BusinessVerificationBadge';
+import { RecipientBusinessVerificationDemo } from '@/components/verification/RecipientBusinessVerificationDemo';
 
 export default function VerifyPage() {
   const { currentBusiness, verificationStatus, startVerification, resetVerification } = useBusiness();
@@ -108,6 +109,9 @@ export default function VerifyPage() {
             </div>
           </div>
         </Card>
+
+        {/* Interactive Judge & Evaluator Verification Suite */}
+        <RecipientBusinessVerificationDemo className="mb-6" />
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Main Verification Form */}
