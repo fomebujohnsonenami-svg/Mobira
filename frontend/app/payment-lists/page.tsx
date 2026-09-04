@@ -47,6 +47,7 @@ import { api } from '@/services/api';
 import { PaymentList, PaymentListCategory, PaymentListRecipient } from '@/types';
 import { formatCurrency, formatDate } from '@/lib/formatters';
 import { useToast } from '@/components/ui/Toast';
+import { usePrivacy, PrivacyToggle } from '@/components/privacy/PrivacyContext';
 
 const CATEGORIES: Array<'All' | PaymentListCategory> = [
   'All',
@@ -59,6 +60,7 @@ const CATEGORIES: Array<'All' | PaymentListCategory> = [
 
 export default function PaymentListsPage() {
   const { toast } = useToast();
+  const { isBlinded, togglePrivacy, formatAmount } = usePrivacy();
   const [lists, setLists] = useState<PaymentList[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<'All' | PaymentListCategory>('All');
   const [loading, setLoading] = useState(true);
@@ -224,17 +226,18 @@ export default function PaymentListsPage() {
         badge={<BusinessVerificationBadge size="sm" />}
         action={
           <div className="flex flex-wrap items-center gap-2.5">
+            <PrivacyToggle size="md" />
             <Button
               variant="outline"
               onClick={() => setIsImportOpen(true)}
-              className="gap-2 font-bold text-xs shadow-subtle border-slate-300 dark:border-navy-700 hover:border-yellow-500/80"
+              className="gap-2 font-bold text-xs shadow-subtle border-slate-300 dark:border-navy-700 hover:border-emerald-500/80"
             >
-              <Upload className="w-3.5 h-3.5 text-yellow-500" /> Import Payment List (.csv / .xlsx)
+              <Upload className="w-3.5 h-3.5 text-emerald-400" /> Import Payment List (.csv / .xlsx)
             </Button>
             <Button
               variant="primary"
               onClick={() => setIsCreateOpen(true)}
-              className="gap-2 font-bold text-xs shadow-elevated"
+              className="gap-2 font-black text-xs bg-emerald-500 hover:bg-emerald-400 text-navy-950 shadow-md shadow-emerald-500/20"
             >
               <Plus className="w-4 h-4" /> Create Payment List
             </Button>
@@ -285,7 +288,7 @@ export default function PaymentListsPage() {
                   Total Enrolled Volume
                 </span>
                 <p className="text-2xl font-black text-navy-950 dark:text-white mt-1 tabular-nums">
-                  {formatCurrency(totalVolume, 'GH₵')}
+                  {formatAmount(totalVolume, 'GH₵')}
                 </p>
                 <span className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 block">
                   Multi-Rail Payout Value
@@ -400,11 +403,11 @@ export default function PaymentListsPage() {
                           <span className="text-[10px] uppercase font-bold text-slate-400 block tracking-wider">
                             Total Group Payout
                           </span>
-                          <p className="text-2xl font-black text-yellow-600 dark:text-yellow-400 mt-1 tabular-nums">
-                            {formatCurrency(list.total_amount, list.currency)}
+                          <p className="text-2xl font-black text-emerald-600 dark:text-emerald-400 mt-1 tabular-nums font-mono">
+                            {formatAmount(list.total_amount, list.currency)}
                           </p>
                           <span className="text-[10px] text-slate-500 dark:text-slate-400 block mt-1">
-                            Est. avg {formatCurrency(Math.round(list.total_amount / (list.recipient_count || 1)), list.currency)} / recipient
+                            Est. avg {formatAmount(Math.round(list.total_amount / (list.recipient_count || 1)), list.currency)} / recipient
                           </span>
                         </div>
 

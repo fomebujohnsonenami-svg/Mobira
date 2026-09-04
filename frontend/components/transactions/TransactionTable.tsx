@@ -5,7 +5,8 @@ import { ArrowUpRight, ArrowDownLeft, Receipt, CheckCircle2, Clock, AlertCircle 
 import { Card } from '@/components/ui/Card';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Transaction } from '@/types';
-import { formatCurrency, formatDate, formatChannelName } from '@/lib/formatters';
+import { formatDate, formatChannelName } from '@/lib/formatters';
+import { usePrivacy } from '@/components/privacy/PrivacyContext';
 
 export interface TransactionTableProps {
   transactions: Transaction[];
@@ -22,6 +23,7 @@ export const TransactionTable: React.FC<TransactionTableProps> = ({
   sortField,
   sortOrder,
 }) => {
+  const { formatAmount } = usePrivacy();
   if (transactions.length === 0) {
     return (
       <Card className="p-8">
@@ -141,7 +143,7 @@ export const TransactionTable: React.FC<TransactionTableProps> = ({
                   {/* Amount */}
                   <td className="py-3 px-4 text-right font-black text-navy-950 dark:text-slate-100 tabular-nums whitespace-nowrap">
                     <span className={isDisb ? 'text-navy-950 dark:text-slate-100' : 'text-emerald-600 dark:text-emerald-400'}>
-                      {isDisb ? '-' : '+'}{formatCurrency(tx.amount, tx.currency || 'GH₵')}
+                      {isDisb ? '-' : '+'}{formatAmount(tx.amount, tx.currency || 'GH₵')}
                     </span>
                   </td>
 

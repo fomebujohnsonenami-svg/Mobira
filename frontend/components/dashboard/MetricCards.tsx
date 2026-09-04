@@ -1,9 +1,9 @@
 'use client';
 
 import React from 'react';
-import { ArrowUpRight, ArrowDownLeft, ShieldCheck, Receipt, Users, CheckCircle2 } from 'lucide-react';
+import { ArrowUpRight, ArrowDownLeft, ShieldCheck, Receipt, Users, CheckCircle2, Eye, EyeOff } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
-import { formatCurrency } from '@/lib/formatters';
+import { usePrivacy } from '@/components/privacy/PrivacyContext';
 
 export interface MetricCardsProps {
   moneyReceived?: number;
@@ -20,87 +20,120 @@ export const MetricCards: React.FC<MetricCardsProps> = ({
   verifiedRecipientsRatio = '48/48',
   currency = 'GH₵',
 }) => {
+  const { isBlinded, togglePrivacy, formatAmount } = usePrivacy();
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
       {/* 1. Money Received */}
-      <Card hover className="p-5 border-2 border-slate-200 dark:border-navy-800 rounded-2xl shadow-subtle">
+      <div className="relative group p-5 rounded-2xl bg-[#08162B]/80 dark:bg-navy-900/80 backdrop-blur-xl border border-emerald-500/20 hover:border-emerald-500/40 shadow-lg shadow-black/20 hover:shadow-emerald-950/20 transition-all duration-300 hover:-translate-y-0.5">
         <div className="flex items-center justify-between">
-          <span className="text-xs font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">
-            Money Received
+          <span className="text-[11px] font-black uppercase tracking-wider text-slate-400">
+            Total Inflow
           </span>
-          <div className="p-2 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60">
-            <ArrowDownLeft className="w-4 h-4" />
+          <div className="flex items-center gap-1.5">
+            <button
+              type="button"
+              onClick={togglePrivacy}
+              className="p-1 rounded-lg text-slate-500 hover:text-emerald-400 hover:bg-navy-800 transition-colors"
+              title={isBlinded ? 'Reveal amount' : 'Blind amount'}
+            >
+              {isBlinded ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+            </button>
+            <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+              <ArrowDownLeft className="w-4 h-4 stroke-[2.5]" />
+            </div>
           </div>
         </div>
         <div className="mt-3">
-          <p className="text-2xl font-black text-emerald-600 dark:text-emerald-400 tabular-nums">
-            {formatCurrency(moneyReceived, currency)}
+          <p className="text-2xl font-black text-emerald-400 tracking-tight font-mono">
+            {formatAmount(moneyReceived, currency)}
           </p>
-          <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium mt-1 flex items-center gap-1">
-            <span className="text-emerald-600 font-bold">+18.2%</span> vs last month
-          </p>
+          <div className="flex items-center justify-between mt-2 pt-2 border-t border-navy-800/60 text-[11px]">
+            <span className="text-emerald-400 font-bold flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              +18.2% this month
+            </span>
+            <span className="text-slate-400">Collections</span>
+          </div>
         </div>
-      </Card>
+      </div>
 
       {/* 2. Money Sent */}
-      <Card hover className="p-5 border-2 border-slate-200 dark:border-navy-800 rounded-2xl shadow-subtle">
+      <div className="relative group p-5 rounded-2xl bg-[#08162B]/80 dark:bg-navy-900/80 backdrop-blur-xl border border-slate-800 hover:border-slate-700 shadow-lg shadow-black/20 transition-all duration-300 hover:-translate-y-0.5">
         <div className="flex items-center justify-between">
-          <span className="text-xs font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">
-            Money Sent
+          <span className="text-[11px] font-black uppercase tracking-wider text-slate-400">
+            Total Outflow
           </span>
-          <div className="p-2 rounded-xl bg-slate-100 dark:bg-navy-950 text-navy-900 dark:text-slate-200 border border-slate-200 dark:border-navy-800">
-            <ArrowUpRight className="w-4 h-4 text-navy-800 dark:text-yellow-400" />
+          <div className="flex items-center gap-1.5">
+            <button
+              type="button"
+              onClick={togglePrivacy}
+              className="p-1 rounded-lg text-slate-500 hover:text-emerald-400 hover:bg-navy-800 transition-colors"
+              title={isBlinded ? 'Reveal amount' : 'Blind amount'}
+            >
+              {isBlinded ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+            </button>
+            <div className="p-2 rounded-xl bg-navy-850 text-slate-300 border border-navy-750">
+              <ArrowUpRight className="w-4 h-4 stroke-[2.5]" />
+            </div>
           </div>
         </div>
         <div className="mt-3">
-          <p className="text-2xl font-black text-navy-950 dark:text-slate-100 tabular-nums">
-            {formatCurrency(moneySent, currency)}
+          <p className="text-2xl font-black text-white tracking-tight font-mono">
+            {formatAmount(moneySent, currency)}
           </p>
-          <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium mt-1">
-            Payroll, suppliers & vendor disbursements
-          </p>
+          <div className="flex items-center justify-between mt-2 pt-2 border-t border-navy-800/60 text-[11px]">
+            <span className="text-slate-300 font-medium">Payroll & Suppliers</span>
+            <span className="text-slate-400 font-mono">Disbursed</span>
+          </div>
         </div>
-      </Card>
+      </div>
 
-      {/* 3. Transactions */}
-      <Card hover className="p-5 border-2 border-slate-200 dark:border-navy-800 rounded-2xl shadow-subtle">
+      {/* 3. Unified Ledger Transactions */}
+      <div className="relative group p-5 rounded-2xl bg-[#08162B]/80 dark:bg-navy-900/80 backdrop-blur-xl border border-slate-800 hover:border-slate-700 shadow-lg shadow-black/20 transition-all duration-300 hover:-translate-y-0.5">
         <div className="flex items-center justify-between">
-          <span className="text-xs font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">
-            Transactions
+          <span className="text-[11px] font-black uppercase tracking-wider text-slate-400">
+            Ledger Volume
           </span>
-          <div className="p-2 rounded-xl bg-yellow-50 dark:bg-yellow-950/60 text-yellow-700 dark:text-yellow-400 border border-yellow-200 dark:border-yellow-800/60">
-            <Receipt className="w-4 h-4" />
+          <div className="p-2 rounded-xl bg-navy-850 text-emerald-400 border border-emerald-500/20">
+            <Receipt className="w-4 h-4 stroke-[2.5]" />
           </div>
         </div>
         <div className="mt-3">
-          <p className="text-2xl font-black text-navy-950 dark:text-slate-100 tabular-nums">
+          <p className="text-2xl font-black text-white tracking-tight font-mono">
             {transactionCount}
           </p>
-          <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold mt-1 flex items-center gap-1">
-            <CheckCircle2 className="w-3.5 h-3.5" /> 99.4% Success rate
-          </p>
+          <div className="flex items-center justify-between mt-2 pt-2 border-t border-navy-800/60 text-[11px]">
+            <span className="text-emerald-400 font-bold flex items-center gap-1">
+              <CheckCircle2 className="w-3.5 h-3.5" /> 99.4% Clearance
+            </span>
+            <span className="text-slate-400 font-mono">Multi-Rail</span>
+          </div>
         </div>
-      </Card>
+      </div>
 
-      {/* 4. Verified Recipients */}
-      <Card hover className="p-5 border-2 border-slate-200 dark:border-navy-800 rounded-2xl shadow-subtle">
+      {/* 4. Pre-Flight Verified Beneficiaries */}
+      <div className="relative group p-5 rounded-2xl bg-[#08162B]/80 dark:bg-navy-900/80 backdrop-blur-xl border border-emerald-500/20 hover:border-emerald-500/40 shadow-lg shadow-black/20 transition-all duration-300 hover:-translate-y-0.5">
         <div className="flex items-center justify-between">
-          <span className="text-xs font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">
-            Verified Recipients
+          <span className="text-[11px] font-black uppercase tracking-wider text-slate-400">
+            Pre-Flight Beneficiaries
           </span>
-          <div className="p-2 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-800/60">
-            <ShieldCheck className="w-4 h-4" />
+          <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+            <ShieldCheck className="w-4 h-4 stroke-[2.5]" />
           </div>
         </div>
         <div className="mt-3">
-          <p className="text-2xl font-black text-navy-950 dark:text-slate-100 tabular-nums">
+          <p className="text-2xl font-black text-emerald-400 tracking-tight font-mono">
             {verifiedRecipientsRatio}
           </p>
-          <p className="text-[11px] text-blue-600 dark:text-blue-400 font-bold mt-1 flex items-center gap-1">
-            <span className="w-1.5 h-1.5 rounded-full bg-blue-600" /> 100% Pre-flight verified
-          </p>
+          <div className="flex items-center justify-between mt-2 pt-2 border-t border-navy-800/60 text-[11px]">
+            <span className="text-emerald-400 font-bold flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" /> 100% Identity Match
+            </span>
+            <span className="text-slate-400 font-mono">Zero Fraud</span>
+          </div>
         </div>
-      </Card>
+      </div>
     </div>
   );
 };

@@ -18,6 +18,8 @@ import {
   Radio,
   Trash2,
   Sparkles,
+  Eye,
+  EyeOff,
 } from 'lucide-react';
 import { DashboardLayoutWrapper } from '@/components/layout/DashboardLayoutWrapper';
 import { PageShell } from '@/components/layout/PageShell';
@@ -33,12 +35,15 @@ import { CardSkeleton } from '@/components/ui/LoadingState';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { useToast } from '@/components/ui/Toast';
 import { BusinessVerificationBadge } from '@/components/verification/BusinessVerificationBadge';
+import { usePrivacy, PrivacyToggle } from '@/components/privacy/PrivacyContext';
 import { api } from '@/services/api';
 import { ConnectedAccount } from '@/types';
 import { formatCurrency } from '@/lib/formatters';
 
 export default function ConnectedAccountsPage() {
   const { toast } = useToast();
+  const { isBlinded, togglePrivacy, formatAmount } = usePrivacy();
+
   const [accounts, setAccounts] = useState<ConnectedAccount[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -99,103 +104,129 @@ export default function ConnectedAccountsPage() {
         is_primary: isPrimary,
       });
 
+      setAccounts((prev) => {
+        if (created.is_primary) {
+          return [...prev.map((a) => ({ ...a, is_primary: false })), created];
+        }
+        return [...prev, created];
+      });
+
       toast({
         type: 'success',
-        title: 'Authorized Account Connected',
-        message: `${created.account_name} (${created.masked_number}) connected in demo mode.`,
+        title: 'Account Connected (Simulated)',
+        message: `${accountName} successfully authorized via Mobira Provider Adapter.`,
       });
 
       setIsConnectOpen(false);
-      loadAccounts();
     } catch (err: any) {
       toast({
         type: 'error',
         title: 'Connection Failed',
-        message: err.message,
+        message: err?.message || 'Unable to connect account.',
       });
     } finally {
       setConnecting(false);
     }
   };
 
-  const handleSetPrimary = async (id: string, name: string) => {
-    try {
-      await api.setPrimaryAccount(id);
-      toast({
-        type: 'success',
-        title: 'Primary Rail Updated',
-        message: `${name} is now the default disbursement account.`,
-      });
-      loadAccounts();
-    } catch (err: any) {
-      toast({ type: 'error', title: 'Failed to update primary account', message: err.message });
-    }
-  };
-
-  const handleConfirmDisconnect = async () => {
+  const handleDisconnectConfirm = async () => {
     if (!selectedForDisconnect) return;
     setDisconnecting(true);
     try {
       await api.disconnectAccount(selectedForDisconnect.id);
+      setAccounts((prev) => prev.filter((a) => a.id !== selectedForDisconnect.id));
       toast({
         type: 'info',
         title: 'Account Disconnected',
-        message: `${selectedForDisconnect.account_name} connection revoked.`,
+        message: `${selectedForDisconnect.account_name} has been safely removed.`,
       });
       setSelectedForDisconnect(null);
-      loadAccounts();
     } catch (err: any) {
-      toast({ type: 'error', title: 'Failed to disconnect account', message: err.message });
+      toast({
+        type: 'error',
+        title: 'Disconnection Failed',
+        message: err?.message || 'Unable to disconnect account.',
+      });
     } finally {
       setDisconnecting(false);
+    }
+  };
+
+  const handleSetPrimary = async (acc: ConnectedAccount) => {
+    try {
+      await api.setPrimaryAccount(acc.id);
+      setAccounts((prev) =>
+        prev.map((a) => ({
+          ...a,
+          is_primary: a.id === acc.id,
+        }))
+      );
+      toast({
+        type: 'success',
+        title: 'Primary Rail Updated',
+        message: `${acc.account_name} is now the default settlement destination.`,
+      });
+    } catch (err: any) {
+      toast({
+        type: 'error',
+        title: 'Failed to update primary rail',
+        message: err?.message,
+      });
     }
   };
 
   return (
     <DashboardLayoutWrapper>
       <PageShell
-        title="Connected Accounts"
-        subtitle="Businesses can connect their existing authorized payment accounts and providers without exposing financial credentials."
-        badge={<BusinessVerificationBadge size="sm" />}
+        title="Connected Payment Accounts"
+        subtitle="Manage authorized mobile money wallets and commercial bank accounts attached to your verified corporate identity."
+        badge={<BusinessVerificationBadge size="md" />}
         action={
-          <Button
-            variant="primary"
-            onClick={() => setIsConnectOpen(true)}
-            className="gap-2 font-bold text-xs shadow-elevated"
-          >
-            <Plus className="w-4 h-4" /> Connect Payment Account
-          </Button>
+          <div className="flex items-center gap-3">
+            <PrivacyToggle size="md" />
+            <Button
+              variant="primary"
+              onClick={() => setIsConnectOpen(true)}
+              className="gap-2 font-black text-xs bg-emerald-500 hover:bg-emerald-400 text-navy-950 shadow-md shadow-emerald-500/20"
+            >
+              <Plus className="w-4 h-4" /> Connect Payment Account
+            </Button>
+          </div>
         }
       >
         {loading ? (
-          <div className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <CardSkeleton count={2} />
           </div>
         ) : error ? (
-          <ErrorState title="Something went wrong." message={error} onRetry={loadAccounts} />
+          <ErrorState
+            title="Could not load connected accounts"
+            message={error}
+            onRetry={loadAccounts}
+          />
         ) : (
           <div className="space-y-6">
-            {/* 1. Architecture Flow Breakdown */}
-            <Card className="p-6 bg-gradient-to-r from-navy-950 via-navy-900 to-navy-950 border-2 border-emerald-500/30 text-white relative overflow-hidden shadow-xl shadow-emerald-950/20">
-              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+            {/* Architecture Card */}
+            <div className="p-6 rounded-2xl bg-[#08162B]/90 backdrop-blur-xl border border-emerald-500/20 shadow-xl shadow-black/20">
+              <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
                 <div className="space-y-2 max-w-xl">
                   <div className="flex items-center gap-2">
-                    <span className="px-2.5 py-0.5 rounded-full bg-emerald-500 text-navy-950 text-[10px] font-black uppercase tracking-wider">
-                      Decoupled Provider Architecture
+                    <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 text-[10px] font-black uppercase tracking-wider">
+                      Provider Adapter Architecture
                     </span>
-                    <span className="text-xs text-sky-400 font-mono">PaymentProvider Interface</span>
+                    <span className="text-xs text-slate-400 font-bold">• Part 36</span>
                   </div>
-                  <h3 className="text-lg font-black tracking-tight text-white">
-                    Multi-Rail Payment Infrastructure Orchestration
+                  <h3 className="text-lg font-black text-white">
+                    Simulated Multi-Rail Orchestration
                   </h3>
                   <p className="text-xs text-slate-300 leading-relaxed">
-                    Mobira operates as an enterprise orchestration and trust layer that interfaces with authorized financial institutions and mobile networks through unified provider adapters.
+                    Mobira operates as an enterprise orchestration and trust layer interfacing with authorized financial institutions and mobile networks through unified provider adapters.
                   </p>
                 </div>
 
-                {/* Step Pipeline Visualization */}
+                {/* Pipeline Steps */}
                 <div className="flex items-center gap-2 overflow-x-auto pb-2 lg:pb-0 shrink-0">
-                  <div className="p-3 rounded-xl bg-navy-900/90 border border-emerald-500/40 text-center min-w-[110px]">
+                  <div className="p-3 rounded-xl bg-navy-950/80 border border-emerald-500/30 text-center min-w-[110px]">
                     <span className="text-[10px] font-bold text-emerald-400 block uppercase">Layer 1</span>
                     <strong className="text-xs text-white block mt-0.5">Mobira Core</strong>
                     <span className="text-[9px] text-slate-400">Identity & Rules</span>
@@ -203,18 +234,10 @@ export default function ConnectedAccountsPage() {
 
                   <ArrowRight className="w-4 h-4 text-emerald-400 shrink-0" />
 
-                  <div className="p-3 rounded-xl bg-navy-900/90 border border-sky-500/50 text-center min-w-[125px]">
-                    <span className="text-[10px] font-bold text-sky-400 block uppercase">Layer 2</span>
+                  <div className="p-3 rounded-xl bg-navy-950/80 border border-slate-700 text-center min-w-[125px]">
+                    <span className="text-[10px] font-bold text-slate-300 block uppercase">Layer 2</span>
                     <strong className="text-xs text-white block mt-0.5">Orchestration</strong>
-                    <span className="text-[9px] text-slate-400">Maker-Checker dual sign</span>
-                  </div>
-
-                  <ArrowRight className="w-4 h-4 text-emerald-400 shrink-0" />
-
-                  <div className="p-3 rounded-xl bg-navy-900/90 border border-teal-500/60 text-center min-w-[130px]">
-                    <span className="text-[10px] font-bold text-teal-400 block uppercase">Layer 3</span>
-                    <strong className="text-xs text-white block mt-0.5">Provider Adapter</strong>
-                    <span className="text-[9px] text-slate-400">PaymentProvider</span>
+                    <span className="text-[9px] text-slate-400">Maker-Checker</span>
                   </div>
 
                   <ArrowRight className="w-4 h-4 text-emerald-400 shrink-0" />
@@ -232,24 +255,24 @@ export default function ConnectedAccountsPage() {
                 <div className="flex items-center gap-2 text-slate-300">
                   <Lock className="w-4 h-4 text-emerald-400 shrink-0" />
                   <span>
-                    <strong className="text-white">Zero Real Financial Credentials Collected:</strong> No PINs, banking passwords, card numbers, or OTPs are ever accepted or stored.
+                    <strong className="text-white">Zero Financial Secrets Stored:</strong> No PINs, passwords, or OTPs accepted.
                   </span>
                 </div>
-                <span className="px-2.5 py-0.5 rounded-full bg-blue-950 border border-blue-800 text-blue-300 text-[11px] font-bold">
-                  Frontend Secret Separation Active
+                <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[11px] font-bold">
+                  Secret Separation Active
                 </span>
               </div>
-            </Card>
+            </div>
 
-            {/* 2. Connected Accounts Grid or Empty State */}
+            {/* Connected Accounts Grid */}
             <div>
               <div className="flex items-center justify-between mb-4">
                 <div>
-                  <h2 className="text-base font-black text-navy-950 dark:text-slate-100">
+                  <h2 className="text-base font-black text-white">
                     Active Authorized Accounts
                   </h2>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
-                    Existing payment channels connected to your Mobira corporate entity
+                  <p className="text-xs text-slate-400">
+                    Payment channels connected to your Mobira corporate entity
                   </p>
                 </div>
                 <span className="text-xs font-mono font-bold text-slate-400">
@@ -272,12 +295,12 @@ export default function ConnectedAccountsPage() {
                     const isMoMo = acc.provider_type === 'MOBILE_MONEY' || acc.provider_name.includes('MOMO');
 
                     return (
-                      <Card
+                      <div
                         key={acc.id}
-                        className={`p-6 relative overflow-hidden transition-all duration-200 border-2 ${
+                        className={`p-6 rounded-2xl relative overflow-hidden transition-all duration-200 border ${
                           acc.is_primary
-                            ? 'border-emerald-500/50 dark:border-emerald-500/40 shadow-xl shadow-emerald-950/20 bg-white dark:bg-navy-900'
-                            : 'border-slate-200 dark:border-navy-800 bg-white dark:bg-navy-900 hover:border-slate-300'
+                            ? 'border-emerald-500/40 shadow-xl shadow-emerald-950/20 bg-[#08162B]/90 backdrop-blur-xl'
+                            : 'border-slate-800 bg-[#08162B]/70 hover:border-slate-700'
                         }`}
                       >
                         {/* Top Status & Header */}
@@ -299,35 +322,35 @@ export default function ConnectedAccountsPage() {
 
                             <div>
                               <div className="flex items-center gap-2">
-                                <h3 className="font-extrabold text-base text-navy-950 dark:text-slate-100">
+                                <h3 className="font-extrabold text-base text-white">
                                   {acc.account_name}
                                 </h3>
                                 {acc.is_primary && (
-                                  <span className="px-2 py-0.5 rounded-md bg-emerald-500/10 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30 text-[10px] font-black uppercase tracking-tight">
+                                  <span className="px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[10px] font-black uppercase tracking-tight">
                                     Primary Rail
                                   </span>
                                 )}
                               </div>
-                              <span className="text-xs text-slate-500 dark:text-slate-400">
+                              <span className="text-xs text-slate-400">
                                 {isMoMo ? 'Mobile Money Merchant Wallet' : 'Commercial Clearing Account'}
                               </span>
                             </div>
                           </div>
 
-                          {/* Demo Connected Status Pill */}
-                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 text-xs font-bold shadow-subtle shrink-0">
-                            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                          {/* Connected Status Pill */}
+                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 text-xs font-bold shrink-0">
+                            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
                             Connected
                           </span>
                         </div>
 
-                        {/* Masked Account Number */}
-                        <div className="my-5 p-4 rounded-xl bg-slate-50 dark:bg-navy-950 border border-slate-200 dark:border-navy-800 flex items-center justify-between">
+                        {/* Masked Account Number & Balance Limit */}
+                        <div className="my-5 p-4 rounded-xl bg-navy-950/80 border border-slate-800 flex items-center justify-between">
                           <div>
                             <span className="text-[10px] uppercase font-bold text-slate-400 block tracking-wider">
                               Masked Identifier
                             </span>
-                            <p className="text-2xl font-mono font-black text-navy-950 dark:text-white tracking-wider mt-0.5">
+                            <p className="text-xl font-mono font-black text-white tracking-wider mt-0.5">
                               {acc.masked_number}
                             </p>
                           </div>
@@ -336,8 +359,8 @@ export default function ConnectedAccountsPage() {
                             <span className="text-[10px] uppercase font-bold text-slate-400 block tracking-wider">
                               Daily Volume Limit
                             </span>
-                            <p className="text-xs font-mono font-bold text-emerald-600 dark:text-emerald-400 mt-0.5">
-                              {formatCurrency(acc.daily_limit || 5000000)}
+                            <p className="text-xs font-mono font-bold text-emerald-400 mt-0.5">
+                              {formatAmount(acc.daily_limit || 5000000)}
                             </p>
                           </div>
                         </div>
@@ -345,216 +368,128 @@ export default function ConnectedAccountsPage() {
                         {/* Capabilities Tags */}
                         <div className="space-y-2 text-xs">
                           <div className="flex flex-wrap items-center gap-2">
-                            <span className="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-navy-850 text-slate-700 dark:text-slate-300 text-[11px] font-medium flex items-center gap-1">
-                              <Check className="w-3 h-3 text-emerald-500" /> Instant Disburse
+                            <span className="px-2 py-0.5 rounded-md bg-navy-950 text-slate-300 text-[11px] font-medium flex items-center gap-1 border border-navy-800">
+                              <Check className="w-3 h-3 text-emerald-400" /> Instant Disburse
                             </span>
-                            <span className="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-navy-850 text-slate-700 dark:text-slate-300 text-[11px] font-medium flex items-center gap-1">
-                              <Check className="w-3 h-3 text-emerald-500" /> QR Collections
+                            <span className="px-2 py-0.5 rounded-md bg-navy-950 text-slate-300 text-[11px] font-medium flex items-center gap-1 border border-navy-800">
+                              <Check className="w-3 h-3 text-emerald-400" /> QR Collections
                             </span>
                             {isMoMo ? (
-                              <span className="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-navy-850 text-slate-700 dark:text-slate-300 text-[11px] font-medium flex items-center gap-1">
-                                <Check className="w-3 h-3 text-emerald-500" /> Telecom Pre-flight KYC
+                              <span className="px-2 py-0.5 rounded-md bg-navy-950 text-slate-300 text-[11px] font-medium flex items-center gap-1 border border-navy-800">
+                                <Check className="w-3 h-3 text-emerald-400" /> Telecom Pre-flight KYC
                               </span>
                             ) : (
-                              <span className="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-navy-850 text-slate-700 dark:text-slate-300 text-[11px] font-medium flex items-center gap-1">
-                                <Check className="w-3 h-3 text-emerald-500" /> Maker-Checker Dual Auth
+                              <span className="px-2 py-0.5 rounded-md bg-navy-950 text-slate-300 text-[11px] font-medium flex items-center gap-1 border border-navy-800">
+                                <Check className="w-3 h-3 text-emerald-400" /> Maker-Checker Dual Auth
                               </span>
                             )}
                           </div>
                         </div>
 
                         {/* Bottom Actions */}
-                        <div className="mt-5 pt-4 border-t border-slate-100 dark:border-navy-800/80 flex items-center justify-between gap-2">
+                        <div className="mt-5 pt-4 border-t border-navy-800/80 flex items-center justify-between gap-2">
                           <div className="flex items-center gap-2">
                             {!acc.is_primary && (
                               <button
                                 type="button"
-                                onClick={() => handleSetPrimary(acc.id, acc.account_name)}
-                                className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline"
+                                onClick={() => handleSetPrimary(acc)}
+                                className="text-xs font-bold text-emerald-400 hover:text-emerald-300 transition-colors"
                               >
-                                Set as Primary Rail
+                                Set as Primary
                               </button>
-                            )}
-                            {acc.is_primary && (
-                              <span className="text-xs text-slate-400 flex items-center gap-1 font-semibold">
-                                <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" /> Default Payout Rail
-                              </span>
                             )}
                           </div>
 
                           <button
                             type="button"
                             onClick={() => setSelectedForDisconnect(acc)}
-                            className="text-xs font-medium text-rose-500 hover:text-rose-600 flex items-center gap-1 transition-colors"
-                            title="Disconnect Account"
+                            className="text-xs text-rose-400 hover:text-rose-300 font-bold flex items-center gap-1 transition-colors"
                           >
-                            <Trash2 className="w-3.5 h-3.5" /> Disconnect
+                            <Trash2 className="w-3.5 h-3.5" />
+                            <span>Disconnect</span>
                           </button>
                         </div>
-                      </Card>
+                      </div>
                     );
                   })}
                 </div>
               )}
             </div>
-
-            {/* 3. Available Providers / Expandable Adapters */}
-            <Card className="p-6 bg-slate-50 dark:bg-navy-950 border border-slate-200 dark:border-navy-800">
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <h3 className="font-extrabold text-sm text-navy-950 dark:text-slate-100">
-                    Supported Payment Rails & Provider Adapters
-                  </h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
-                    Ready to link through the unified <code className="font-mono text-yellow-600 dark:text-yellow-400">PaymentProvider</code> interface
-                  </p>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div className="p-4 rounded-xl bg-white dark:bg-navy-900 border border-slate-200 dark:border-navy-800 flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-lg bg-orange-500 text-white font-black flex items-center justify-center text-xs">
-                      VF
-                    </div>
-                    <div>
-                      <strong className="text-xs block text-navy-950 dark:text-white">Vodafone Cash</strong>
-                      <span className="text-[10px] text-slate-400">Vodafone Cash Business API</span>
-                    </div>
-                  </div>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => {
-                      setProviderName('ORANGE_MONEY');
-                      setAccountName('Vodafone Cash Business');
-                      setAccountIdentifier('+233 20 999 5566');
-                      setIsConnectOpen(true);
-                    }}
-                    className="text-xs font-bold"
-                  >
-                    Connect
-                  </Button>
-                </div>
-
-                <div className="p-4 rounded-xl bg-white dark:bg-navy-900 border border-slate-200 dark:border-navy-800 flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-lg bg-blue-600 text-white font-black flex items-center justify-center text-xs">
-                      GCB
-                    </div>
-                    <div>
-                      <strong className="text-xs block text-navy-950 dark:text-white">GCB Bank Corporate</strong>
-                      <span className="text-[10px] text-slate-400">Direct Host-to-Host Host</span>
-                    </div>
-                  </div>
-                  <Badge variant="blue" size="sm" className="text-[10px]">
-                    Adapter Ready
-                  </Badge>
-                </div>
-
-                <div className="p-4 rounded-xl bg-white dark:bg-navy-900 border border-slate-200 dark:border-navy-800 flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-lg bg-emerald-600 text-white font-black flex items-center justify-center text-xs">
-                      GHP
-                    </div>
-                    <div>
-                      <strong className="text-xs block text-navy-950 dark:text-white">GhIPSS Ghana</strong>
-                      <span className="text-[10px] text-slate-400">Ghana Interbank Clearing</span>
-                    </div>
-                  </div>
-                  <Badge variant="blue" size="sm" className="text-[10px]">
-                    Adapter Ready
-                  </Badge>
-                </div>
-              </div>
-            </Card>
           </div>
         )}
 
-        {/* Connect Account Modal */}
+        {/* Connect Modal */}
         <Modal
           isOpen={isConnectOpen}
           onClose={() => setIsConnectOpen(false)}
-          title="Connect Authorized Account"
-          description="Link an existing payment rail to your Mobira corporate profile."
-          maxWidth="md"
+          title="Connect Payment Account (Simulated)"
         >
-          <div className="p-3.5 rounded-xl bg-yellow-50 dark:bg-yellow-950/40 border border-yellow-300 dark:border-yellow-700/60 mb-4 flex items-start gap-3">
-            <Lock className="w-4 h-4 text-yellow-600 dark:text-yellow-400 shrink-0 mt-0.5" />
-            <div className="text-xs text-yellow-950 dark:text-yellow-200">
-              <strong className="block font-bold">Zero Real Financial Credential Policy</strong>
-              For this competition MVP, all connections are simulated via <code>MockPaymentProvider</code>. Do not enter real PINs, banking passwords, card numbers, or OTPs.
-            </div>
-          </div>
-
           <form onSubmit={handleConnectSubmit} className="space-y-4">
             <Select
-              label="Select Payment Rail / Provider"
+              label="Payment Rail / Adapter"
               value={providerName}
               onChange={handleProviderSelectChange}
               options={[
-                { value: 'MTN_MOMO', label: 'MTN MoMo Business (Mobile Money)' },
-                { value: 'BANK_TRANSFER', label: 'Business Bank Account (GCB / EFT / Wire)' },
-                { value: 'ORANGE_MONEY', label: 'Vodafone Cash Business (Mobile Money)' },
+                { value: 'MTN_MOMO', label: 'MTN Mobile Money Business' },
+                { value: 'BANK_TRANSFER', label: 'Commercial Bank Account (GCB / Ecobank)' },
+                { value: 'ORANGE_MONEY', label: 'Vodafone Cash / Orange Money' },
               ]}
             />
 
             <Input
-              label="Account Display Label"
+              label="Account Label"
               value={accountName}
               onChange={(e) => setAccountName(e.target.value)}
-              placeholder="e.g. MTN MoMo Business"
+              placeholder="e.g. MTN MoMo Treasury"
               required
             />
 
             <Input
-              label={
-                providerName === 'BANK_TRANSFER'
-                  ? 'Bank Account Identifier (IBAN / Account #)'
-                  : 'Business Wallet Identifier (MSISDN)'
-              }
+              label="Account Identifier / Number"
               value={accountIdentifier}
               onChange={(e) => setAccountIdentifier(e.target.value)}
-              placeholder={providerName === 'BANK_TRANSFER' ? 'GCB-0104-9184-001' : '+233 24 123 4821'}
-              helperText="Identifier is immediately masked (e.g. •••• 4821) upon connection."
+              placeholder="+233 24 123 4821"
               required
             />
 
-            <div className="flex items-center gap-2 pt-1">
+            <label className="flex items-center gap-2 text-xs text-slate-300 cursor-pointer pt-1">
               <input
                 type="checkbox"
-                id="primary-rail-check"
                 checked={isPrimary}
                 onChange={(e) => setIsPrimary(e.target.checked)}
-                className="w-4 h-4 rounded text-yellow-500 focus:ring-yellow-500"
+                className="rounded border-slate-700 bg-navy-950 text-emerald-500 focus:ring-emerald-500"
               />
-              <label
-                htmlFor="primary-rail-check"
-                className="text-xs text-slate-700 dark:text-slate-300 font-semibold cursor-pointer"
-              >
-                Set as primary disbursement rail for ABC Technologies Ltd
-              </label>
-            </div>
+              <span>Set as primary disbursement rail</span>
+            </label>
 
-            <div className="flex justify-end gap-3 pt-3">
-              <Button type="button" variant="outline" onClick={() => setIsConnectOpen(false)} className="text-xs">
+            <div className="pt-3 flex items-center justify-end gap-2 border-t border-navy-800">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setIsConnectOpen(false)}
+              >
                 Cancel
               </Button>
-              <Button type="submit" variant="primary" isLoading={connecting} className="text-xs font-bold">
-                Connect Account (Simulated)
+              <Button
+                type="submit"
+                variant="primary"
+                isLoading={connecting}
+                className="bg-emerald-500 hover:bg-emerald-400 text-navy-950 font-bold"
+              >
+                Connect Account
               </Button>
             </div>
           </form>
         </Modal>
 
-        {/* Disconnect Account Confirmation Dialog */}
+        {/* Disconnect Confirmation Dialog */}
         <ConfirmDialog
-          isOpen={Boolean(selectedForDisconnect)}
+          isOpen={!!selectedForDisconnect}
           onClose={() => setSelectedForDisconnect(null)}
-          onConfirm={handleConfirmDisconnect}
+          onConfirm={handleDisconnectConfirm}
           title="Disconnect Payment Account"
-          description={`Are you sure you want to disconnect ${selectedForDisconnect?.account_name} (${selectedForDisconnect?.masked_number})? Automated disbursements using this rail will be paused.`}
-          confirmLabel="Disconnect Account"
+          description={`Are you sure you want to disconnect ${selectedForDisconnect?.account_name}? You will not be able to disburse or collect on this rail until reconnected.`}
+          confirmLabel="Disconnect Rail"
           variant="danger"
           isLoading={disconnecting}
         />

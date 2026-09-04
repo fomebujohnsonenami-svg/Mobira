@@ -16,8 +16,10 @@ import { formatCurrency, formatDate, formatChannelName } from '@/lib/formatters'
 import { DisbursementWizard } from '@/components/payments/DisbursementWizard';
 import { MakerCheckerModal } from '@/components/payments/MakerCheckerModal';
 import { BusinessVerificationBadge } from '@/components/verification/BusinessVerificationBadge';
+import { usePrivacy, PrivacyToggle } from '@/components/privacy/PrivacyContext';
 
 export default function PaymentsPage() {
+  const { formatAmount } = usePrivacy();
   const [payments, setPayments] = useState<Payment[]>([]);
   const [recipients, setRecipients] = useState<Recipient[]>([]);
   const [loading, setLoading] = useState(true);
@@ -58,7 +60,12 @@ export default function PaymentsPage() {
       <PageShell
         title="Single Disbursements (PAY)"
         subtitle="Manage individual vendor, supplier, and contractor payouts with multi-rail execution."
-        badge={<BusinessVerificationBadge size="sm" />}
+        badge={
+          <div className="flex items-center gap-2">
+            <BusinessVerificationBadge size="sm" />
+            <PrivacyToggle size="sm" />
+          </div>
+        }
         action={
           <Button variant="primary" onClick={() => setIsSendOpen(true)} className="gap-2 font-bold text-xs">
             <Send className="w-3.5 h-3.5 text-navy-950" /> Send Payment
@@ -206,7 +213,7 @@ export default function PaymentsPage() {
                             </td>
 
                             <td className="py-3 px-4 text-right font-black text-navy-950 dark:text-slate-100 tabular-nums whitespace-nowrap">
-                              {formatCurrency(p.amount)}
+                              {formatAmount(p.amount, p.currency || 'GH₵')}
                             </td>
 
                             <td className="py-3 px-4 text-center whitespace-nowrap">

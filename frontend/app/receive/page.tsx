@@ -38,6 +38,7 @@ import { api } from '@/services/api';
 import { PaymentLink } from '@/types';
 import { formatCurrency, formatDate } from '@/lib/formatters';
 import { useToast } from '@/components/ui/Toast';
+import { usePrivacy, PrivacyToggle } from '@/components/privacy/PrivacyContext';
 
 type ReceiveTab = 'CUSTOMER_PAGES' | 'PAYMENT_LINKS' | 'QR_CODE' | 'PAYMENT_REQUESTS' | 'INVOICES';
 
@@ -132,7 +133,12 @@ export default function ReceivePage() {
       <PageShell
         title="Receive Payments"
         subtitle="Create branded payment links, QR codes, payment requests, simple invoices, and customer checkout pages."
-        badge={<BusinessVerificationBadge size="sm" />}
+        badge={
+          <div className="flex items-center gap-2">
+            <BusinessVerificationBadge size="sm" />
+            <PrivacyToggle size="sm" />
+          </div>
+        }
         action={
           <div className="flex items-center gap-2">
             <Button

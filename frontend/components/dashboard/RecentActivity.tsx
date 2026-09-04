@@ -5,7 +5,8 @@ import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Transaction } from '@/types';
-import { formatCurrency, formatDate, formatChannelName } from '@/lib/formatters';
+import { formatDate, formatChannelName } from '@/lib/formatters';
+import { usePrivacy } from '@/components/privacy/PrivacyContext';
 
 export interface RecentActivityProps {
   transactions: Transaction[];
@@ -16,6 +17,7 @@ export const RecentActivity: React.FC<RecentActivityProps> = ({
   transactions,
   onSelectTransaction,
 }) => {
+  const { formatAmount } = usePrivacy();
   return (
     <Card className="p-6">
       <div className="flex items-center justify-between pb-4 border-b border-slate-200 dark:border-navy-800">
@@ -84,7 +86,7 @@ export const RecentActivity: React.FC<RecentActivityProps> = ({
                     }`}
                   >
                     {isDisb ? '-' : '+'}
-                    {formatCurrency(tx.amount)}
+                    {formatAmount(tx.amount, tx.currency || 'GH₵')}
                   </p>
                   <div className="flex items-center justify-end mt-0.5">
                     <Badge variant={tx.status === 'SUCCESS' ? 'emerald' : 'amber'} size="sm">

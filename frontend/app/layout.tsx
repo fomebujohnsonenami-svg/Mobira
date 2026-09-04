@@ -4,6 +4,7 @@ import { ToastProvider } from '@/components/ui/Toast';
 import { AuthProvider } from '@/components/auth/AuthContext';
 import { BusinessProvider } from '@/components/layout/BusinessContext';
 import { NotificationProvider } from '@/components/notifications/NotificationContext';
+import { PrivacyProvider } from '@/components/privacy/PrivacyContext';
 
 export const metadata: Metadata = {
   title: 'Mobira — African Business Payment & Trust Orchestration Platform',
@@ -22,7 +23,9 @@ export default function RootLayout({
           <AuthProvider>
             <BusinessProvider>
               <NotificationProvider>
-                {children}
+                <PrivacyProvider>
+                  {children}
+                </PrivacyProvider>
               </NotificationProvider>
             </BusinessProvider>
           </AuthProvider>

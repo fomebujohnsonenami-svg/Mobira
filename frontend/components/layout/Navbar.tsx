@@ -16,6 +16,7 @@ import {
   Menu,
 } from 'lucide-react';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
+import { PrivacyToggle } from '@/components/privacy/PrivacyContext';
 import { useBusiness } from './BusinessContext';
 import { useAuth } from '@/components/auth/AuthContext';
 import { BusinessVerificationBadge } from '@/components/verification/BusinessVerificationBadge';
@@ -172,6 +173,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu }) => {
           <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-sm shadow-emerald-400/50" />
           <span className="font-mono font-semibold">MTN MoMo • Orange Money • Bank EFT</span>
         </div>
+
+        {/* Privacy Balance Blinding Toggle */}
+        <PrivacyToggle size="sm" />
 
         {/* Theme Toggle (Light/Dark Mode) */}
         <ThemeToggle />
