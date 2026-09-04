@@ -45,62 +45,64 @@ export default function SignUpPage() {
   };
 
   return (
-    <div className="min-h-screen bg-navy-950 text-slate-100 flex flex-col items-center justify-center p-4 sm:p-6 selection:bg-yellow-500 selection:text-navy-950">
-      <div className="max-w-md w-full space-y-6">
+    <div className="min-h-screen bg-[#040C18] text-slate-100 flex flex-col items-center justify-center p-4 sm:p-6 selection:bg-emerald-500 selection:text-navy-950">
+      <div className="max-w-xl w-full space-y-6">
         {/* Brand Header */}
         <div className="text-center space-y-2">
           <Link href="/" className="inline-flex items-center gap-3 group">
-            <div className="w-10 h-10 rounded-xl bg-yellow-500 text-navy-950 font-black text-xl flex items-center justify-center shadow-subtle group-hover:bg-yellow-400 transition-colors">
+            <div className="w-10 h-10 rounded-xl bg-emerald-500 text-navy-950 font-black text-xl flex items-center justify-center shadow-lg shadow-emerald-500/20 group-hover:bg-emerald-400 transition-colors">
               M
             </div>
             <div className="text-left">
               <span className="font-black text-2xl text-white tracking-tight block">MOBIRA</span>
-              <span className="text-[10px] text-yellow-400 font-bold block uppercase tracking-widest">
+              <span className="text-[10px] text-emerald-400 font-bold block uppercase tracking-widest">
                 TRUST & PAYMENTS
               </span>
             </div>
           </Link>
 
-          <p className="text-xs text-slate-400 max-w-xs mx-auto pt-1">
+          <p className="text-xs text-slate-400 max-w-sm mx-auto pt-1">
             Create an enterprise treasury account to disburse payouts and receive verified customer funds.
           </p>
         </div>
 
-        {/* 1. Fast Judge Access: "Continue with Demo Account" */}
-        <Card className="p-4 bg-navy-900 border border-yellow-500/40 shadow-modal flex items-center justify-between gap-3">
-          <div>
-            <span className="text-[10px] font-bold uppercase tracking-wider text-yellow-400 block">
-              Competition Presentation
+        {/* 1. Fast Judge Access: "Skip Registration with Demo Account" */}
+        <Card className="p-5 bg-[#08162B] border-2 border-emerald-500/40 shadow-xl shadow-emerald-950/30 space-y-3">
+          <div className="flex items-center justify-between pb-2 border-b border-navy-800">
+            <span className="text-[10px] font-black uppercase tracking-wider text-emerald-400">
+              Judges & Evaluators Quick Access
             </span>
-            <span className="text-xs text-slate-300 font-semibold">
-              Skip registration with pre-seeded data
+            <span className="px-2 py-0.5 rounded text-[10px] font-black bg-emerald-500 text-navy-950">
+              PRE-CONFIGURED
             </span>
           </div>
+          <p className="text-xs text-slate-300">
+            Skip account creation and jump straight into the live dashboard with 80+ beneficiaries and verified business identities:
+          </p>
           <Button
             type="button"
             variant="primary"
-            size="sm"
-            onClick={demoLogin}
+            onClick={() => demoLogin('admin@abctechnologies.com')}
             isLoading={isLoading}
-            className="shrink-0 gap-1.5 font-bold text-xs"
+            className="w-full gap-2 font-black py-2.5 text-xs bg-emerald-500 hover:bg-emerald-400 text-navy-950 shadow-md shadow-emerald-500/20"
           >
-            <Award className="w-3.5 h-3.5" /> Continue with Demo Account
+            <Award className="w-4 h-4" /> Skip & Launch Demo Account (Kwame Asante)
           </Button>
         </Card>
 
         {/* 2. Registration Form */}
-        <Card className="p-6 bg-white dark:bg-navy-900 border border-slate-200 dark:border-navy-800 text-slate-900 dark:text-slate-100 shadow-subtle space-y-4">
-          <div className="border-b border-slate-200 dark:border-navy-800 pb-3">
-            <h3 className="font-extrabold text-base text-navy-950 dark:text-slate-100">
+        <Card className="p-6 bg-navy-900 border border-navy-800 text-slate-100 shadow-subtle space-y-4">
+          <div className="border-b border-navy-800 pb-3">
+            <h3 className="font-extrabold text-sm text-white">
               Create Enterprise Account
             </h3>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-              Set up your authorized company representative
+            <p className="text-xs text-slate-400 mt-0.5">
+              Set up your authorized corporate representative
             </p>
           </div>
 
           {error && (
-            <div className="p-3 bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-800 text-rose-800 dark:text-rose-300 rounded-lg text-xs font-semibold">
+            <div className="p-3 bg-rose-950/50 border border-rose-800 text-rose-300 rounded-lg text-xs font-semibold">
               {error}
             </div>
           )}
@@ -111,7 +113,7 @@ export default function SignUpPage() {
               type="text"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
-              placeholder="e.g. Samuel Eto"
+              placeholder="e.g. Kwame Asante"
               required
             />
 
@@ -120,7 +122,7 @@ export default function SignUpPage() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="samuel.eto@abctechnologies.cm"
+              placeholder="kwame.asante@yourcompany.com"
               required
             />
 
@@ -129,7 +131,7 @@ export default function SignUpPage() {
               type="tel"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              placeholder="+237 670 000 111"
+              placeholder="+233 24 123 4567"
               required
             />
 
@@ -157,17 +159,17 @@ export default function SignUpPage() {
               type="submit"
               variant="secondary"
               isLoading={isLoading}
-              className="w-full gap-2 font-bold py-2.5 text-xs mt-2"
+              className="w-full gap-2 font-bold py-2.5 text-xs mt-2 bg-navy-800 hover:bg-navy-750 text-white border border-navy-700"
             >
-              <CheckCircle2 className="w-3.5 h-3.5 text-yellow-400" /> Create Enterprise Account
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" /> Create Enterprise Account
             </Button>
           </form>
 
-          <div className="pt-2 text-center text-xs text-slate-500 dark:text-slate-400">
+          <div className="pt-2 text-center text-xs text-slate-400">
             Already have an account?{' '}
             <Link
               href="/login"
-              className="font-bold text-navy-950 dark:text-yellow-400 hover:underline"
+              className="font-bold text-emerald-400 hover:underline"
             >
               Sign in
             </Link>
@@ -175,8 +177,8 @@ export default function SignUpPage() {
         </Card>
 
         {/* Security & Simulation Notice */}
-        <p className="text-center text-[11px] text-slate-500 dark:text-slate-400">
-          Mobira is an orchestration & trust layer. All payment provider rails are simulated for this competition prototype.
+        <p className="text-center text-[11px] text-slate-500">
+          Protected by Mobira Pre-Flight Protocol. Fictional demo environment configured for competition evaluation.
         </p>
       </div>
     </div>

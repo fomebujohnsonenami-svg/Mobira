@@ -13,23 +13,67 @@ interface AuthContextType {
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
   register: (data: { full_name: string; email: string; phone: string; password: string; confirm_password: string }) => Promise<void>;
-  demoLogin: () => Promise<void>;
+  demoLogin: (email?: string) => Promise<void>;
   logout: () => void;
 }
 
-const DEFAULT_DEMO_USER: User = {
-  id: 'usr_jeanne_ngono_01',
-  email: 'jeanne.ngono@abctechnologies.cm',
-  username: 'jeanne.ngono',
-  first_name: 'Jeanne',
-  last_name: 'Ngono',
-  role: 'FINANCE_OFFICER',
-  phone_number: '+237 679 001 122',
-  business_name: 'ABC Technologies Ltd',
-  business_trust_score: 96,
-  business_tier: 'GOLD_VERIFIED',
-  is_verified: true,
+export const DEMO_USERS_MAP: Record<string, User> = {
+  'admin@abctechnologies.com': {
+    id: 'usr_kwame_asante_01',
+    email: 'admin@abctechnologies.com',
+    username: 'kwame.asante',
+    first_name: 'Kwame',
+    last_name: 'Asante',
+    role: 'ADMIN',
+    phone_number: '+233 24 111 2233',
+    business_name: 'ABC Technologies Ltd',
+    business_trust_score: 96,
+    business_tier: 'GOLD_VERIFIED',
+    is_verified: true,
+  },
+  'finance@abctechnologies.com': {
+    id: 'usr_ama_mensah_02',
+    email: 'finance@abctechnologies.com',
+    username: 'ama.mensah',
+    first_name: 'Ama',
+    last_name: 'Mensah',
+    role: 'FINANCE_OFFICER',
+    phone_number: '+233 24 222 3344',
+    business_name: 'ABC Technologies Ltd',
+    business_trust_score: 96,
+    business_tier: 'GOLD_VERIFIED',
+    is_verified: true,
+  },
+  'auditor@abctechnologies.com': {
+    id: 'usr_kofi_boateng_03',
+    email: 'auditor@abctechnologies.com',
+    username: 'kofi.boateng',
+    first_name: 'Kofi',
+    last_name: 'Boateng',
+    role: 'AUDITOR',
+    phone_number: '+233 24 333 4455',
+    business_name: 'ABC Technologies Ltd',
+    business_trust_score: 96,
+    business_tier: 'GOLD_VERIFIED',
+    is_verified: true,
+  },
+  'manager@abcfashion.com': {
+    id: 'usr_efua_darkwa_04',
+    email: 'manager@abcfashion.com',
+    username: 'efua.darkwa',
+    first_name: 'Efua',
+    last_name: 'Darkwa',
+    role: 'ADMIN',
+    phone_number: '+233 24 444 5566',
+    business_name: 'ABC Fashion',
+    business_trust_score: 92,
+    business_tier: 'GOLD_VERIFIED',
+    is_verified: true,
+  },
 };
+
+const DEFAULT_DEMO_USER: User = DEMO_USERS_MAP['admin@abctechnologies.com'];
+
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -64,31 +108,41 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const login = async (email: string, password: string) => {
     setIsLoading(true);
     try {
-      // Send login request to backend
-      const res = await fetch('http://localhost:8000/api/v1/auth/login/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
-
-      if (res.ok) {
-        const data = await res.json();
-        setToken(data.access);
-        setUser(data.user);
-        localStorage.setItem('mobira_token', data.access);
-        localStorage.setItem('mobira_user', JSON.stringify(data.user));
-        toast({
-          type: 'success',
-          title: 'Welcome Back',
-          message: `Signed in as ${data.user.first_name || data.user.email}`,
+      // 1. Try real backend
+      try {
+        const res = await fetch('http://localhost:8000/api/v1/auth/login/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password }),
         });
-        router.push('/dashboard');
+
+        if (res.ok) {
+          const data = await res.json();
+          setToken(data.access);
+          setUser(data.user);
+          localStorage.setItem('mobira_token', data.access);
+          localStorage.setItem('mobira_user', JSON.stringify(data.user));
+          toast({
+            type: 'success',
+            title: 'Welcome Back',
+            message: `Signed in as ${data.user.first_name || data.user.email}`,
+          });
+          router.push('/dashboard');
+          return;
+        }
+      } catch (backendErr) {
+        // Backend offline -> continue to local check
+      }
+
+      // 2. Check if matching simulated demo accounts
+      const matchedUser = DEMO_USERS_MAP[email.toLowerCase()];
+      if (matchedUser) {
+        await demoLogin(email.toLowerCase());
         return;
       }
 
-      // If backend offline or simulated credentials, check if valid demo email
-      if (email.toLowerCase().includes('demo') || email.toLowerCase().includes('abctechnologies')) {
-        await demoLogin();
+      if (email.toLowerCase().includes('demo') || email.toLowerCase().includes('abctechnologies') || password === 'demo2026') {
+        await demoLogin('admin@abctechnologies.com');
         return;
       }
 
@@ -114,25 +168,29 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }) => {
     setIsLoading(true);
     try {
-      const res = await fetch('http://localhost:8000/api/v1/auth/register/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
-
-      if (res.ok) {
-        const resData = await res.json();
-        setToken(resData.access);
-        setUser(resData.user);
-        localStorage.setItem('mobira_token', resData.access);
-        localStorage.setItem('mobira_user', JSON.stringify(resData.user));
-        toast({
-          type: 'success',
-          title: 'Account Created',
-          message: 'Welcome to Mobira Enterprise Platform.',
+      try {
+        const res = await fetch('http://localhost:8000/api/v1/auth/register/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
         });
-        router.push('/dashboard');
-        return;
+
+        if (res.ok) {
+          const resData = await res.json();
+          setToken(resData.access);
+          setUser(resData.user);
+          localStorage.setItem('mobira_token', resData.access);
+          localStorage.setItem('mobira_user', JSON.stringify(resData.user));
+          toast({
+            type: 'success',
+            title: 'Account Created',
+            message: 'Welcome to Mobira Enterprise Platform.',
+          });
+          router.push('/dashboard');
+          return;
+        }
+      } catch (backendErr) {
+        // Backend offline -> use client state simulation
       }
 
       // Offline fallback simulation
@@ -175,14 +233,18 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
-  const demoLogin = async () => {
+  const demoLogin = async (targetEmail: string = 'admin@abctechnologies.com') => {
     setIsLoading(true);
     try {
-      // Call demo-login endpoint
+      const selectedUser = DEMO_USERS_MAP[targetEmail] || DEFAULT_DEMO_USER;
+      const demoToken = `demo-token-${selectedUser.id}`;
+
+      // Call demo-login endpoint if backend is live
       try {
         const res = await fetch('http://localhost:8000/api/v1/auth/demo-login/', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: targetEmail }),
         });
         if (res.ok) {
           const data = await res.json();
@@ -192,8 +254,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           localStorage.setItem('mobira_user', JSON.stringify(data.user));
           toast({
             type: 'success',
-            title: 'Judge Demo Session Initialized',
-            message: 'Signed in as Jeanne Ngono (ABC Technologies Ltd ✓).',
+            title: 'Judge Demo Session Active',
+            message: `Signed in as ${data.user.first_name} ${data.user.last_name} (${data.user.role}).`,
           });
           router.push('/dashboard');
           return;
@@ -202,17 +264,16 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         // Backend offline -> use instant memory mock
       }
 
-      setToken('demo-jwt-token-jeanne');
-      setUser(DEFAULT_DEMO_USER);
-      localStorage.setItem('mobira_token', 'demo-jwt-token-jeanne');
-      localStorage.setItem('mobira_user', JSON.stringify(DEFAULT_DEMO_USER));
+      setToken(demoToken);
+      setUser(selectedUser);
+      localStorage.setItem('mobira_token', demoToken);
+      localStorage.setItem('mobira_user', JSON.stringify(selectedUser));
 
       toast({
         type: 'success',
-        title: 'Judge Demo Session Initialized',
-        message: 'Signed in as Jeanne Ngono (ABC Technologies Ltd ✓).',
+        title: 'Judge Demo Session Active',
+        message: `Signed in as ${selectedUser.first_name} ${selectedUser.last_name} (${selectedUser.business_name} - ${selectedUser.role}).`,
       });
-      router.push('/dashboard');
     } finally {
       setIsLoading(false);
     }
