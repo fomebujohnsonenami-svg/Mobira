@@ -72,13 +72,13 @@ export const BusinessVerificationBadge: React.FC<BusinessVerificationBadgeProps>
       {status === 'VERIFIED' && (
         <span
           className={cn(
-            'inline-flex items-center gap-1.5 rounded-full bg-blue-50 dark:bg-blue-950/80 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-800 font-extrabold shadow-subtle',
+            'inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 dark:bg-emerald-950/80 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 dark:border-emerald-700/60 font-black shadow-subtle',
             sizeClasses.badge
           )}
           title="This business has been verified by Mobira."
         >
-          <span className="inline-flex items-center justify-center rounded-full bg-blue-600 text-white p-0.5">
-            <Check className={cn('text-white', sizeClasses.icon)} />
+          <span className="inline-flex items-center justify-center rounded-full bg-emerald-500 text-navy-950 p-0.5">
+            <Check className={cn('text-navy-950 stroke-[3.5]', sizeClasses.icon)} />
           </span>
           {showLabel && <span>Verified Business</span>}
         </span>
@@ -87,11 +87,11 @@ export const BusinessVerificationBadge: React.FC<BusinessVerificationBadgeProps>
       {status === 'IN_PROGRESS' && (
         <span
           className={cn(
-            'inline-flex items-center gap-1.5 rounded-full bg-yellow-50 dark:bg-yellow-950/70 text-yellow-700 dark:text-yellow-400 border border-yellow-300 dark:border-yellow-700/60 font-bold',
+            'inline-flex items-center gap-1.5 rounded-full bg-sky-50 dark:bg-sky-950/70 text-sky-700 dark:text-sky-400 border border-sky-300 dark:border-sky-700/60 font-bold',
             sizeClasses.badge
           )}
         >
-          <Loader2 className={cn('animate-spin text-yellow-600 dark:text-yellow-400', sizeClasses.icon)} />
+          <Loader2 className={cn('animate-spin text-sky-600 dark:text-sky-400', sizeClasses.icon)} />
           {showLabel && <span>Verification in Progress</span>}
         </span>
       )}
@@ -99,11 +99,11 @@ export const BusinessVerificationBadge: React.FC<BusinessVerificationBadgeProps>
       {status === 'UNVERIFIED' && (
         <span
           className={cn(
-            'inline-flex items-center gap-1.5 rounded-full bg-amber-50 dark:bg-amber-950/70 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-700/70 font-bold',
+            'inline-flex items-center gap-1.5 rounded-full bg-rose-50 dark:bg-rose-950/70 text-rose-800 dark:text-rose-300 border border-rose-300 dark:border-rose-700/70 font-bold',
             sizeClasses.badge
           )}
         >
-          <ShieldAlert className={cn('text-amber-600 dark:text-amber-400', sizeClasses.icon)} />
+          <ShieldAlert className={cn('text-rose-600 dark:text-rose-400', sizeClasses.icon)} />
           {showLabel && <span>Verification Required</span>}
         </span>
       )}

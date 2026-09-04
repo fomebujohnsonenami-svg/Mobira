@@ -79,7 +79,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu }) => {
             type="button"
             className="flex items-center gap-2.5 p-1.5 sm:px-3 sm:py-2 rounded-xl bg-slate-50 dark:bg-navy-950/80 hover:bg-slate-100 dark:hover:bg-navy-850 border border-slate-200 dark:border-navy-800 transition-all text-left shadow-subtle group"
           >
-            <div className="w-7 h-7 rounded-lg bg-navy-900 text-yellow-400 font-black flex items-center justify-center text-xs shrink-0 shadow-sm">
+            <div className="w-7 h-7 rounded-lg bg-emerald-500 text-navy-950 font-black flex items-center justify-center text-xs shrink-0 shadow-sm shadow-emerald-500/20">
               {currentBusiness.name.slice(0, 2).toUpperCase()}
             </div>
 
@@ -116,7 +116,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu }) => {
                       }}
                       className={`w-full flex items-center justify-between p-2.5 rounded-lg text-xs transition-colors text-left ${
                         isSelected
-                          ? 'bg-yellow-50 dark:bg-navy-950 text-navy-950 dark:text-yellow-400 font-bold border border-yellow-300 dark:border-yellow-700/60'
+                          ? 'bg-emerald-500/10 dark:bg-navy-950 text-emerald-400 font-bold border border-emerald-500/30'
                           : 'hover:bg-slate-50 dark:hover:bg-navy-850 text-slate-700 dark:text-slate-300'
                       }`}
                     >
@@ -124,7 +124,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu }) => {
                         <div className="flex items-center gap-1.5">
                           <span className="truncate">{biz.name}</span>
                           <span
-                            className="inline-flex items-center justify-center w-3.5 h-3.5 rounded-full bg-blue-600 text-white shrink-0"
+                            className="inline-flex items-center justify-center w-3.5 h-3.5 rounded-full bg-emerald-500 text-navy-950 shrink-0"
                             title="Verified Entity"
                           >
                             <Check className="w-2.5 h-2.5 stroke-[3]" />
@@ -135,7 +135,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu }) => {
                         </span>
                       </div>
                       {isSelected && (
-                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-yellow-500 text-navy-950 font-black shrink-0">
+                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500 text-navy-950 font-black shrink-0">
                           Active
                         </span>
                       )}
@@ -157,7 +157,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu }) => {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search transactions, payees, or invoices..."
-            className="w-full pl-10 pr-12 py-2 bg-slate-50 dark:bg-navy-950 border border-slate-200 dark:border-navy-800 rounded-lg text-xs text-navy-950 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-yellow-500/70 focus:border-yellow-500 transition-colors shadow-subtle"
+            className="w-full pl-10 pr-12 py-2 bg-slate-50 dark:bg-navy-950 border border-slate-200 dark:border-navy-800 rounded-lg text-xs text-navy-950 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/70 focus:border-emerald-500 transition-colors shadow-subtle"
           />
           <kbd className="absolute right-3 top-1/2 -translate-y-1/2 px-1.5 py-0.5 text-[9px] font-mono font-bold bg-white dark:bg-navy-900 border border-slate-200 dark:border-navy-800 text-slate-400 rounded">
             ⌘K
@@ -169,7 +169,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu }) => {
       <div className="flex items-center gap-2 sm:gap-3">
         {/* Rails Pill */}
         <div className="hidden xl:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-navy-950 border border-slate-200 dark:border-navy-800 text-[11px] text-slate-600 dark:text-slate-300">
-          <span className="w-2 h-2 rounded-full bg-emerald-500" />
+          <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-sm shadow-emerald-400/50" />
           <span className="font-mono font-semibold">MTN MoMo • Orange Money • Bank EFT</span>
         </div>
 
@@ -186,7 +186,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu }) => {
           >
             <Bell className="w-4 h-4" />
             {unreadCount > 0 && (
-              <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 bg-blue-600 text-white rounded-full text-[10px] font-black flex items-center justify-center shadow-subtle border-2 border-white dark:border-navy-900 animate-in zoom-in-50">
+              <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 bg-emerald-500 text-navy-950 rounded-full text-[10px] font-black flex items-center justify-center shadow-subtle border-2 border-white dark:border-navy-900 animate-in zoom-in-50">
                 {unreadCount > 9 ? '9+' : unreadCount}
               </span>
             )}
@@ -206,7 +206,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu }) => {
             type="button"
             className="flex items-center gap-2 p-1 rounded-xl hover:bg-slate-100 dark:hover:bg-navy-850 transition-colors border border-transparent hover:border-slate-200 dark:hover:border-navy-800"
           >
-            <div className="w-8 h-8 rounded-full bg-yellow-500 text-navy-950 font-black text-xs flex items-center justify-center border border-yellow-600/30 shadow-subtle">
+            <div className="w-8 h-8 rounded-full bg-emerald-500 text-navy-950 font-black text-xs flex items-center justify-center border border-emerald-600/30 shadow-md shadow-emerald-500/20">
               {(user?.first_name?.[0] || 'K')}{(user?.last_name?.[0] || 'A')}
             </div>
             <div className="hidden md:block text-left pr-1">

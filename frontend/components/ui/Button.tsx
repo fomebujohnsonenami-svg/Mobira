@@ -16,18 +16,18 @@ export const Button: React.FC<ButtonProps> = ({
   disabled,
   ...props
 }) => {
-  const baseStyles = 'inline-flex items-center justify-center font-bold rounded-lg transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-yellow-500/70 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-subtle';
+  const baseStyles = 'inline-flex items-center justify-center font-bold rounded-lg transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-emerald-500/70 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-subtle';
 
   const variantStyles = {
-    // Mobira Gold / African Fintech Yellow
-    primary: 'bg-yellow-500 hover:bg-yellow-400 active:bg-yellow-600 text-navy-950 border border-yellow-600/20',
-    // Institutional African Deep Blue
-    secondary: 'bg-navy-900 hover:bg-navy-850 active:bg-navy-950 text-white dark:bg-navy-800 dark:hover:bg-navy-700 dark:active:bg-navy-900 border border-navy-800 dark:border-navy-700',
+    // Vibrant Emerald Primary
+    primary: 'bg-emerald-500 hover:bg-emerald-400 active:bg-emerald-600 text-navy-950 font-black border border-emerald-600/30 shadow-md shadow-emerald-500/20',
+    // Deep Blue Institutional Secondary
+    secondary: 'bg-navy-900 hover:bg-navy-850 active:bg-navy-950 text-white dark:bg-navy-900 dark:hover:bg-navy-850 dark:active:bg-navy-950 border border-navy-800 dark:border-navy-700',
     // Minimal hairline border
-    outline: 'border border-slate-300 dark:border-navy-800 bg-white dark:bg-navy-900 text-navy-950 dark:text-slate-100 hover:bg-slate-50 dark:hover:bg-navy-850',
+    outline: 'border border-slate-300 dark:border-navy-700/80 bg-white dark:bg-navy-900 text-navy-950 dark:text-slate-100 hover:bg-slate-50 dark:hover:bg-navy-850 hover:border-emerald-500/40',
     danger: 'bg-rose-700 hover:bg-rose-800 active:bg-rose-900 text-white border border-rose-800',
     ghost: 'bg-transparent hover:bg-slate-100 dark:hover:bg-navy-850 text-slate-700 dark:text-slate-200 shadow-none',
-    success: 'bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white border border-emerald-700',
+    success: 'bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white border border-emerald-700',
   };
 
   const sizeStyles = {

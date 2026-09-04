@@ -19,11 +19,11 @@ export const ChannelDistribution: React.FC<ChannelDistributionProps> = ({ channe
       <div className="flex items-center justify-between pb-4 border-b border-slate-200 dark:border-navy-800">
         <div>
           <h3 className="font-extrabold text-sm sm:text-base text-navy-950 dark:text-slate-100 flex items-center gap-2">
-            <PieChart className="w-4 h-4 text-yellow-500" />
+            <PieChart className="w-4 h-4 text-emerald-400" />
             Rail Volume Breakdown
           </h3>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-            Diversification across MTN MoMo, Orange Money, and Bank EFT
+            Diversification across MTN MoMo, Vodafone Cash, and Bank EFT
           </p>
         </div>
       </div>
@@ -32,7 +32,7 @@ export const ChannelDistribution: React.FC<ChannelDistributionProps> = ({ channe
         {channels.map((ch, idx) => {
           const label = ch.name || ch.channel || `Rail ${idx + 1}`;
           const isMoMo = label.toUpperCase().includes('MOMO');
-          const isOrange = label.toUpperCase().includes('ORANGE');
+          const isOrange = label.toUpperCase().includes('ORANGE') || label.toUpperCase().includes('VODA');
 
           return (
             <div key={label} className="space-y-1.5">
@@ -50,10 +50,10 @@ export const ChannelDistribution: React.FC<ChannelDistributionProps> = ({ channe
                   style={{ width: `${ch.percentage}%` }}
                   className={`h-full rounded-full ${
                     isMoMo
-                      ? 'bg-yellow-500'
+                      ? 'bg-emerald-500'
                       : isOrange
-                      ? 'bg-amber-600'
-                      : 'bg-navy-800 dark:bg-slate-300'
+                      ? 'bg-sky-500'
+                      : 'bg-teal-600 dark:bg-teal-400'
                   }`}
                 />
               </div>

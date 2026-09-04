@@ -3,13 +3,11 @@ import './globals.css';
 import { ToastProvider } from '@/components/ui/Toast';
 import { AuthProvider } from '@/components/auth/AuthContext';
 import { BusinessProvider } from '@/components/layout/BusinessContext';
-import { TrustBanner } from '@/components/layout/TrustBanner';
-
 import { NotificationProvider } from '@/components/notifications/NotificationContext';
 
 export const metadata: Metadata = {
-  title: 'Mobira — Trusted Business Payment & Identity Platform',
-  description: 'PAY • RECEIVE • VERIFY • GROW. Built on existing payment rails. NOT a bank, NOT a wallet.',
+  title: 'Mobira — African Business Payment & Trust Orchestration Platform',
+  description: 'Enterprise multi-rail disbursements, collections, and verified pre-flight identity for African businesses.',
 };
 
 export default function RootLayout({
@@ -24,7 +22,6 @@ export default function RootLayout({
           <AuthProvider>
             <BusinessProvider>
               <NotificationProvider>
-                <TrustBanner />
                 {children}
               </NotificationProvider>
             </BusinessProvider>

@@ -65,24 +65,24 @@ export default function AnalyticsPage() {
       category: 'Employee payments',
       amount: 98000,
       percentage: 68.8,
-      color: 'bg-yellow-500',
-      textColor: 'text-yellow-600 dark:text-yellow-400',
+      color: 'bg-emerald-500',
+      textColor: 'text-emerald-600 dark:text-emerald-400',
       description: 'Monthly payroll across 48 staff members',
     },
     {
       category: 'Suppliers',
       amount: 32500,
       percentage: 22.8,
-      color: 'bg-blue-500',
-      textColor: 'text-blue-600 dark:text-blue-400',
+      color: 'bg-sky-500',
+      textColor: 'text-sky-600 dark:text-sky-400',
       description: 'Raw materials & commercial supplier settlements',
     },
     {
       category: 'Contractors',
       amount: 8200,
       percentage: 5.7,
-      color: 'bg-emerald-500',
-      textColor: 'text-emerald-600 dark:text-emerald-400',
+      color: 'bg-teal-500',
+      textColor: 'text-teal-600 dark:text-teal-400',
       description: 'Software development & specialized consulting',
     },
     {
@@ -157,7 +157,7 @@ export default function AnalyticsPage() {
                       Money Sent
                     </span>
                     <div className="p-2 rounded-xl bg-slate-100 dark:bg-navy-950 text-navy-900 dark:text-slate-200">
-                      <ArrowUpRight className="w-4 h-4 text-yellow-500" />
+                      <ArrowUpRight className="w-4 h-4 text-sky-400" />
                     </div>
                   </div>
                   <div className="mt-2">
@@ -176,12 +176,12 @@ export default function AnalyticsPage() {
                     <span className="text-xs font-black uppercase tracking-wider text-slate-400">
                       Net Movement
                     </span>
-                    <div className="p-2 rounded-xl bg-yellow-50 dark:bg-yellow-950/60 text-yellow-600 dark:text-yellow-400">
+                    <div className="p-2 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400">
                       <TrendingUp className="w-4 h-4" />
                     </div>
                   </div>
                   <div className="mt-2">
-                    <p className="text-2xl font-black text-yellow-600 dark:text-yellow-400 tabular-nums">
+                    <p className="text-2xl font-black text-emerald-600 dark:text-emerald-400 tabular-nums">
                       +{formatCurrency(financialOverview.netMovement, financialOverview.currency)}
                     </p>
                     <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-bold mt-1">
@@ -342,7 +342,7 @@ export default function AnalyticsPage() {
             {/* 4. INSIGHTS */}
             <div className="space-y-3">
               <div className="flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-yellow-500" />
+                <Sparkles className="w-4 h-4 text-emerald-400" />
                 <h3 className="font-black text-base text-navy-950 dark:text-white">
                   Deterministic Financial Insights
                 </h3>
@@ -350,12 +350,12 @@ export default function AnalyticsPage() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Insight 1 (Exact specification) */}
-                <Card className="p-5 border-2 border-yellow-500/40 bg-yellow-50/50 dark:bg-navy-950 rounded-2xl shadow-subtle flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-xl bg-yellow-500 text-navy-950 flex items-center justify-center shrink-0 font-black">
+                <Card className="p-5 border-2 border-emerald-500/30 bg-emerald-50/20 dark:bg-navy-950 rounded-2xl shadow-subtle flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-xl bg-emerald-500 text-navy-950 flex items-center justify-center shrink-0 font-black shadow-md shadow-emerald-500/20">
                     <Lightbulb className="w-5 h-5" />
                   </div>
                   <div className="space-y-1">
-                    <span className="text-[10px] uppercase font-black text-yellow-700 dark:text-yellow-400 tracking-wider block">
+                    <span className="text-[10px] uppercase font-black text-emerald-700 dark:text-emerald-400 tracking-wider block">
                       Expenditure Concentration
                     </span>
                     <p className="text-sm font-black text-navy-950 dark:text-white leading-snug">

@@ -38,11 +38,11 @@ export const CashflowChart: React.FC<CashflowChartProps> = ({ monthlyTrends }) =
 
         <div className="flex items-center gap-4 text-xs font-semibold">
           <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-sm bg-yellow-500" />
+            <span className="w-2.5 h-2.5 rounded-sm bg-emerald-500 shadow-sm shadow-emerald-500/30" />
             <span className="text-slate-700 dark:text-slate-300">Collections (RECEIVE)</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-sm bg-navy-900 dark:bg-slate-300" />
+            <span className="w-2.5 h-2.5 rounded-sm bg-sky-500 dark:bg-sky-400" />
             <span className="text-slate-700 dark:text-slate-300">Disbursements (PAY)</span>
           </div>
         </div>
@@ -58,16 +58,16 @@ export const CashflowChart: React.FC<CashflowChartProps> = ({ monthlyTrends }) =
           return (
             <div key={trend.month} className="flex flex-col items-center h-full justify-end group">
               <div className="flex items-end gap-1 sm:gap-2 w-full justify-center h-full">
-                {/* Collected Bar (Yellow) */}
+                {/* Collected Bar (Emerald) */}
                 <div
                   style={{ height: `${collPct}%` }}
-                  className="w-3 sm:w-5 bg-yellow-500 rounded-t transition-all group-hover:brightness-110"
+                  className="w-3 sm:w-5 bg-emerald-500 rounded-t transition-all group-hover:brightness-110 shadow-sm shadow-emerald-500/20"
                   title={`Collected: ${formatCurrency(cVal)}`}
                 />
-                {/* Disbursed Bar (Deep Blue / Light Slate) */}
+                {/* Disbursed Bar (Sky Blue) */}
                 <div
                   style={{ height: `${disbPct}%` }}
-                  className="w-3 sm:w-5 bg-navy-900 dark:bg-slate-200 rounded-t transition-all group-hover:brightness-110"
+                  className="w-3 sm:w-5 bg-sky-600 dark:bg-sky-400 rounded-t transition-all group-hover:brightness-110"
                   title={`Disbursed: ${formatCurrency(dVal)}`}
                 />
               </div>

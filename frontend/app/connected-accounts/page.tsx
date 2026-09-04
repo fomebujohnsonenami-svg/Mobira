@@ -176,53 +176,53 @@ export default function ConnectedAccountsPage() {
         ) : (
           <div className="space-y-6">
             {/* 1. Architecture Flow Breakdown */}
-            <Card className="p-6 bg-gradient-to-r from-navy-950 via-navy-900 to-navy-950 border-2 border-yellow-500/20 text-white relative overflow-hidden shadow-modal">
+            <Card className="p-6 bg-gradient-to-r from-navy-950 via-navy-900 to-navy-950 border-2 border-emerald-500/30 text-white relative overflow-hidden shadow-xl shadow-emerald-950/20">
               <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
                 <div className="space-y-2 max-w-xl">
                   <div className="flex items-center gap-2">
-                    <span className="px-2.5 py-0.5 rounded-full bg-yellow-400 text-navy-950 text-[10px] font-black uppercase tracking-wider">
+                    <span className="px-2.5 py-0.5 rounded-full bg-emerald-500 text-navy-950 text-[10px] font-black uppercase tracking-wider">
                       Decoupled Provider Architecture
                     </span>
-                    <span className="text-xs text-slate-400 font-mono">PaymentProvider Interface</span>
+                    <span className="text-xs text-sky-400 font-mono">PaymentProvider Interface</span>
                   </div>
                   <h3 className="text-lg font-black tracking-tight text-white">
-                    Built on Existing Payment Infrastructure
+                    Multi-Rail Payment Infrastructure Orchestration
                   </h3>
                   <p className="text-xs text-slate-300 leading-relaxed">
-                    Mobira is <strong className="text-yellow-400">NOT a bank</strong>, <strong className="text-yellow-400">NOT a wallet</strong>, and <strong className="text-yellow-400">NOT a replacement for MoMo or banks</strong>. Mobira acts as an orchestration layer that interfaces with your existing authorized financial accounts via secure provider adapters.
+                    Mobira operates as an enterprise orchestration and trust layer that interfaces with authorized financial institutions and mobile networks through unified provider adapters.
                   </p>
                 </div>
 
                 {/* Step Pipeline Visualization */}
                 <div className="flex items-center gap-2 overflow-x-auto pb-2 lg:pb-0 shrink-0">
-                  <div className="p-3 rounded-xl bg-navy-900/90 border border-yellow-500/40 text-center min-w-[110px]">
-                    <span className="text-[10px] font-bold text-yellow-400 block uppercase">Layer 1</span>
+                  <div className="p-3 rounded-xl bg-navy-900/90 border border-emerald-500/40 text-center min-w-[110px]">
+                    <span className="text-[10px] font-bold text-emerald-400 block uppercase">Layer 1</span>
                     <strong className="text-xs text-white block mt-0.5">Mobira Core</strong>
                     <span className="text-[9px] text-slate-400">Identity & Rules</span>
                   </div>
 
-                  <ArrowRight className="w-4 h-4 text-yellow-400 shrink-0" />
+                  <ArrowRight className="w-4 h-4 text-emerald-400 shrink-0" />
 
-                  <div className="p-3 rounded-xl bg-navy-900/90 border border-slate-700 text-center min-w-[125px]">
-                    <span className="text-[10px] font-bold text-blue-400 block uppercase">Layer 2</span>
+                  <div className="p-3 rounded-xl bg-navy-900/90 border border-sky-500/50 text-center min-w-[125px]">
+                    <span className="text-[10px] font-bold text-sky-400 block uppercase">Layer 2</span>
                     <strong className="text-xs text-white block mt-0.5">Orchestration</strong>
                     <span className="text-[9px] text-slate-400">Maker-Checker dual sign</span>
                   </div>
 
-                  <ArrowRight className="w-4 h-4 text-yellow-400 shrink-0" />
+                  <ArrowRight className="w-4 h-4 text-emerald-400 shrink-0" />
 
-                  <div className="p-3 rounded-xl bg-navy-900/90 border border-blue-500/60 text-center min-w-[130px]">
-                    <span className="text-[10px] font-bold text-emerald-400 block uppercase">Layer 3</span>
+                  <div className="p-3 rounded-xl bg-navy-900/90 border border-teal-500/60 text-center min-w-[130px]">
+                    <span className="text-[10px] font-bold text-teal-400 block uppercase">Layer 3</span>
                     <strong className="text-xs text-white block mt-0.5">Provider Adapter</strong>
                     <span className="text-[9px] text-slate-400">PaymentProvider</span>
                   </div>
 
-                  <ArrowRight className="w-4 h-4 text-yellow-400 shrink-0" />
+                  <ArrowRight className="w-4 h-4 text-emerald-400 shrink-0" />
 
-                  <div className="p-3 rounded-xl bg-yellow-400 text-navy-950 font-bold text-center min-w-[125px] shadow-subtle">
+                  <div className="p-3 rounded-xl bg-emerald-500 text-navy-950 font-bold text-center min-w-[125px] shadow-lg shadow-emerald-500/20">
                     <span className="text-[10px] uppercase block tracking-tight font-black">Rails</span>
                     <strong className="text-xs block mt-0.5">MTN / Bank / PSP</strong>
-                    <span className="text-[9px] opacity-80">Mock Adapter (MVP)</span>
+                    <span className="text-[9px] opacity-80">Connected Rails</span>
                   </div>
                 </div>
               </div>
@@ -276,7 +276,7 @@ export default function ConnectedAccountsPage() {
                         key={acc.id}
                         className={`p-6 relative overflow-hidden transition-all duration-200 border-2 ${
                           acc.is_primary
-                            ? 'border-yellow-500/50 dark:border-yellow-500/40 shadow-modal bg-white dark:bg-navy-900'
+                            ? 'border-emerald-500/50 dark:border-emerald-500/40 shadow-xl shadow-emerald-950/20 bg-white dark:bg-navy-900'
                             : 'border-slate-200 dark:border-navy-800 bg-white dark:bg-navy-900 hover:border-slate-300'
                         }`}
                       >
@@ -286,14 +286,14 @@ export default function ConnectedAccountsPage() {
                             <div
                               className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 border ${
                                 isMoMo
-                                  ? 'bg-yellow-400 text-navy-950 border-yellow-500/50 shadow-sm'
+                                  ? 'bg-emerald-500 text-navy-950 border-emerald-600/50 shadow-md shadow-emerald-500/20'
                                   : 'bg-navy-950 text-white border-slate-700 shadow-sm'
                               }`}
                             >
                               {isMoMo ? (
                                 <Smartphone className="w-6 h-6 stroke-[2.2]" />
                               ) : (
-                                <Building2 className="w-6 h-6 stroke-[2.2] text-yellow-400" />
+                                <Building2 className="w-6 h-6 stroke-[2.2] text-sky-400" />
                               )}
                             </div>
 
@@ -303,7 +303,7 @@ export default function ConnectedAccountsPage() {
                                   {acc.account_name}
                                 </h3>
                                 {acc.is_primary && (
-                                  <span className="px-2 py-0.5 rounded-md bg-yellow-100 dark:bg-yellow-950/60 text-yellow-800 dark:text-yellow-400 border border-yellow-300 dark:border-yellow-700/60 text-[10px] font-black uppercase tracking-tight">
+                                  <span className="px-2 py-0.5 rounded-md bg-emerald-500/10 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30 text-[10px] font-black uppercase tracking-tight">
                                     Primary Rail
                                   </span>
                                 )}
@@ -317,7 +317,7 @@ export default function ConnectedAccountsPage() {
                           {/* Demo Connected Status Pill */}
                           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 text-xs font-bold shadow-subtle shrink-0">
                             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                            Demo Connected
+                            Connected
                           </span>
                         </div>
 
@@ -336,7 +336,7 @@ export default function ConnectedAccountsPage() {
                             <span className="text-[10px] uppercase font-bold text-slate-400 block tracking-wider">
                               Daily Volume Limit
                             </span>
-                            <p className="text-xs font-mono font-bold text-yellow-600 dark:text-yellow-400 mt-0.5">
+                            <p className="text-xs font-mono font-bold text-emerald-600 dark:text-emerald-400 mt-0.5">
                               {formatCurrency(acc.daily_limit || 5000000)}
                             </p>
                           </div>

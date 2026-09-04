@@ -14,10 +14,10 @@ export const Badge: React.FC<BadgeProps> = ({
   ...props
 }) => {
   const variantStyles = {
-    gold: 'bg-yellow-100 text-yellow-900 dark:bg-yellow-950/70 dark:text-yellow-300 border border-yellow-300 dark:border-yellow-700/60',
-    amber: 'bg-yellow-100 text-yellow-900 dark:bg-yellow-950/70 dark:text-yellow-300 border border-yellow-300 dark:border-yellow-700/60',
-    blue: 'bg-navy-100 text-navy-900 dark:bg-navy-800 dark:text-navy-100 border border-navy-200 dark:border-navy-700',
-    emerald: 'bg-emerald-50 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800/80',
+    gold: 'bg-emerald-500/10 text-emerald-400 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-500/30 dark:border-emerald-700/60',
+    amber: 'bg-sky-500/10 text-sky-400 dark:bg-sky-950/60 dark:text-sky-300 border border-sky-500/30 dark:border-sky-700/60',
+    blue: 'bg-sky-500/10 text-sky-400 dark:bg-navy-900 dark:text-sky-300 border border-sky-500/30 dark:border-navy-700',
+    emerald: 'bg-emerald-500/10 text-emerald-400 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-500/30 dark:border-emerald-800/80',
     rose: 'bg-rose-50 text-rose-800 dark:bg-rose-950/60 dark:text-rose-300 border border-rose-300 dark:border-rose-800/80',
     slate: 'bg-slate-100 text-slate-700 dark:bg-navy-950 dark:text-slate-300 border border-slate-200 dark:border-navy-800',
   };

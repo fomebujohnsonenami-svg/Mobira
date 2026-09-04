@@ -80,13 +80,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ onClose, isMobile = false }) =
         {/* Brand Header */}
         <div className="p-5 border-b border-navy-850 flex items-center justify-between">
           <Link href="/dashboard" onClick={handleNavClick} className="flex items-center gap-3 group">
-            <div className="w-9 h-9 rounded-xl bg-yellow-500 text-navy-950 flex items-center justify-center font-black text-lg tracking-tight shadow-subtle group-hover:bg-yellow-400 transition-colors">
+            <div className="w-9 h-9 rounded-xl bg-emerald-500 text-navy-950 flex items-center justify-center font-black text-lg tracking-tight shadow-lg shadow-emerald-500/20 group-hover:bg-emerald-400 transition-colors">
               M
             </div>
             <div>
               <div className="flex items-center gap-1.5">
                 <span className="font-black text-lg text-white tracking-tight">MOBIRA</span>
-                <span className="px-1.5 py-0.2 rounded text-[9px] font-extrabold bg-yellow-500/20 text-yellow-400 border border-yellow-500/40 tracking-wider">
+                <span className="px-1.5 py-0.2 rounded text-[9px] font-extrabold bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 tracking-wider">
                   ENTERPRISE
                 </span>
               </div>
@@ -122,14 +122,14 @@ export const Sidebar: React.FC<SidebarProps> = ({ onClose, isMobile = false }) =
                 className={cn(
                   'flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-bold transition-all duration-150',
                   isActive
-                    ? 'bg-yellow-500 text-navy-950 shadow-subtle font-extrabold'
-                    : 'text-slate-300 hover:text-white hover:bg-navy-900'
+                    ? 'bg-emerald-500 text-navy-950 shadow-md shadow-emerald-500/20 font-black'
+                    : 'text-slate-300 hover:text-white hover:bg-navy-900 group'
                 )}
               >
                 <Icon
                   className={cn(
                     'w-4 h-4 shrink-0 transition-colors',
-                    isActive ? 'text-navy-950' : 'text-slate-400 group-hover:text-yellow-400'
+                    isActive ? 'text-navy-950' : 'text-slate-400 group-hover:text-emerald-400'
                   )}
                 />
                 <span className="truncate">{item.label}</span>
@@ -145,13 +145,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ onClose, isMobile = false }) =
         <Link
           href="/connected-accounts"
           onClick={handleNavClick}
-          className="flex items-center justify-between px-3 py-2 rounded-xl bg-navy-900/90 border border-navy-800 hover:border-yellow-500/50 text-xs text-slate-300 hover:text-white transition-all group shadow-sm"
+          className="flex items-center justify-between px-3 py-2 rounded-xl bg-navy-900/90 border border-navy-800 hover:border-emerald-500/50 text-xs text-slate-300 hover:text-white transition-all group shadow-sm"
         >
           <div className="flex items-center gap-2">
-            <Zap className="w-3.5 h-3.5 text-yellow-400 group-hover:scale-110 transition-transform" />
+            <Zap className="w-3.5 h-3.5 text-emerald-400 group-hover:scale-110 transition-transform" />
             <span className="font-bold">Connected Accounts</span>
           </div>
-          <span className="text-[10px] px-1.5 py-0.5 rounded bg-navy-950 text-yellow-400 font-mono font-bold">
+          <span className="text-[10px] px-1.5 py-0.5 rounded bg-navy-950 text-emerald-400 font-mono font-bold">
             Simulated
           </span>
         </Link>
@@ -160,7 +160,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onClose, isMobile = false }) =
         <div className="p-3 rounded-xl bg-navy-900/90 border border-navy-800 space-y-1.5">
           <div className="flex items-center justify-between gap-1">
             <BusinessVerificationBadge showLabel={false} size="sm" />
-            <span className="text-[10px] font-mono text-yellow-400 font-bold shrink-0">
+            <span className="text-[10px] font-mono text-emerald-400 font-bold shrink-0">
               {currentBusiness.trust_score}/100
             </span>
           </div>
@@ -180,7 +180,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onClose, isMobile = false }) =
             <Link
               href={`/business/${currentBusiness.business_id || 'PP-ABC-001'}`}
               onClick={handleNavClick}
-              className="text-yellow-400 hover:text-yellow-300 font-bold flex items-center gap-1 shrink-0"
+              className="text-emerald-400 hover:text-emerald-300 font-bold flex items-center gap-1 shrink-0"
               title="View Public Verified Profile"
             >
               <span>Public Profile</span>
@@ -193,10 +193,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ onClose, isMobile = false }) =
         <div className="flex items-center justify-between px-3 py-1.5 rounded-lg bg-navy-900 border border-navy-800 text-[11px]">
           <div className="flex items-center gap-2">
             <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-400 opacity-75" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-yellow-500" />
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
             </span>
-            <span className="font-bold text-yellow-400 text-[10px] uppercase tracking-wider">
+            <span className="font-bold text-emerald-400 text-[10px] uppercase tracking-wider">
               {isDemoMode ? 'Demo Mode' : 'Live Mode'}
             </span>
           </div>
@@ -210,7 +210,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onClose, isMobile = false }) =
           className="w-full flex items-center justify-center gap-2 px-3 py-1.5 rounded-lg bg-navy-900 hover:bg-navy-850 active:bg-navy-950 text-slate-300 hover:text-white border border-navy-800 hover:border-slate-700 text-xs font-semibold transition-all shadow-subtle group"
           title="Reset all demo state to original baseline"
         >
-          <RotateCcw className="w-3.5 h-3.5 text-slate-400 group-hover:text-yellow-400 group-hover:-rotate-90 transition-transform duration-200" />
+          <RotateCcw className="w-3.5 h-3.5 text-slate-400 group-hover:text-emerald-400 group-hover:-rotate-90 transition-transform duration-200" />
           <span>Reset Demo</span>
         </button>
 
