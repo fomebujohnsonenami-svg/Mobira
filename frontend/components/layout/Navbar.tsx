@@ -61,7 +61,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu }) => {
   }, []);
 
   return (
-    <header className="h-16 bg-[#131B24] border-b border-slate-800 px-3 sm:px-6 flex items-center justify-between z-20 relative select-none">
+    <header className="h-16 bg-white dark:bg-[#131B24] border-b border-slate-200 dark:border-slate-800 px-3 sm:px-6 flex items-center justify-between z-20 relative select-none transition-colors duration-200">
       {/* LEFT: Mobile Menu Button & Business Selector */}
       <div className="flex items-center gap-2 sm:gap-4 min-w-0">
         {/* Mobile Hamburger Button */}
@@ -69,7 +69,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu }) => {
           type="button"
           onClick={onOpenMobileMenu}
           aria-label="Open Navigation Menu"
-          className="lg:hidden p-2 rounded-xl text-slate-300 hover:bg-slate-800 border border-slate-700 transition-colors shrink-0"
+          className="lg:hidden p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 transition-colors shrink-0"
         >
           <Menu className="w-5 h-5" />
         </button>
@@ -79,14 +79,14 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu }) => {
           <button
             onClick={() => setIsBizMenuOpen(!isBizMenuOpen)}
             type="button"
-            className="flex items-center gap-2 p-1.5 sm:px-3 sm:py-2 rounded-xl bg-[#18222D] hover:bg-[#1E293B] border border-slate-800 transition-all text-left shadow-subtle group max-w-[200px] xs:max-w-[260px] sm:max-w-none truncate"
+            className="flex items-center gap-2 p-1.5 sm:px-3 sm:py-2 rounded-xl bg-slate-50 dark:bg-[#18222D] hover:bg-slate-100 dark:hover:bg-[#1E293B] border border-slate-200 dark:border-slate-800 transition-all text-left shadow-sm group max-w-[200px] xs:max-w-[260px] sm:max-w-none truncate"
           >
             <div className="w-7 h-7 rounded-lg bg-[#A3E635] text-[#0F172A] font-black flex items-center justify-center text-xs shrink-0 shadow-sm shadow-[#A3E635]/20">
               {currentBusiness.name.slice(0, 2).toUpperCase()}
             </div>
 
             <div className="flex items-center gap-1.5 min-w-0 truncate">
-              <span className="font-black text-white tracking-tight text-xs truncate max-w-[90px] xs:max-w-[130px] sm:max-w-none">
+              <span className="font-black text-slate-900 dark:text-white tracking-tight text-xs truncate max-w-[90px] xs:max-w-[130px] sm:max-w-none">
                 {currentBusiness.name}
               </span>
               <span
@@ -98,7 +98,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu }) => {
               </span>
 
               <ChevronDown
-                className={`w-3 h-3 text-slate-400 shrink-0 transition-transform ${
+                className={`w-3.5 h-3.5 text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-200 transition-transform ${
                   isBizMenuOpen ? 'rotate-180' : ''
                 }`}
               />
@@ -107,8 +107,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu }) => {
 
           {/* Business Selector Dropdown */}
           {isBizMenuOpen && (
-            <div className="absolute left-0 mt-2 w-72 bg-[#18222D] border border-slate-700 rounded-2xl shadow-modal p-2 z-50 animate-in fade-in zoom-in-95 text-xs text-white">
-              <div className="px-3 py-2 border-b border-slate-800">
+            <div className="absolute left-0 mt-2 w-72 bg-white dark:bg-[#18222D] border border-slate-200 dark:border-slate-700 rounded-2xl shadow-modal p-2 z-50 animate-in fade-in zoom-in-95 text-xs text-slate-900 dark:text-white">
+              <div className="px-3 py-2 border-b border-slate-100 dark:border-slate-800">
                 <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
                   Switch Business Entity
                 </span>
@@ -123,8 +123,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu }) => {
                     }}
                     className={`w-full flex items-center justify-between p-2.5 rounded-xl text-left transition-all ${
                       b.id === currentBusiness.id
-                        ? 'bg-[#1E293B] text-white border border-[#A3E635]/30'
-                        : 'hover:bg-slate-800/60 text-slate-300'
+                        ? 'bg-slate-100 dark:bg-[#1E293B] text-slate-900 dark:text-white border border-[#A3E635]/40 font-bold'
+                        : 'hover:bg-slate-50 dark:hover:bg-slate-800/60 text-slate-600 dark:text-slate-300'
                     }`}
                   >
                     <div>
@@ -140,25 +140,29 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu }) => {
         </div>
       </div>
 
-      {/* RIGHT: Privacy Toggle, Notifications & User */}
-      <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
-        <div className="hidden xl:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#18222D] border border-slate-800 text-[11px] text-slate-300">
+      {/* RIGHT: Rail Indicators, Theme Toggle, Privacy, Notifications, Profile */}
+      <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
+        <div className="hidden xl:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-50 dark:bg-[#18222D] border border-slate-200 dark:border-slate-800 text-[11px] text-slate-600 dark:text-slate-300">
           <span className="w-2 h-2 rounded-full bg-[#A3E635] shadow-sm shadow-[#A3E635]/50 animate-pulse" />
           <span className="font-mono font-semibold">MTN MoMo • Telecel • Bank EFT</span>
         </div>
 
-        {/* Global Privacy Toggle */}
+        {/* Global Privacy Blind Toggle */}
         <PrivacyToggle size="sm" />
 
-        {/* Notifications Icon */}
+        {/* Dark / Light Theme Toggle Button */}
+        <ThemeToggle />
+
+        {/* Notifications Drawer Toggle Button */}
         <button
           type="button"
           onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
-          className="relative p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-colors border border-transparent hover:border-slate-700"
+          aria-label="Open Notifications"
+          className="relative p-2 rounded-xl text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors border border-transparent hover:border-slate-200 dark:hover:border-slate-700"
         >
           <Bell className="w-4 h-4" />
           {unreadCount > 0 && (
-            <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#A3E635] ring-2 ring-[#131B24]" />
+            <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#A3E635] ring-2 ring-white dark:ring-[#131B24]" />
           )}
         </button>
 
@@ -167,16 +171,49 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu }) => {
           <button
             type="button"
             onClick={() => setIsProfileOpen(!isProfileOpen)}
-            className="flex items-center gap-2 p-1 rounded-xl hover:bg-slate-800 transition-colors border border-transparent hover:border-slate-700"
+            className="flex items-center gap-2 p-1 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors border border-transparent hover:border-slate-200 dark:hover:border-slate-700"
           >
             <div className="w-8 h-8 rounded-full bg-[#A3E635] text-[#0F172A] font-black text-xs flex items-center justify-center shadow-md shadow-[#A3E635]/20">
-              KA
+              {user?.first_name?.slice(0, 1) || 'M'}{user?.last_name?.slice(0, 1) || 'E'}
             </div>
             <div className="hidden md:block text-left pr-1">
-              <span className="block font-bold text-xs text-white leading-tight">Kwame Asante</span>
-              <span className="block text-[10px] text-slate-400 font-medium">Finance Admin</span>
+              <span className="block font-bold text-xs text-slate-900 dark:text-white leading-tight">
+                {user?.first_name ? `${user.first_name} ${user.last_name}` : 'Mobira Enterprise'}
+              </span>
+              <span className="block text-[10px] text-slate-500 dark:text-slate-400 font-medium capitalize">
+                {user?.role?.toLowerCase() || 'Admin'}
+              </span>
             </div>
           </button>
+
+          {/* Profile Dropdown */}
+          {isProfileOpen && (
+            <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-[#18222D] border border-slate-200 dark:border-slate-700 rounded-2xl shadow-modal p-2 z-50 animate-in fade-in zoom-in-95 text-xs text-slate-900 dark:text-white">
+              <div className="px-3 py-2 border-b border-slate-100 dark:border-slate-800">
+                <p className="font-bold">{user?.first_name} {user?.last_name}</p>
+                <p className="text-[10px] text-slate-400 font-mono truncate">{user?.email}</p>
+              </div>
+              <div className="py-1">
+                <Link
+                  href="/settings"
+                  onClick={() => setIsProfileOpen(false)}
+                  className="block px-3 py-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/60 text-slate-700 dark:text-slate-300 font-medium"
+                >
+                  Account Settings
+                </Link>
+                <button
+                  onClick={() => {
+                    setIsProfileOpen(false);
+                    logout();
+                  }}
+                  className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-left hover:bg-rose-50 dark:hover:bg-rose-950/40 text-rose-600 dark:text-rose-400 font-medium"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                  <span>Sign Out</span>
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 

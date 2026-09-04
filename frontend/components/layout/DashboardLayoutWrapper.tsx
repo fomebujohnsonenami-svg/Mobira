@@ -18,7 +18,7 @@ export const DashboardLayoutWrapper: React.FC<{ children: React.ReactNode }> = (
   };
 
   return (
-    <div className="flex-1 flex overflow-hidden min-h-screen">
+    <div className="flex-1 flex overflow-hidden min-h-screen bg-[#F8FAFC] dark:bg-[#0F172A] text-slate-900 dark:text-slate-100 transition-colors duration-200">
       {/* Desktop Fixed Sidebar */}
       <Sidebar />
 
@@ -27,11 +27,11 @@ export const DashboardLayoutWrapper: React.FC<{ children: React.ReactNode }> = (
         <div className="fixed inset-0 z-50 lg:hidden flex">
           {/* Backdrop */}
           <div
-            className="fixed inset-0 bg-navy-950/80 backdrop-blur-sm transition-opacity animate-in fade-in"
+            className="fixed inset-0 bg-slate-900/60 dark:bg-navy-950/80 backdrop-blur-sm transition-opacity animate-in fade-in"
             onClick={() => setIsMobileMenuOpen(false)}
           />
           {/* Drawer Body */}
-          <div className="relative flex-1 flex flex-col max-w-xs w-full bg-navy-950 shadow-2xl z-10 animate-in slide-in-from-left duration-200">
+          <div className="relative flex-1 flex flex-col max-w-xs w-full bg-white dark:bg-[#131B24] shadow-2xl z-10 animate-in slide-in-from-left duration-200">
             <Sidebar isMobile onClose={() => setIsMobileMenuOpen(false)} />
           </div>
         </div>
@@ -39,7 +39,7 @@ export const DashboardLayoutWrapper: React.FC<{ children: React.ReactNode }> = (
 
       <div className="flex-1 flex flex-col min-w-0 overflow-y-auto">
         {/* Top Persistent DEMO MODE Announcement Banner */}
-        <div className="bg-amber-500/10 dark:bg-amber-950/40 border-b border-amber-500/30 px-3 sm:px-4 py-1.5 flex items-center justify-between text-xs text-amber-800 dark:text-amber-300 select-none shrink-0">
+        <div className="bg-amber-500/10 dark:bg-amber-950/40 border-b border-amber-500/30 px-3 sm:px-4 py-1.5 flex items-center justify-between text-xs text-amber-800 dark:text-amber-300 select-none shrink-0 transition-colors">
           <div className="flex items-center gap-2 font-medium">
             <span className="text-amber-500 text-sm">🟡</span>
             <strong className="font-black tracking-wide uppercase">DEMO MODE</strong>

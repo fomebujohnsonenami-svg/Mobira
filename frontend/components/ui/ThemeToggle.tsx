@@ -2,51 +2,48 @@
 
 import React, { useEffect, useState } from 'react';
 import { Sun, Moon } from 'lucide-react';
+import { useTheme } from '@/contexts/ThemeContext';
 
-export const ThemeToggle: React.FC = () => {
-  const [theme, setTheme] = useState<'light' | 'dark'>('light');
+export interface ThemeToggleProps {
+  className?: string;
+  showLabel?: boolean;
+}
+
+export const ThemeToggle: React.FC<ThemeToggleProps> = ({ className = '', showLabel = false }) => {
+  const { theme, toggleTheme, isDark } = useTheme();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
-    const stored = localStorage.getItem('mobira-theme') as 'light' | 'dark' | null;
-    const isDark = stored ? stored === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const active = isDark ? 'dark' : 'light';
-    setTheme(active);
-    if (active === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
   }, []);
 
-  const toggleTheme = () => {
-    const next = theme === 'light' ? 'dark' : 'light';
-    setTheme(next);
-    localStorage.setItem('mobira-theme', next);
-    if (next === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  };
-
   if (!mounted) {
-    return <div className="w-8 h-8 rounded-lg border border-slate-200 dark:border-navy-800" />;
+    return (
+      <div className="w-8 h-8 rounded-xl bg-slate-800/40 border border-slate-700 animate-pulse" />
+    );
   }
 
   return (
     <button
       onClick={toggleTheme}
       type="button"
-      aria-label="Toggle visual theme"
-      className="p-1.5 rounded-lg border border-slate-200 dark:border-navy-800 bg-white dark:bg-navy-900 text-slate-600 dark:text-slate-300 hover:text-navy-950 dark:hover:text-yellow-400 hover:border-slate-300 dark:hover:border-navy-700 transition-colors flex items-center justify-center shadow-subtle"
-      title={`Switch to ${theme === 'light' ? 'Dark' : 'Light'} Mode`}
+      aria-label={`Switch to ${isDark ? 'Light' : 'Dark'} Mode`}
+      title={`Switch to ${isDark ? 'Light' : 'Dark'} Mode`}
+      className={`inline-flex items-center gap-1.5 p-2 rounded-xl border transition-all duration-200 shadow-sm select-none active:scale-95 ${
+        isDark
+          ? 'bg-[#18222D] hover:bg-[#1E293B] border-slate-700 text-[#A3E635] hover:border-[#A3E635]/50'
+          : 'bg-white hover:bg-slate-100 border-slate-200 text-slate-700 hover:text-slate-900'
+      } ${className}`}
     >
-      {theme === 'light' ? (
-        <Moon className="w-4 h-4 text-navy-850" />
+      {isDark ? (
+        <Sun className="w-4 h-4 text-[#A3E635] transition-transform duration-300 hover:rotate-45" />
       ) : (
-        <Sun className="w-4 h-4 text-yellow-400" />
+        <Moon className="w-4 h-4 text-slate-700 transition-transform duration-300 hover:-rotate-12" />
+      )}
+      {showLabel && (
+        <span className="text-xs font-bold capitalize">
+          {isDark ? 'Light Mode' : 'Dark Mode'}
+        </span>
       )}
     </button>
   );

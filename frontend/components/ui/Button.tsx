@@ -21,12 +21,12 @@ export const Button: React.FC<ButtonProps> = ({
   const variantStyles = {
     // Vibrant Electric Lime Primary
     primary: 'bg-[#A3E635] hover:bg-[#84CC16] active:bg-[#65A30D] text-[#0F172A] font-black border border-[#A3E635]/40 shadow-md shadow-[#A3E635]/20',
-    // Deep Charcoal / Slate Secondary
-    secondary: 'bg-[#1E293B] hover:bg-[#283548] active:bg-[#0F172A] text-white border border-slate-700',
-    // Minimal hairline border
-    outline: 'border border-slate-700/80 bg-[#18222D] text-white hover:bg-[#1E293B] hover:border-[#A3E635]/50 shadow-sm',
+    // Adaptive Secondary
+    secondary: 'bg-slate-100 hover:bg-slate-200 dark:bg-[#1E293B] dark:hover:bg-[#283548] active:bg-slate-300 dark:active:bg-[#0F172A] text-slate-800 dark:text-white border border-slate-300 dark:border-slate-700',
+    // Adaptive Outline
+    outline: 'border border-slate-300 dark:border-slate-700/80 bg-white dark:bg-[#18222D] text-slate-800 dark:text-white hover:bg-slate-50 dark:hover:bg-[#1E293B] hover:border-[#A3E635]/50 shadow-sm',
     danger: 'bg-rose-600 hover:bg-rose-700 active:bg-rose-800 text-white border border-rose-700 shadow-md shadow-rose-900/20',
-    ghost: 'bg-transparent hover:bg-slate-800/60 text-slate-300 hover:text-white shadow-none',
+    ghost: 'bg-transparent hover:bg-slate-100 dark:hover:bg-slate-800/60 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white shadow-none',
     success: 'bg-[#10B981] hover:bg-[#059669] active:bg-[#047857] text-white border border-emerald-600',
   };
 
