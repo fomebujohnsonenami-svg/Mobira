@@ -2,38 +2,88 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   ShieldCheck,
   ArrowRight,
   Play,
-  CheckCircle2,
   Lock,
   Send,
   QrCode,
   Zap,
-  Building2,
-  Users,
   Star,
   Check,
   TrendingUp,
-  FileCheck,
+  Award,
+  X,
   Sparkles,
-  Smartphone,
+  Unlock,
+  KeyRound,
+  Mail,
+  UserCheck,
+  LogOut,
   ChevronRight,
   Shield,
   Layers,
-  ArrowUpRight,
-  Activity,
-  CreditCard,
-  X,
-  Clock,
-  Award,
+  Smartphone,
 } from 'lucide-react';
+import { useAuth } from '@/components/auth/AuthContext';
+import { RecipientBusinessVerificationDemo } from '@/components/verification/RecipientBusinessVerificationDemo';
 
 export default function HomePage() {
+  const router = useRouter();
+  const { user, isAuthenticated, login, demoLogin, logout, isLoading } = useAuth();
+
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<'PAY' | 'RECEIVE' | 'VERIFY' | 'GROW'>('VERIFY');
+  const [isUnlockModalOpen, setIsUnlockModalOpen] = useState(false);
+  const [modalTargetFeature, setModalTargetFeature] = useState<string>('Enterprise Suite');
+
+  // Quick Login form state inside modal
+  const [loginEmail, setLoginEmail] = useState('mobira@gmail.com');
+  const [loginPassword, setLoginPassword] = useState('mobira123');
+  const [loginError, setLoginError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleProtectedAction = (featureName: string, destinationUrl?: string) => {
+    if (isAuthenticated) {
+      if (destinationUrl) {
+        router.push(destinationUrl);
+      } else {
+        setIsVideoModalOpen(true);
+      }
+    } else {
+      setModalTargetFeature(featureName);
+      setIsUnlockModalOpen(true);
+    }
+  };
+
+  const handleQuickLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoginError('');
+    setIsSubmitting(true);
+    try {
+      await login(loginEmail, loginPassword);
+      setIsUnlockModalOpen(false);
+    } catch (err: any) {
+      setLoginError(err.message || 'Invalid credentials. Use mobira@gmail.com and mobira123');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleInstantDemoLogin = async () => {
+    setLoginError('');
+    setIsSubmitting(true);
+    try {
+      await demoLogin('mobira@gmail.com');
+      setIsUnlockModalOpen(false);
+    } catch (err: any) {
+      setLoginError('Could not log in.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#131B24] text-slate-100 font-sans selection:bg-[#A3E635] selection:text-[#0F172A] overflow-x-hidden">
@@ -71,43 +121,79 @@ export default function HomePage() {
             <Link href="#features" className="hover:text-white transition-colors">
               Features
             </Link>
-            <Link href="/verify" className="hover:text-white transition-colors flex items-center gap-1">
-              Verification <span className="w-1.5 h-1.5 rounded-full bg-[#A3E635] animate-pulse" />
-            </Link>
-            <Link href="#contact" className="hover:text-white transition-colors">
-              Contact
+            <button
+              type="button"
+              onClick={() => handleProtectedAction('Pre-Flight Verification', '/verify')}
+              className="hover:text-white transition-colors flex items-center gap-1.5"
+            >
+              <span>Verification</span>
+              {isAuthenticated ? (
+                <span className="w-1.5 h-1.5 rounded-full bg-[#A3E635] animate-pulse" />
+              ) : (
+                <Lock className="w-3 h-3 text-amber-400" />
+              )}
+            </button>
+            <Link href="#workbench" className="hover:text-white transition-colors">
+              Live Demo
             </Link>
           </nav>
 
           {/* CTA Actions */}
           <div className="flex items-center gap-2 sm:gap-3">
-            <Link
-              href="/login"
-              className="text-xs font-bold text-slate-300 hover:text-white px-3 py-2 rounded-lg hover:bg-[#1E293B] transition-colors"
-            >
-              Sign In
-            </Link>
-            <Link
-              href="/login"
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-black bg-[#A3E635] hover:bg-[#84CC16] text-[#0F172A] shadow-md shadow-[#A3E635]/25 transition-all duration-150 active:scale-95"
-            >
-              <span>Launch Enterprise Portal</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
+            {isAuthenticated ? (
+              <div className="flex items-center gap-2">
+                <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#1E293B] border border-slate-700 text-xs">
+                  <span className="w-2 h-2 rounded-full bg-[#A3E635]" />
+                  <span className="font-mono text-slate-300 truncate max-w-[140px]">{user?.email}</span>
+                </div>
+                <Link
+                  href="/dashboard"
+                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-black bg-[#A3E635] hover:bg-[#84CC16] text-[#0F172A] shadow-md shadow-[#A3E635]/25 transition-all duration-150 active:scale-95"
+                >
+                  <span>Dashboard</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+                <button
+                  type="button"
+                  onClick={logout}
+                  className="p-2 rounded-xl bg-[#1E293B] border border-slate-700 hover:bg-slate-800 text-slate-400 hover:text-white transition-colors"
+                  title="Sign Out"
+                >
+                  <LogOut className="w-4 h-4" />
+                </button>
+              </div>
+            ) : (
+              <>
+                <Link
+                  href="/login"
+                  className="text-xs font-bold text-slate-300 hover:text-white px-3 py-2 rounded-lg hover:bg-[#1E293B] transition-colors"
+                >
+                  Sign In
+                </Link>
+                <button
+                  type="button"
+                  onClick={() => handleProtectedAction('Enterprise Portal', '/dashboard')}
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-black bg-[#A3E635] hover:bg-[#84CC16] text-[#0F172A] shadow-md shadow-[#A3E635]/25 transition-all duration-150 active:scale-95"
+                >
+                  <Lock className="w-3.5 h-3.5" />
+                  <span>Launch Enterprise Portal</span>
+                </button>
+              </>
+            )}
           </div>
         </div>
       </header>
 
       {/* ========================================================================= */}
-      {/* B. HERO SECTION (Dark Charcoal #131B24)                                    */}
+      {/* B. HERO SECTION                                                           */}
       {/* ========================================================================= */}
       <section className="relative pt-12 pb-20 lg:pt-20 lg:pb-32 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto overflow-hidden">
-        {/* Subtle Ambient Background Glows */}
+        {/* Ambient Glows */}
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-[#A3E635]/10 blur-[130px] rounded-full pointer-events-none -z-10" />
         <div className="absolute top-1/3 right-10 w-[400px] h-[300px] bg-sky-500/10 blur-[140px] rounded-full pointer-events-none -z-10" />
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
-          {/* Left Column: Headlines & CTAs (7 cols) */}
+          {/* Left Column: Headlines & CTAs */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -116,8 +202,17 @@ export default function HomePage() {
           >
             {/* Top Pill Badge */}
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#A3E635]/15 border border-[#A3E635]/40 text-[#A3E635] text-xs font-black tracking-wide shadow-sm">
-              <ShieldCheck className="w-4 h-4 text-[#A3E635]" />
-              <span>PRE-FLIGHT RECIPIENT IDENTITY VERIFICATION</span>
+              {isAuthenticated ? (
+                <>
+                  <span className="w-2 h-2 rounded-full bg-[#A3E635] animate-ping" />
+                  <span>ENTERPRISE SESSION ACTIVE • UNLOCKED</span>
+                </>
+              ) : (
+                <>
+                  <Lock className="w-3.5 h-3.5 text-amber-400" />
+                  <span className="text-amber-300">ENTERPRISE PROTECTED • LOGIN TO UNLOCK FEATURES</span>
+                </>
+              )}
             </div>
 
             {/* Hero Headline */}
@@ -134,13 +229,18 @@ export default function HomePage() {
               networks and commercial banks with real-time pre-flight identity matching.
             </p>
 
-            {/* Tagline Badges (PAY • RECEIVE • VERIFY • GROW) */}
+            {/* Tagline Badges */}
             <div className="flex flex-wrap items-center gap-2 pt-1">
               {['PAY', 'RECEIVE', 'VERIFY', 'GROW'].map((item, idx) => (
                 <React.Fragment key={item}>
-                  <span className="px-3.5 py-1 rounded-lg bg-[#1E293B] border border-slate-700/80 text-xs font-black text-white shadow-sm hover:border-[#A3E635]/50 transition-colors">
-                    {item}
-                  </span>
+                  <button
+                    type="button"
+                    onClick={() => handleProtectedAction(item, item === 'PAY' ? '/payments' : item === 'RECEIVE' ? '/receive' : item === 'VERIFY' ? '/verify' : '/analytics')}
+                    className="px-3.5 py-1 rounded-lg bg-[#1E293B] border border-slate-700/80 text-xs font-black text-white shadow-sm hover:border-[#A3E635]/50 flex items-center gap-1.5 transition-colors"
+                  >
+                    <span>{item}</span>
+                    {!isAuthenticated && <Lock className="w-3 h-3 text-slate-500" />}
+                  </button>
                   {idx < 3 && <span className="text-[#A3E635] font-bold">•</span>}
                 </React.Fragment>
               ))}
@@ -148,27 +248,41 @@ export default function HomePage() {
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 pt-3">
-              <Link
-                href="/login"
+              <button
+                type="button"
+                onClick={() => handleProtectedAction('Business Dashboard', '/dashboard')}
                 className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-black text-sm bg-[#A3E635] hover:bg-[#84CC16] text-[#0F172A] shadow-xl shadow-[#A3E635]/20 transition-all duration-150 active:scale-95"
               >
-                <span>Open Business Dashboard</span>
-                <ArrowRight className="w-4 h-4" />
-              </Link>
+                {isAuthenticated ? (
+                  <>
+                    <span>Open Business Dashboard</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </>
+                ) : (
+                  <>
+                    <Lock className="w-4 h-4" />
+                    <span>Unlock Business Dashboard</span>
+                  </>
+                )}
+              </button>
 
               <button
                 type="button"
-                onClick={() => setIsVideoModalOpen(true)}
+                onClick={() => handleProtectedAction('Pre-Flight Simulation')}
                 className="inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl font-bold text-sm bg-[#1E293B] text-white border border-slate-700 hover:border-[#A3E635]/60 hover:bg-[#283548] transition-all duration-150 shadow-md active:scale-95 group"
               >
                 <div className="w-6 h-6 rounded-full bg-[#A3E635]/20 text-[#A3E635] flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <Play className="w-3 h-3 fill-current ml-0.5" />
+                  {isAuthenticated ? (
+                    <Play className="w-3 h-3 fill-current ml-0.5" />
+                  ) : (
+                    <Lock className="w-3 h-3 text-amber-400" />
+                  )}
                 </div>
-                <span>Test Pre-Flight Verification</span>
+                <span>{isAuthenticated ? 'Test Pre-Flight Verification' : 'Unlock Pre-Flight Simulator'}</span>
               </button>
             </div>
 
-            {/* Ratings & Social Proof Widget */}
+            {/* Ratings & Social Proof */}
             <div className="pt-4 flex flex-col sm:flex-row sm:items-center gap-4 border-t border-[#1E293B]">
               <div className="flex items-center -space-x-2.5">
                 {[
@@ -201,11 +315,10 @@ export default function HomePage() {
             </div>
           </motion.div>
 
-          {/* Right Column: Hero Visual Showcase (5 cols - Dual 3D Smartphone Stack) */}
+          {/* Right Column: Hero Visual Showcase */}
           <div className="lg:col-span-5 relative flex items-center justify-center pt-8 lg:pt-0">
-            {/* Animated Mockup Stack */}
             <div className="relative w-full max-w-[380px] h-[520px] flex items-center justify-center">
-              {/* Phone 2 (Background Tilted Phone) */}
+              {/* Phone 2 */}
               <motion.div
                 initial={{ opacity: 0, x: 40, rotate: 12 }}
                 animate={{ opacity: 0.85, x: 30, y: [-4, 6, -4], rotate: 10 }}
@@ -215,7 +328,6 @@ export default function HomePage() {
                 }}
                 className="absolute w-[260px] h-[460px] rounded-[38px] bg-[#0F172A] border-[6px] border-[#1E293B] shadow-2xl p-3 overflow-hidden select-none"
               >
-                {/* Screen Header */}
                 <div className="w-20 h-4 bg-[#1E293B] rounded-full mx-auto mb-3" />
                 <div className="space-y-3">
                   <div className="p-2.5 rounded-xl bg-[#131B24] border border-slate-800 space-y-1">
@@ -238,7 +350,7 @@ export default function HomePage() {
                 </div>
               </motion.div>
 
-              {/* Phone 1 (Foreground Active Phone with Floating Animation) */}
+              {/* Phone 1 */}
               <motion.div
                 initial={{ opacity: 0, y: 30, rotate: -4 }}
                 animate={{
@@ -252,12 +364,9 @@ export default function HomePage() {
                 }}
                 className="relative z-10 w-[280px] h-[490px] rounded-[42px] bg-[#0F172A] border-[7px] border-slate-700 shadow-2xl p-4 overflow-hidden flex flex-col justify-between"
               >
-                {/* Speaker Notch */}
                 <div className="w-24 h-4 bg-slate-800 rounded-full mx-auto mb-2" />
 
-                {/* Dashboard Screen Content */}
                 <div className="space-y-3 flex-1">
-                  {/* Top Bar */}
                   <div className="flex items-center justify-between pb-2 border-b border-slate-800 text-[10px]">
                     <div className="flex items-center gap-1.5">
                       <div className="w-4 h-4 rounded bg-[#A3E635] text-[#0F172A] font-black flex items-center justify-center text-[9px]">
@@ -270,7 +379,6 @@ export default function HomePage() {
                     </span>
                   </div>
 
-                  {/* Financial Balance Card ($1,543.00) */}
                   <div className="p-3 rounded-2xl bg-gradient-to-br from-[#1E293B] to-[#0F172A] border border-slate-700 text-left space-y-1">
                     <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">
                       Net Available Liquidity
@@ -286,23 +394,33 @@ export default function HomePage() {
                     <p className="text-[9px] text-slate-400">MTN MoMo • GCB Bank Treasury</p>
                   </div>
 
-                  {/* Quick Action Icons */}
                   <div className="grid grid-cols-3 gap-1.5 text-center">
-                    <div className="p-1.5 rounded-xl bg-[#1E293B] border border-slate-800 text-[9px] font-bold text-slate-200">
+                    <button
+                      type="button"
+                      onClick={() => handleProtectedAction('PAY', '/payments')}
+                      className="p-1.5 rounded-xl bg-[#1E293B] border border-slate-800 text-[9px] font-bold text-slate-200 hover:border-[#A3E635]/40"
+                    >
                       <Send className="w-3.5 h-3.5 text-[#A3E635] mx-auto mb-0.5" />
                       PAY
-                    </div>
-                    <div className="p-1.5 rounded-xl bg-[#1E293B] border border-slate-800 text-[9px] font-bold text-slate-200">
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleProtectedAction('RECEIVE', '/receive')}
+                      className="p-1.5 rounded-xl bg-[#1E293B] border border-slate-800 text-[9px] font-bold text-slate-200 hover:border-[#A3E635]/40"
+                    >
                       <QrCode className="w-3.5 h-3.5 text-sky-400 mx-auto mb-0.5" />
                       RECEIVE
-                    </div>
-                    <div className="p-1.5 rounded-xl bg-[#1E293B] border border-slate-800 text-[9px] font-bold text-slate-200">
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleProtectedAction('VERIFY', '/verify')}
+                      className="p-1.5 rounded-xl bg-[#1E293B] border border-slate-800 text-[9px] font-bold text-slate-200 hover:border-[#A3E635]/40"
+                    >
                       <ShieldCheck className="w-3.5 h-3.5 text-[#A3E635] mx-auto mb-0.5" />
                       VERIFY
-                    </div>
+                    </button>
                   </div>
 
-                  {/* Live Transaction Ledger Snippet */}
                   <div className="space-y-1.5 pt-1">
                     <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block text-left">
                       Recent Activity
@@ -324,11 +442,10 @@ export default function HomePage() {
                   </div>
                 </div>
 
-                {/* Bottom Home Indicator */}
                 <div className="w-20 h-1 bg-slate-700 rounded-full mx-auto mt-2" />
               </motion.div>
 
-              {/* Floating Stats Badge Overlay */}
+              {/* Floating Status Badge */}
               <motion.div
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
@@ -336,13 +453,15 @@ export default function HomePage() {
                 className="absolute -bottom-6 -left-4 z-20 p-3 rounded-2xl bg-[#1E293B]/95 border-2 border-[#A3E635]/60 shadow-2xl backdrop-blur-md flex items-center gap-2.5"
               >
                 <div className="w-8 h-8 rounded-xl bg-[#A3E635] text-[#0F172A] flex items-center justify-center font-black">
-                  <ShieldCheck className="w-4 h-4" />
+                  {isAuthenticated ? <ShieldCheck className="w-4 h-4" /> : <Lock className="w-4 h-4" />}
                 </div>
                 <div className="text-left pr-1">
-                  <span className="text-xs font-black text-white block">100% Pre-Flight</span>
+                  <span className="text-xs font-black text-white block">
+                    {isAuthenticated ? 'Enterprise Active' : 'Feature Protected'}
+                  </span>
                   <span className="text-[10px] text-[#A3E635] font-bold flex items-center gap-1">
                     <span className="w-1.5 h-1.5 rounded-full bg-[#A3E635] animate-ping" />
-                    Identity Match Verified
+                    {isAuthenticated ? '100% Unlocked' : 'Login with mobira@gmail.com'}
                   </span>
                 </div>
               </motion.div>
@@ -356,48 +475,58 @@ export default function HomePage() {
       {/* ========================================================================= */}
       <section id="about" className="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-          {/* Left Card: Media Card with Play Button */}
+          {/* Left Card: Media Card */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            onClick={() => setIsVideoModalOpen(true)}
+            onClick={() => handleProtectedAction('How Pre-Flight Works')}
             className="lg:col-span-5 relative rounded-3xl overflow-hidden min-h-[300px] sm:min-h-[360px] group cursor-pointer border border-[#1E293B] shadow-xl"
           >
-            {/* Background Unsplash Image */}
             <div
               className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
               style={{
                 backgroundImage: `url('https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=800')`,
               }}
             />
-            {/* Gradient Overlay */}
             <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A] via-[#0F172A]/70 to-transparent" />
 
-            {/* Play Button Overlay & Caption */}
             <div className="absolute inset-0 p-6 sm:p-8 flex flex-col justify-between text-left">
-              <div className="self-start px-3 py-1 rounded-full bg-[#A3E635] text-[#0F172A] text-xs font-black uppercase tracking-wider shadow-md">
-                Live Overview
+              <div className="flex items-center justify-between">
+                <div className="self-start px-3 py-1 rounded-full bg-[#A3E635] text-[#0F172A] text-xs font-black uppercase tracking-wider shadow-md">
+                  Live Overview
+                </div>
+                {!isAuthenticated && (
+                  <span className="px-2.5 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[10px] font-black flex items-center gap-1">
+                    <Lock className="w-3 h-3" /> LOCKED
+                  </span>
+                )}
               </div>
 
               <div className="space-y-3">
                 <div className="w-12 h-12 rounded-2xl bg-[#A3E635] text-[#0F172A] flex items-center justify-center shadow-lg shadow-[#A3E635]/30 group-hover:scale-110 transition-transform">
-                  <Play className="w-5 h-5 fill-current ml-0.5" />
+                  {isAuthenticated ? (
+                    <Play className="w-5 h-5 fill-current ml-0.5" />
+                  ) : (
+                    <Lock className="w-5 h-5 stroke-[2.5]" />
+                  )}
                 </div>
                 <div>
                   <h3 className="text-xl sm:text-2xl font-black text-white leading-tight">
                     How Pre-Flight Verification Works
                   </h3>
                   <p className="text-xs text-slate-300 mt-1">
-                    Watch how Mobira queries live carrier registries to eliminate ghost payroll payees.
+                    {isAuthenticated
+                      ? 'Watch how Mobira queries live carrier registries to eliminate ghost payroll payees.'
+                      : 'Sign in to unlock real-time subscriber name match simulation.'}
                   </p>
                 </div>
               </div>
             </div>
           </motion.div>
 
-          {/* Right Card: Dark Slate Container (#1E293B) with 3 Mini-Feature Columns */}
+          {/* Right Card: Dark Slate Container with 3 Mini-Feature Columns */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -418,38 +547,55 @@ export default function HomePage() {
                 <Award className="w-6 h-6 text-[#A3E635]" />
               </div>
 
-              {/* 3 Mini-Feature Columns */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-6">
-                {/* 1. Operational Consulting / Disbursement Engine */}
-                <div className="p-4 rounded-2xl bg-[#131B24]/90 border border-slate-800 space-y-2.5 hover:border-[#A3E635]/40 transition-all group">
-                  <div className="w-9 h-9 rounded-xl bg-[#A3E635]/15 text-[#A3E635] flex items-center justify-center font-bold group-hover:scale-105 transition-transform">
-                    <Send className="w-4 h-4" />
+                {/* 1. Disbursement Engine */}
+                <div
+                  onClick={() => handleProtectedAction('Disbursement Engine', '/payments')}
+                  className="p-4 rounded-2xl bg-[#131B24]/90 border border-slate-800 space-y-2.5 hover:border-[#A3E635]/40 transition-all group cursor-pointer"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="w-9 h-9 rounded-xl bg-[#A3E635]/15 text-[#A3E635] flex items-center justify-center font-bold group-hover:scale-105 transition-transform">
+                      <Send className="w-4 h-4" />
+                    </div>
+                    {!isAuthenticated && <Lock className="w-3.5 h-3.5 text-slate-500" />}
                   </div>
                   <h4 className="font-extrabold text-sm text-white">Disbursement Engine</h4>
                   <p className="text-xs text-slate-400 leading-relaxed">
-                    Automated bulk salary and supplier payouts across MTN MoMo and Bank EFT with maker-checker approvals.
+                    Automated bulk salary and supplier payouts across MTN MoMo and Bank EFT with dual-auth.
                   </p>
                 </div>
 
-                {/* 2. Strategy Consulting / Anti-Fraud Intelligence */}
-                <div className="p-4 rounded-2xl bg-[#131B24]/90 border border-slate-800 space-y-2.5 hover:border-[#A3E635]/40 transition-all group">
-                  <div className="w-9 h-9 rounded-xl bg-[#A3E635]/15 text-[#A3E635] flex items-center justify-center font-bold group-hover:scale-105 transition-transform">
-                    <ShieldCheck className="w-4 h-4" />
+                {/* 2. Anti-Fraud Intelligence */}
+                <div
+                  onClick={() => handleProtectedAction('Anti-Fraud Intelligence', '/verify')}
+                  className="p-4 rounded-2xl bg-[#131B24]/90 border border-slate-800 space-y-2.5 hover:border-[#A3E635]/40 transition-all group cursor-pointer"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="w-9 h-9 rounded-xl bg-[#A3E635]/15 text-[#A3E635] flex items-center justify-center font-bold group-hover:scale-105 transition-transform">
+                      <ShieldCheck className="w-4 h-4" />
+                    </div>
+                    {!isAuthenticated && <Lock className="w-3.5 h-3.5 text-slate-500" />}
                   </div>
                   <h4 className="font-extrabold text-sm text-white">Anti-Fraud Intelligence</h4>
                   <p className="text-xs text-slate-400 leading-relaxed">
-                    Real-time subscriber name enquiries eradicate wrong-number losses before funds leave treasury.
+                    Real-time subscriber name enquiries eradicate wrong-number losses before funds leave.
                   </p>
                 </div>
 
-                {/* 3. Financial Consulting / Trust Score Metrics */}
-                <div className="p-4 rounded-2xl bg-[#131B24]/90 border border-slate-800 space-y-2.5 hover:border-[#A3E635]/40 transition-all group">
-                  <div className="w-9 h-9 rounded-xl bg-[#A3E635]/15 text-[#A3E635] flex items-center justify-center font-bold group-hover:scale-105 transition-transform">
-                    <TrendingUp className="w-4 h-4" />
+                {/* 3. Trust Score Metrics */}
+                <div
+                  onClick={() => handleProtectedAction('Trust Score Metrics', '/analytics')}
+                  className="p-4 rounded-2xl bg-[#131B24]/90 border border-slate-800 space-y-2.5 hover:border-[#A3E635]/40 transition-all group cursor-pointer"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="w-9 h-9 rounded-xl bg-[#A3E635]/15 text-[#A3E635] flex items-center justify-center font-bold group-hover:scale-105 transition-transform">
+                      <TrendingUp className="w-4 h-4" />
+                    </div>
+                    {!isAuthenticated && <Lock className="w-3.5 h-3.5 text-slate-500" />}
                   </div>
                   <h4 className="font-extrabold text-sm text-white">Trust Score Metrics</h4>
                   <p className="text-xs text-slate-400 leading-relaxed">
-                    Convert verified transaction histories into an authoritative score (0-100) to unlock trade financing.
+                    Convert verified transaction histories into an authoritative score (0-100) for trade financing.
                   </p>
                 </div>
               </div>
@@ -459,12 +605,14 @@ export default function HomePage() {
               <span className="text-xs text-slate-300 font-medium">
                 Compliant with Bank of Ghana & CEMAC FinTech frameworks.
               </span>
-              <Link
-                href="/verify"
+              <button
+                type="button"
+                onClick={() => handleProtectedAction('Verification Workbench', '/verify')}
                 className="text-xs font-bold text-[#A3E635] hover:underline inline-flex items-center gap-1"
               >
-                Explore Live Verification Workbench →
-              </Link>
+                <span>Explore Live Verification Workbench</span>
+                <ChevronRight className="w-3.5 h-3.5" />
+              </button>
             </div>
           </motion.div>
         </div>
@@ -488,7 +636,7 @@ export default function HomePage() {
             </p>
           </div>
 
-          {/* 4 Feature Cards with Images, Icons & Lime Accents */}
+          {/* 4 Feature Cards (PAY, RECEIVE, VERIFY, GROW) */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-left">
             {/* Card 1: PAY */}
             <motion.div
@@ -497,7 +645,7 @@ export default function HomePage() {
               viewport={{ once: true }}
               whileHover={{ scale: 1.03 }}
               transition={{ duration: 0.3 }}
-              className="rounded-3xl bg-white border border-slate-200/90 shadow-lg hover:shadow-2xl transition-all overflow-hidden flex flex-col justify-between group"
+              className="rounded-3xl bg-white border border-slate-200/90 shadow-lg hover:shadow-2xl transition-all overflow-hidden flex flex-col justify-between group relative"
             >
               <div className="h-44 relative overflow-hidden bg-slate-100">
                 <div
@@ -507,6 +655,17 @@ export default function HomePage() {
                   }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+                <div className="absolute top-3 right-3">
+                  {isAuthenticated ? (
+                    <span className="px-2 py-0.5 rounded-full bg-emerald-500 text-white text-[10px] font-black">
+                      ✓ UNLOCKED
+                    </span>
+                  ) : (
+                    <span className="px-2.5 py-1 rounded-full bg-slate-900/80 text-amber-300 border border-amber-500/40 text-[10px] font-black flex items-center gap-1 backdrop-blur-sm">
+                      <Lock className="w-3 h-3" /> LOCKED
+                    </span>
+                  )}
+                </div>
                 <div className="absolute bottom-3 left-4 flex items-center gap-2">
                   <div className="w-8 h-8 rounded-xl bg-[#A3E635] text-[#0F172A] flex items-center justify-center font-black">
                     <Send className="w-4 h-4" />
@@ -519,13 +678,23 @@ export default function HomePage() {
                   Disburse bulk salaries and vendor settlements across MTN Mobile Money, Vodafone Cash, and
                   Bank EFT with dual-approval maker-checker governance.
                 </p>
-                <Link
-                  href="/payments"
-                  className="inline-flex items-center gap-1 text-xs font-black text-[#65A30D] hover:text-[#4D7C0F] pt-2"
+                <button
+                  type="button"
+                  onClick={() => handleProtectedAction('Disbursement Engine (PAY)', '/payments')}
+                  className="inline-flex items-center gap-1.5 text-xs font-black text-[#65A30D] hover:text-[#4D7C0F] pt-2 text-left"
                 >
-                  <span>Disbursement Engine</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </Link>
+                  {isAuthenticated ? (
+                    <>
+                      <span>Open Disbursement Engine</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </>
+                  ) : (
+                    <>
+                      <Lock className="w-3.5 h-3.5" />
+                      <span>Unlock Disbursement Engine</span>
+                    </>
+                  )}
+                </button>
               </div>
             </motion.div>
 
@@ -536,7 +705,7 @@ export default function HomePage() {
               viewport={{ once: true }}
               whileHover={{ scale: 1.03 }}
               transition={{ duration: 0.3, delay: 0.1 }}
-              className="rounded-3xl bg-white border border-slate-200/90 shadow-lg hover:shadow-2xl transition-all overflow-hidden flex flex-col justify-between group"
+              className="rounded-3xl bg-white border border-slate-200/90 shadow-lg hover:shadow-2xl transition-all overflow-hidden flex flex-col justify-between group relative"
             >
               <div className="h-44 relative overflow-hidden bg-slate-100">
                 <div
@@ -546,6 +715,17 @@ export default function HomePage() {
                   }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+                <div className="absolute top-3 right-3">
+                  {isAuthenticated ? (
+                    <span className="px-2 py-0.5 rounded-full bg-emerald-500 text-white text-[10px] font-black">
+                      ✓ UNLOCKED
+                    </span>
+                  ) : (
+                    <span className="px-2.5 py-1 rounded-full bg-slate-900/80 text-amber-300 border border-amber-500/40 text-[10px] font-black flex items-center gap-1 backdrop-blur-sm">
+                      <Lock className="w-3 h-3" /> LOCKED
+                    </span>
+                  )}
+                </div>
                 <div className="absolute bottom-3 left-4 flex items-center gap-2">
                   <div className="w-8 h-8 rounded-xl bg-[#A3E635] text-[#0F172A] flex items-center justify-center font-black">
                     <QrCode className="w-4 h-4" />
@@ -558,13 +738,23 @@ export default function HomePage() {
                   Generate branded payment links and dynamic QR codes that display verified corporate identity
                   and trigger seamless customer USSD mobile push prompts.
                 </p>
-                <Link
-                  href="/receive"
-                  className="inline-flex items-center gap-1 text-xs font-black text-[#65A30D] hover:text-[#4D7C0F] pt-2"
+                <button
+                  type="button"
+                  onClick={() => handleProtectedAction('Payment Links & QR (RECEIVE)', '/receive')}
+                  className="inline-flex items-center gap-1.5 text-xs font-black text-[#65A30D] hover:text-[#4D7C0F] pt-2 text-left"
                 >
-                  <span>Payment Links & QR</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </Link>
+                  {isAuthenticated ? (
+                    <>
+                      <span>Open Payment Links & QR</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </>
+                  ) : (
+                    <>
+                      <Lock className="w-3.5 h-3.5" />
+                      <span>Unlock Payment Links & QR</span>
+                    </>
+                  )}
+                </button>
               </div>
             </motion.div>
 
@@ -575,7 +765,7 @@ export default function HomePage() {
               viewport={{ once: true }}
               whileHover={{ scale: 1.03 }}
               transition={{ duration: 0.3, delay: 0.2 }}
-              className="rounded-3xl bg-white border-2 border-[#84CC16]/60 shadow-xl hover:shadow-2xl transition-all overflow-hidden flex flex-col justify-between group"
+              className="rounded-3xl bg-white border-2 border-[#84CC16]/60 shadow-xl hover:shadow-2xl transition-all overflow-hidden flex flex-col justify-between group relative"
             >
               <div className="h-44 relative overflow-hidden bg-slate-100">
                 <div
@@ -585,6 +775,17 @@ export default function HomePage() {
                   }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+                <div className="absolute top-3 right-3">
+                  {isAuthenticated ? (
+                    <span className="px-2 py-0.5 rounded-full bg-emerald-500 text-white text-[10px] font-black">
+                      ✓ UNLOCKED
+                    </span>
+                  ) : (
+                    <span className="px-2.5 py-1 rounded-full bg-slate-900/80 text-amber-300 border border-amber-500/40 text-[10px] font-black flex items-center gap-1 backdrop-blur-sm">
+                      <Lock className="w-3 h-3" /> LOCKED
+                    </span>
+                  )}
+                </div>
                 <div className="absolute bottom-3 left-4 flex items-center gap-2">
                   <div className="w-8 h-8 rounded-xl bg-[#A3E635] text-[#0F172A] flex items-center justify-center font-black">
                     <ShieldCheck className="w-4 h-4" />
@@ -597,13 +798,23 @@ export default function HomePage() {
                   Execute pre-flight name matching against telecom subscriber registries and corporate registers
                   to eradicate ghost payees and wrong-number errors.
                 </p>
-                <Link
-                  href="/verify"
-                  className="inline-flex items-center gap-1 text-xs font-black text-[#4D7C0F] hover:underline pt-2"
+                <button
+                  type="button"
+                  onClick={() => handleProtectedAction('Anti-Fraud Intelligence (VERIFY)', '/verify')}
+                  className="inline-flex items-center gap-1.5 text-xs font-black text-[#4D7C0F] hover:underline pt-2 text-left"
                 >
-                  <span>Anti-Fraud Intelligence</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </Link>
+                  {isAuthenticated ? (
+                    <>
+                      <span>Open Anti-Fraud Workbench</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </>
+                  ) : (
+                    <>
+                      <Lock className="w-3.5 h-3.5" />
+                      <span>Unlock Verification Suite</span>
+                    </>
+                  )}
+                </button>
               </div>
             </motion.div>
 
@@ -614,7 +825,7 @@ export default function HomePage() {
               viewport={{ once: true }}
               whileHover={{ scale: 1.03 }}
               transition={{ duration: 0.3, delay: 0.3 }}
-              className="rounded-3xl bg-white border border-slate-200/90 shadow-lg hover:shadow-2xl transition-all overflow-hidden flex flex-col justify-between group"
+              className="rounded-3xl bg-white border border-slate-200/90 shadow-lg hover:shadow-2xl transition-all overflow-hidden flex flex-col justify-between group relative"
             >
               <div className="h-44 relative overflow-hidden bg-slate-100">
                 <div
@@ -624,6 +835,17 @@ export default function HomePage() {
                   }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+                <div className="absolute top-3 right-3">
+                  {isAuthenticated ? (
+                    <span className="px-2 py-0.5 rounded-full bg-emerald-500 text-white text-[10px] font-black">
+                      ✓ UNLOCKED
+                    </span>
+                  ) : (
+                    <span className="px-2.5 py-1 rounded-full bg-slate-900/80 text-amber-300 border border-amber-500/40 text-[10px] font-black flex items-center gap-1 backdrop-blur-sm">
+                      <Lock className="w-3 h-3" /> LOCKED
+                    </span>
+                  )}
+                </div>
                 <div className="absolute bottom-3 left-4 flex items-center gap-2">
                   <div className="w-8 h-8 rounded-xl bg-[#A3E635] text-[#0F172A] flex items-center justify-center font-black">
                     <TrendingUp className="w-4 h-4" />
@@ -636,13 +858,23 @@ export default function HomePage() {
                   Convert verified payment histories into an authoritative Mobira Trust Score (0-100) to build
                   institutional credibility and unlock trade financing.
                 </p>
-                <Link
-                  href="/analytics"
-                  className="inline-flex items-center gap-1 text-xs font-black text-[#65A30D] hover:text-[#4D7C0F] pt-2"
+                <button
+                  type="button"
+                  onClick={() => handleProtectedAction('Trust Score Metrics (GROW)', '/analytics')}
+                  className="inline-flex items-center gap-1.5 text-xs font-black text-[#65A30D] hover:text-[#4D7C0F] pt-2 text-left"
                 >
-                  <span>Trust Score Metrics</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </Link>
+                  {isAuthenticated ? (
+                    <>
+                      <span>Open Trust Score Analytics</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </>
+                  ) : (
+                    <>
+                      <Lock className="w-3.5 h-3.5" />
+                      <span>Unlock Trust Metrics</span>
+                    </>
+                  )}
+                </button>
               </div>
             </motion.div>
           </div>
@@ -650,7 +882,86 @@ export default function HomePage() {
       </section>
 
       {/* ========================================================================= */}
-      {/* E. TRUST METRICS & STATISTICS BAR                                         */}
+      {/* E. LIVE INTERACTIVE RECIPIENT & BUSINESS VERIFICATION WORKBENCH            */}
+      {/* ========================================================================= */}
+      <section id="workbench" className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <div className="text-center max-w-3xl mx-auto space-y-3 pb-8">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#A3E635]/15 border border-[#A3E635]/40 text-[#A3E635] text-xs font-black">
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>INTERACTIVE VERIFICATION WORKBENCH</span>
+          </div>
+          <h2 className="text-2xl sm:text-4xl font-black text-white">
+            Test Recipient & Verified Business Identity
+          </h2>
+          <p className="text-xs sm:text-sm text-slate-400 max-w-xl mx-auto">
+            Try looking up Business ID <code className="text-[#A3E635] bg-[#1E293B] px-1.5 py-0.5 rounded font-mono">700235</code> or testing recipient mobile numbers.
+          </p>
+        </div>
+
+        {/* Interactive Demo with Authentication Lock Gate */}
+        <div className="relative rounded-3xl overflow-hidden border border-slate-800 bg-[#18222D]/90 p-4 sm:p-6 shadow-2xl">
+          {!isAuthenticated && (
+            <div className="absolute inset-0 z-30 bg-[#0F172A]/85 backdrop-blur-md flex items-center justify-center p-6 text-center">
+              <div className="max-w-md w-full p-6 sm:p-8 rounded-2xl bg-[#18222D] border-2 border-[#A3E635]/40 shadow-2xl space-y-5">
+                <div className="w-14 h-14 rounded-2xl bg-[#A3E635]/15 border border-[#A3E635]/40 text-[#A3E635] flex items-center justify-center mx-auto shadow-lg shadow-[#A3E635]/20">
+                  <Lock className="w-7 h-7 stroke-[2.5]" />
+                </div>
+                <div className="space-y-1.5">
+                  <h3 className="text-xl font-black text-white">Interactive Workbench Locked</h3>
+                  <p className="text-xs text-slate-300 leading-relaxed">
+                    Sign in with your enterprise credentials to test live carrier lookups and business identity matching.
+                  </p>
+                </div>
+
+                <div className="p-3.5 rounded-xl bg-[#131B24] border border-slate-800 text-left space-y-1.5 text-xs">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
+                    Demo Credentials:
+                  </span>
+                  <div className="flex items-center justify-between text-slate-300 font-mono text-[11px]">
+                    <span>Email:</span>
+                    <strong className="text-white">mobira@gmail.com</strong>
+                  </div>
+                  <div className="flex items-center justify-between text-slate-300 font-mono text-[11px]">
+                    <span>Password:</span>
+                    <strong className="text-[#A3E635]">mobira123</strong>
+                  </div>
+                  <div className="flex items-center justify-between text-slate-300 font-mono text-[11px] pt-1 border-t border-slate-800">
+                    <span>Business ID:</span>
+                    <strong className="text-sky-400">700235</strong>
+                  </div>
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-2.5 pt-1">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setModalTargetFeature('Verification Workbench');
+                      setIsUnlockModalOpen(true);
+                    }}
+                    className="w-full py-2.5 rounded-xl border border-slate-700 hover:bg-slate-800 text-xs font-bold text-slate-200 transition-all"
+                  >
+                    Enter Credentials
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleInstantDemoLogin}
+                    disabled={isSubmitting}
+                    className="w-full py-2.5 rounded-xl bg-[#A3E635] hover:bg-[#84CC16] text-[#0F172A] text-xs font-black uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 shadow-md shadow-[#A3E635]/20"
+                  >
+                    <Unlock className="w-3.5 h-3.5" />
+                    <span>Instant Unlock</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <RecipientBusinessVerificationDemo />
+        </div>
+      </section>
+
+      {/* ========================================================================= */}
+      {/* F. TRUST METRICS & STATISTICS BAR                                         */}
       {/* ========================================================================= */}
       <section className="py-14 bg-[#18222D] border-y border-[#1E293B] px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
@@ -704,7 +1015,121 @@ export default function HomePage() {
       </section>
 
       {/* ========================================================================= */}
-      {/* F. INTERACTIVE PRE-FLIGHT VERIFICATION VIDEO / SIMULATION MODAL            */}
+      {/* G. QUICK ENTERPRISE UNLOCK MODAL                                          */}
+      {/* ========================================================================= */}
+      <AnimatePresence>
+        {isUnlockModalOpen && (
+          <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="w-full max-w-md rounded-3xl bg-[#18222D] border-2 border-[#A3E635]/50 p-6 sm:p-7 text-white space-y-5 shadow-2xl relative text-left"
+            >
+              <button
+                type="button"
+                onClick={() => setIsUnlockModalOpen(false)}
+                className="absolute top-5 right-5 p-1.5 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-2xl bg-[#A3E635]/15 border border-[#A3E635]/40 text-[#A3E635] flex items-center justify-center shrink-0">
+                  <Lock className="w-6 h-6 stroke-[2.5]" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-black text-white">Unlock {modalTargetFeature}</h3>
+                  <p className="text-xs text-slate-400">Enterprise authentication required</p>
+                </div>
+              </div>
+
+              {/* Demo Credentials Box */}
+              <div className="p-3.5 rounded-2xl bg-[#131B24] border border-slate-800 space-y-1.5 text-xs">
+                <div className="flex items-center justify-between text-slate-400">
+                  <span className="font-bold text-[10px] uppercase tracking-wider">Enterprise Credentials</span>
+                  <span className="text-[10px] text-[#A3E635] font-mono font-bold">Preset Ready</span>
+                </div>
+                <div className="flex items-center justify-between text-slate-300 font-mono text-[11px]">
+                  <span>Email:</span>
+                  <strong className="text-white">mobira@gmail.com</strong>
+                </div>
+                <div className="flex items-center justify-between text-slate-300 font-mono text-[11px]">
+                  <span>Password:</span>
+                  <strong className="text-[#A3E635]">mobira123</strong>
+                </div>
+              </div>
+
+              {/* Login Form */}
+              <form onSubmit={handleQuickLogin} className="space-y-3.5">
+                {loginError && (
+                  <div className="p-2.5 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-300 text-xs font-semibold">
+                    {loginError}
+                  </div>
+                )}
+
+                <div className="space-y-1">
+                  <label className="text-[11px] font-bold text-slate-300 uppercase tracking-wider">
+                    Enterprise Email
+                  </label>
+                  <div className="relative">
+                    <Mail className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                    <input
+                      type="email"
+                      value={loginEmail}
+                      onChange={(e) => setLoginEmail(e.target.value)}
+                      placeholder="mobira@gmail.com"
+                      required
+                      className="w-full pl-10 pr-3.5 py-2.5 rounded-xl bg-[#131B24] border border-slate-700 text-sm text-white focus:outline-none focus:border-[#A3E635] font-mono"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-[11px] font-bold text-slate-300 uppercase tracking-wider">
+                    Password
+                  </label>
+                  <div className="relative">
+                    <KeyRound className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                    <input
+                      type="password"
+                      value={loginPassword}
+                      onChange={(e) => setLoginPassword(e.target.value)}
+                      placeholder="mobira123"
+                      required
+                      className="w-full pl-10 pr-3.5 py-2.5 rounded-xl bg-[#131B24] border border-slate-700 text-sm text-white focus:outline-none focus:border-[#A3E635]"
+                    />
+                  </div>
+                </div>
+
+                <div className="pt-2 space-y-2">
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="w-full py-3 rounded-xl bg-[#A3E635] hover:bg-[#84CC16] text-[#0F172A] font-black text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-lg shadow-[#A3E635]/25 active:scale-95 disabled:opacity-50"
+                  >
+                    <Unlock className="w-4 h-4" />
+                    <span>{isSubmitting ? 'Authenticating...' : 'Unlock Features & Continue'}</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handleInstantDemoLogin}
+                    disabled={isSubmitting}
+                    className="w-full py-2.5 rounded-xl bg-[#1E293B] hover:bg-[#283548] border border-slate-700 text-white font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-1.5"
+                  >
+                    <Sparkles className="w-3.5 h-3.5 text-[#A3E635]" />
+                    <span>1-Click Demo Login (mobira@gmail.com)</span>
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* ========================================================================= */}
+      {/* H. PRE-FLIGHT VERIFICATION SIMULATION MODAL                                */}
       {/* ========================================================================= */}
       <AnimatePresence>
         {isVideoModalOpen && (
@@ -713,7 +1138,7 @@ export default function HomePage() {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="w-full max-w-2xl rounded-3xl bg-[#1E293B] border-2 border-[#A3E635]/50 p-6 text-white space-y-5 shadow-2xl"
+              className="w-full max-w-2xl rounded-3xl bg-[#1E293B] border-2 border-[#A3E635]/50 p-6 text-white space-y-5 shadow-2xl text-left"
             >
               <div className="flex items-center justify-between pb-3 border-b border-slate-700">
                 <div className="flex items-center gap-2.5">
@@ -721,8 +1146,8 @@ export default function HomePage() {
                     <ShieldCheck className="w-4 h-4" />
                   </div>
                   <div>
-                    <h4 className="font-extrabold text-sm text-white">How Pre-Flight Verification Works</h4>
-                    <p className="text-[10px] text-slate-400">Live Carrier Switch Simulation</p>
+                    <h4 className="font-extrabold text-sm text-white">Pre-Flight Telecom Switch Simulation</h4>
+                    <p className="text-[10px] text-slate-400">Live Carrier Name Matching</p>
                   </div>
                 </div>
                 <button
@@ -778,13 +1203,13 @@ export default function HomePage() {
                   onClick={() => setIsVideoModalOpen(false)}
                   className="w-1/2 py-2.5 rounded-xl border border-slate-700 hover:bg-slate-800 text-xs font-bold transition-all text-slate-300"
                 >
-                  Close Preview
+                  Close
                 </button>
                 <Link
                   href="/verify"
                   className="w-1/2 py-2.5 rounded-xl font-black text-xs uppercase tracking-wider text-[#0F172A] bg-[#A3E635] hover:bg-[#84CC16] shadow-lg shadow-[#A3E635]/30 flex items-center justify-center gap-1.5 transition-all"
                 >
-                  <span>Open Verification Tool</span>
+                  <span>Open Full Verification Tool</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </Link>
               </div>
@@ -794,7 +1219,7 @@ export default function HomePage() {
       </AnimatePresence>
 
       {/* ========================================================================= */}
-      {/* G. FOOTER                                                                 */}
+      {/* I. FOOTER                                                                 */}
       {/* ========================================================================= */}
       <footer id="contact" className="border-t border-[#1E293B] bg-[#0F172A] px-4 sm:px-6 lg:px-8 py-12 text-slate-400 text-xs">
         <div className="max-w-7xl mx-auto space-y-8">
@@ -812,21 +1237,41 @@ export default function HomePage() {
             </div>
 
             <div className="flex flex-wrap items-center gap-6 text-xs font-bold text-slate-300">
-              <Link href="/dashboard" className="hover:text-[#A3E635] transition-colors">
+              <button
+                type="button"
+                onClick={() => handleProtectedAction('Dashboard', '/dashboard')}
+                className="hover:text-[#A3E635] transition-colors"
+              >
                 Dashboard
-              </Link>
-              <Link href="/payments" className="hover:text-[#A3E635] transition-colors">
+              </button>
+              <button
+                type="button"
+                onClick={() => handleProtectedAction('Disbursements (PAY)', '/payments')}
+                className="hover:text-[#A3E635] transition-colors"
+              >
                 Disbursements (PAY)
-              </Link>
-              <Link href="/receive" className="hover:text-[#A3E635] transition-colors">
+              </button>
+              <button
+                type="button"
+                onClick={() => handleProtectedAction('Receive & Links', '/receive')}
+                className="hover:text-[#A3E635] transition-colors"
+              >
                 Receive & Links
-              </Link>
-              <Link href="/verify" className="hover:text-[#A3E635] transition-colors">
+              </button>
+              <button
+                type="button"
+                onClick={() => handleProtectedAction('Pre-Flight Verify', '/verify')}
+                className="hover:text-[#A3E635] transition-colors"
+              >
                 Pre-Flight Verify
-              </Link>
-              <Link href="/analytics" className="hover:text-[#A3E635] transition-colors">
+              </button>
+              <button
+                type="button"
+                onClick={() => handleProtectedAction('Trust Scores', '/analytics')}
+                className="hover:text-[#A3E635] transition-colors"
+              >
                 Trust Scores
-              </Link>
+              </button>
             </div>
           </div>
 

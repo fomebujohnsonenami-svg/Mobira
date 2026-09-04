@@ -3,7 +3,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
 import { User } from '@/types';
-import { api } from '@/services/api';
 import { useToast } from '@/components/ui/Toast';
 
 interface AuthContextType {
@@ -85,7 +84,7 @@ export const DEMO_USERS_MAP: Record<string, User> = {
   },
 };
 
-const DEFAULT_DEMO_USER: User = DEMO_USERS_MAP['mobira@gmail.com'] || DEMO_USERS_MAP['admin@abctechnologies.com'];
+const DEFAULT_DEMO_USER: User = DEMO_USERS_MAP['mobira@gmail.com'];
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -108,11 +107,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       } catch (err) {
         localStorage.removeItem('mobira_token');
         localStorage.removeItem('mobira_user');
+        setToken(null);
+        setUser(null);
       }
     } else {
-      // Default to enterprise demo session
-      setToken('demo-session-token');
-      setUser(DEFAULT_DEMO_USER);
+      // Locked by default until login
+      setToken(null);
+      setUser(null);
     }
     setIsLoading(false);
   }, []);
@@ -142,7 +143,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             title: 'Welcome Back',
             message: `Signed in as ${data.user.first_name || data.user.email}`,
           });
-          router.push('/dashboard');
           return;
         }
       } catch (backendErr) {
@@ -162,10 +162,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         localStorage.setItem('mobira_user', JSON.stringify(enterpriseUser));
         toast({
           type: 'success',
-          title: 'Enterprise Portal Access Granted',
+          title: 'Enterprise Portal Unlocked',
           message: 'Signed in successfully as mobira@gmail.com',
         });
-        router.push('/dashboard');
         return;
       }
 
@@ -226,7 +225,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             title: 'Account Created',
             message: 'Welcome to Mobira Enterprise Platform.',
           });
-          router.push('/dashboard');
           return;
         }
       } catch (backendErr) {
@@ -260,7 +258,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         title: 'Account Created',
         message: 'Welcome to Mobira Enterprise Platform.',
       });
-      router.push('/dashboard');
     } catch (err: any) {
       toast({
         type: 'error',
@@ -295,9 +292,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           toast({
             type: 'success',
             title: 'Enterprise Access Granted',
-            message: `Switched persona to: ${data.user.first_name || data.user.email} (${data.user.role})`,
+            message: `Signed in as ${data.user.first_name || data.user.email}`,
           });
-          router.push('/dashboard');
           return;
         }
       } catch (e) {
@@ -312,9 +308,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       toast({
         type: 'success',
         title: 'Enterprise Access Granted',
-        message: `Signed in as: ${selectedUser.first_name} ${selectedUser.last_name} (${selectedUser.role})`,
+        message: `Signed in as: ${selectedUser.first_name} ${selectedUser.last_name}`,
       });
-      router.push('/dashboard');
     } catch (err: any) {
       toast({
         type: 'error',
@@ -334,9 +329,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     toast({
       type: 'info',
       title: 'Signed Out',
-      message: 'You have been signed out from Mobira.',
+      message: 'You have been signed out. Features are now locked.',
     });
-    router.push('/login');
   };
 
   return (

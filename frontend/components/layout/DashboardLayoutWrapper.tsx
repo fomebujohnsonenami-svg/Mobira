@@ -1,14 +1,19 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { Sidebar } from './Sidebar';
 import { Navbar } from './Navbar';
 import { useBusiness } from './BusinessContext';
-import { RotateCcw } from 'lucide-react';
+import { useAuth } from '@/components/auth/AuthContext';
+import { RotateCcw, Lock, ArrowRight } from 'lucide-react';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
+import { Button } from '@/components/ui/Button';
 
 export const DashboardLayoutWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { resetDemo } = useBusiness();
+  const { user, isAuthenticated, isLoading, demoLogin } = useAuth();
+  const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isResetConfirmOpen, setIsResetConfirmOpen] = useState(false);
 
@@ -16,6 +21,58 @@ export const DashboardLayoutWrapper: React.FC<{ children: React.ReactNode }> = (
     resetDemo();
     setIsResetConfirmOpen(false);
   };
+
+  if (!isLoading && !isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-[#0F172A] text-white flex items-center justify-center p-4">
+        <div className="max-w-md w-full p-6 sm:p-8 rounded-2xl bg-[#18222D] border-2 border-[#A3E635]/40 shadow-2xl text-center space-y-5">
+          <div className="w-14 h-14 rounded-2xl bg-[#A3E635]/15 border border-[#A3E635]/40 text-[#A3E635] flex items-center justify-center mx-auto shadow-lg shadow-[#A3E635]/20">
+            <Lock className="w-7 h-7 stroke-[2.5]" />
+          </div>
+          <div className="space-y-2">
+            <h2 className="text-xl font-black text-white">Enterprise Feature Locked</h2>
+            <p className="text-xs text-slate-300 leading-relaxed">
+              Please authenticate with your enterprise account to access this tool.
+            </p>
+          </div>
+
+          <div className="p-3.5 rounded-xl bg-[#131B24] border border-slate-800 text-left space-y-1.5 text-xs">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
+              Enterprise Credentials:
+            </span>
+            <div className="flex items-center justify-between text-slate-300 font-mono text-[11px]">
+              <span>Email:</span>
+              <strong className="text-white">mobira@gmail.com</strong>
+            </div>
+            <div className="flex items-center justify-between text-slate-300 font-mono text-[11px]">
+              <span>Password:</span>
+              <strong className="text-[#A3E635]">mobira123</strong>
+            </div>
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-2.5 pt-2">
+            <Button
+              variant="outline"
+              className="w-full"
+              onClick={() => router.push('/login')}
+            >
+              Go to Sign In
+            </Button>
+            <Button
+              variant="primary"
+              className="w-full"
+              onClick={async () => {
+                await demoLogin('mobira@gmail.com');
+              }}
+            >
+              <span>Instant Unlock</span>
+              <ArrowRight className="w-4 h-4 ml-1" />
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex-1 flex overflow-hidden min-h-screen bg-[#F8FAFC] dark:bg-[#0F172A] text-slate-900 dark:text-slate-100 transition-colors duration-200">
