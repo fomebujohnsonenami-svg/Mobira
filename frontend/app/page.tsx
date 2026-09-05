@@ -380,114 +380,92 @@ export default function HomePage() {
             </div>
           </motion.div>
 
-          {/* Right Column: EMBEDDED SIGN-IN CARD (when unauthenticated) OR LIVE SHOWCASE (when authenticated) */}
+          {/* Right Column: ANIMATED CORPORATE BUSINESS SHOWCASE */}
           <div className="lg:col-span-5 relative flex items-center justify-center pt-4 lg:pt-0">
             {!isAuthenticated ? (
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5 }}
-                className="w-full max-w-md p-6 sm:p-7 rounded-3xl bg-[#18222D] border-2 border-[#A3E635]/60 shadow-2xl space-y-4 text-left relative overflow-hidden"
+                transition={{ duration: 0.6 }}
+                className="w-full max-w-lg rounded-3xl bg-[#18222D] border-2 border-[#A3E635]/60 shadow-2xl p-4 sm:p-5 relative overflow-hidden group"
               >
-                {/* Header Tag */}
-                <div className="flex items-center justify-between pb-3 border-b border-slate-800">
-                  <div className="flex items-center gap-2">
-                    <div className="w-7 h-7 rounded-lg bg-[#A3E635] text-[#0F172A] font-black text-xs flex items-center justify-center">
-                      <Lock className="w-4 h-4" />
+                {/* Main Animated Corporate Business Image Container */}
+                <div className="relative w-full h-[320px] sm:h-[360px] rounded-2xl overflow-hidden border border-slate-700/80 bg-[#0F172A]">
+                  <motion.div
+                    animate={{ scale: [1, 1.03, 1] }}
+                    transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+                    className="absolute inset-0 bg-cover bg-center"
+                    style={{ backgroundImage: `url('/images/corporate_boardroom.jpg')` }}
+                  />
+                  {/* Subtle gradient vignette */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A] via-[#0F172A]/40 to-transparent" />
+
+                  {/* Animated Data Rail Lines Pulse */}
+                  <div className="absolute top-4 right-4 z-10 flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#0F172A]/90 border border-[#A3E635]/50 backdrop-blur-md shadow-lg">
+                    <span className="w-2 h-2 rounded-full bg-[#A3E635] animate-ping" />
+                    <span className="text-[10px] font-black text-[#A3E635] tracking-wider font-mono">
+                      LIVE RAILS CONNECTED
+                    </span>
+                  </div>
+
+                  {/* Top Left Verified Corporate Badge */}
+                  <motion.div
+                    animate={{ y: [0, -4, 0] }}
+                    transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+                    className="absolute top-4 left-4 z-10 p-2.5 rounded-xl bg-[#0F172A]/90 border border-slate-700 backdrop-blur-md shadow-xl flex items-center gap-2"
+                  >
+                    <div className="w-6 h-6 rounded-lg bg-[#A3E635] text-[#0F172A] flex items-center justify-center font-black">
+                      <ShieldCheck className="w-3.5 h-3.5" />
                     </div>
                     <div>
-                      <h3 className="font-extrabold text-sm text-white">Enterprise Sign-In</h3>
-                      <p className="text-[10px] text-[#A3E635] font-bold">Sign In Required</p>
+                      <p className="text-[10px] font-black text-white leading-tight">Verified Business</p>
+                      <p className="text-[8px] text-slate-300 font-mono">ID: 700235 • Ghana Reg</p>
+                    </div>
+                  </motion.div>
+
+                  {/* Bottom Overlay: Sign In Required Banner */}
+                  <div className="absolute bottom-3 inset-x-3 z-10 p-3 rounded-2xl bg-[#0F172A]/95 border border-[#A3E635]/40 backdrop-blur-md space-y-2 text-left">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1.5">
+                        <Lock className="w-3.5 h-3.5 text-amber-400" />
+                        <span className="text-[11px] font-black text-white">Sign In Required</span>
+                      </div>
+                      <span className="text-[9px] font-mono font-bold text-[#A3E635] bg-[#A3E635]/15 px-2 py-0.5 rounded border border-[#A3E635]/30">
+                        mobira@gmail.com
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2">
+                      <button
+                        type="button"
+                        onClick={handleInstantDemoLogin}
+                        disabled={isAuthenticating}
+                        className="py-2 px-3 rounded-xl bg-[#A3E635] hover:bg-[#84CC16] text-[#0F172A] font-black text-xs transition-all flex items-center justify-center gap-1.5 shadow-md shadow-[#A3E635]/25 active:scale-95 disabled:opacity-50"
+                      >
+                        <Sparkles className="w-3.5 h-3.5" />
+                        <span>⚡ 1-Click Sign In</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setModalTargetFeature('Enterprise Suite');
+                          setIsUnlockModalOpen(true);
+                        }}
+                        className="py-2 px-3 rounded-xl bg-[#1E293B] hover:bg-[#283548] border border-slate-700 text-white font-bold text-xs transition-all flex items-center justify-center gap-1"
+                      >
+                        <KeyRound className="w-3.5 h-3.5 text-slate-400" />
+                        <span>Enter Password</span>
+                      </button>
                     </div>
                   </div>
-                  <span className="px-2 py-0.5 rounded text-[9px] font-black bg-[#A3E635]/20 text-[#A3E635] border border-[#A3E635]/40">
-                    REQUIRED
-                  </span>
                 </div>
 
-                {/* Preset Credentials Box */}
-                <div className="p-3.5 bg-[#131B24] rounded-2xl border border-slate-700/80 space-y-1.5 text-xs">
-                  <div className="flex items-center justify-between text-slate-400">
-                    <span className="font-bold text-[10px] uppercase tracking-wider">Demo Access Credentials</span>
-                    <span className="text-[9px] text-[#A3E635] font-mono font-bold">Auto-Ready</span>
-                  </div>
-                  <div className="flex items-center justify-between text-slate-300 font-mono text-[11px]">
-                    <span>Email:</span>
-                    <strong className="text-white select-all">mobira@gmail.com</strong>
-                  </div>
-                  <div className="flex items-center justify-between text-slate-300 font-mono text-[11px]">
-                    <span>Password:</span>
-                    <strong className="text-[#A3E635] select-all">mobira123</strong>
-                  </div>
-                  <div className="flex items-center justify-between text-slate-300 font-mono text-[11px] pt-1 border-t border-slate-800">
-                    <span>Business ID:</span>
-                    <strong className="text-sky-400">700235</strong>
-                  </div>
+                {/* Footer Credentials Note */}
+                <div className="flex items-center justify-between pt-3 px-1 text-[11px] text-slate-400 font-mono">
+                  <span>Demo: <strong className="text-white">mobira@gmail.com</strong></span>
+                  <span>Pass: <strong className="text-[#A3E635]">mobira123</strong></span>
                 </div>
-
-                {/* Sign-In Form */}
-                <form onSubmit={handleInlineLogin} className="space-y-3">
-                  {authError && (
-                    <div className="p-2.5 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-300 text-xs font-semibold">
-                      {authError}
-                    </div>
-                  )}
-
-                  <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-300 uppercase tracking-wider">
-                      Enterprise Email
-                    </label>
-                    <div className="relative">
-                      <Mail className="w-3.5 h-3.5 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
-                      <input
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder="mobira@gmail.com"
-                        required
-                        className="w-full pl-9 pr-3 py-2 rounded-xl bg-[#131B24] border border-slate-700 text-xs text-white focus:outline-none focus:border-[#A3E635] font-mono"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-300 uppercase tracking-wider">
-                      Password
-                    </label>
-                    <div className="relative">
-                      <KeyRound className="w-3.5 h-3.5 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
-                      <input
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        placeholder="mobira123"
-                        required
-                        className="w-full pl-9 pr-3 py-2 rounded-xl bg-[#131B24] border border-slate-700 text-xs text-white focus:outline-none focus:border-[#A3E635]"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="pt-2 space-y-2">
-                    <button
-                      type="submit"
-                      disabled={isAuthenticating}
-                      className="w-full py-2.5 rounded-xl bg-[#A3E635] hover:bg-[#84CC16] text-[#0F172A] font-black text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-lg shadow-[#A3E635]/25 active:scale-95 disabled:opacity-50"
-                    >
-                      <Unlock className="w-4 h-4" />
-                      <span>{isAuthenticating ? 'Signing In...' : 'Sign In & Unlock Platform'}</span>
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={handleInstantDemoLogin}
-                      disabled={isAuthenticating}
-                      className="w-full py-2 rounded-xl bg-[#1E293B] hover:bg-[#283548] border border-slate-700 text-white font-bold text-[11px] transition-all flex items-center justify-center gap-1.5"
-                    >
-                      <Sparkles className="w-3.5 h-3.5 text-[#A3E635]" />
-                      <span>⚡ 1-Click Sign In (mobira@gmail.com)</span>
-                    </button>
-                  </div>
-                </form>
               </motion.div>
             ) : (
               /* Live Visual Showcase when Authenticated */
@@ -617,7 +595,7 @@ export default function HomePage() {
             <div
               className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
               style={{
-                backgroundImage: `url('https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=800')`,
+                backgroundImage: `url('/images/corporate_business.jpg')`,
               }}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A] via-[#0F172A]/70 to-transparent" />
